@@ -1,4 +1,4 @@
-# Delete instance directory 
+# Delete instance directory
 rm -rf instance
 
 # Run setup.py
