@@ -1,0 +1,38 @@
+Integration Testing:
+
+Endpoints:
+•	POST API returns non-null message:
+    •	Test that sending a valid POST request to the API endpoint returns a non-null message.
+    •	Test that sending an invalid POST request to the API endpoint returns a non-null error message.
+•	GET API returns non-null HTML content:
+    •	Test that sending a valid GET request to the API endpoint returns a non-null HTML content.
+    •	Test that sending an invalid GET request to the API endpoint returns a non-null error message.
+Routes:
+•	GET /register returns 200 with register.html:
+    •	Test that sending a valid GET request to the /register endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected form elements.
+•	POST /register returns 200 with redirect to /login or /register:
+    •	Test that sending a valid POST request to the /register endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected redirect URL to /login or /register.
+    •	Test that the new user is added to the database.
+•	GET /login returns 200 with login.html:
+    •	Test that sending a valid GET request to the /login endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected form elements.
+•	POST /login returns 200 with redirect to /admin or /login:
+    •	Test that sending a valid POST request to the /login endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected redirect URL to /admin or /login.
+    •	Test that the user is logged in and the session is created.
+•	GET /admin returns 200 with admin.html:
+    •	Test that sending a valid GET request to the /admin endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected user information.
+•	GET /logout returns 200 with redirect to /login:
+    •	Test that sending a valid GET request to the /logout endpoint returns a 200 status code.
+    •	Test that the response content type is HTML.
+    •	Test that the returned HTML content is non-null and contains the expected redirect URL to /login.
+    •	Test that the user is logged out and the session is destroyed.
+
