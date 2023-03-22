@@ -13,29 +13,14 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    pass
-
-# Models
-
-
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(200), nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    roles = db.Column(db.String(200), nullable=False)
-
-    def __repr__(self):
-        return '<User %r>' % self.id
-
-    def is_active(self):
-        return True
+    from model import db, User
 
 
 # Routes
@@ -144,4 +129,4 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)
