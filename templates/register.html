@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register</title>
+
+    <link rel="stylesheet" href="../static/css/login.css">
+    <script>function show_hide_password(target) {
+            var input = document.getElementById('password-input');
+            if (input.getAttribute('type') == 'password') {
+                target.classList.add('view');
+                input.setAttribute('type', 'text');
+            } else {
+                target.classList.remove('view');
+                input.setAttribute('type', 'password');
+            }
+            return false;
+        }</script>
+
+</head>
+
+<body>
+    <section>
+        <div class="box">
+            <div class="square" style="--i:0;"></div>
+            <div class="square" style="--i:1;"></div>
+            <div class="square" style="--i:2;"></div>
+            <div class="square" style="--i:3;"></div>
+            <div class="square" style="--i:4;"></div>
+            <div class="square" style="--i:5;"></div>
+
+            <div class="container">
+                <div class="form">
+                    <h2>Register</h2>
+                    <form action="" method="POST">
+                        <div class="inputBx">
+                            <input name="username" type="text" required="required">
+                            <span>User Name</span>
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="inputBx password">
+                            <input id="password-input" id="password" type="password" name="password"
+                                required="required">
+                            <span>Password</span>
+                            <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <!--  Auth key so that when creating admin account  -->
+
+                        <!-- Create a dropdown with the following roles : ['Practitioner', 'Admin', 'Lab Technition'] -->
+                        <select type='dropdown' class="inputBx" name="roles" style="  
+                        outline: none;
+                        border: none;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        background: rgba(255, 255, 255, 0.2);
+                        padding: 7px 10px;
+                        padding-left: 34px;
+                        border-radius: 15px;
+                        color: #fff;
+                        font-size: 16px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);">
+                            <option class="inputBx" value="admin">Admin</option>
+                            <option class="inputBx" selected value="practitioner">Practitioner</option>
+                            <option class="inputBx" value="lab technition">Lab Technition</option>
+                        </select>
+                        <div class="inputBx">
+                            <input type="submit" value="Register">
+                        </div>
+                    </form>
+                    <p>Forgot password? <a href="#">Click Here</a></p>
+                    <p>Do have an account? <a href="login">Login</a></p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>
