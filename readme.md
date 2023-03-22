@@ -17,7 +17,7 @@ pip install -r requirements.txt
 python setup.py
 ```
 
-## Naming Convention
+## Branching Naming Convention
 
 Examples
 - Features: `feature/add-admin-button-to-panel`
