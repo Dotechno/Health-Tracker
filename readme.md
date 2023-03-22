@@ -8,7 +8,12 @@ cd Health-Tracker
 
 # Create python venv
 python -m venv venv
-venv\Scripts\activate
+
+# Assuming ur using mac or linux
+venv/Scripts/activate
+
+# If windows
+# venv\Scripts\activate.bat
 
 # Install dependencies
 pip install -r requirements.txt
