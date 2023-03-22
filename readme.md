@@ -16,6 +16,7 @@ venv/Scripts/activate
 # venv\Scripts\activate.bat
 
 # Install dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
 
 # Setup DB 
