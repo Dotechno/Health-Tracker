@@ -25,7 +25,7 @@ if not 'models' in sys.modules:
 # Models
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False)
@@ -33,6 +33,9 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.id
+
+    def is_active(self):
+        return True
 
 
 # Routes
