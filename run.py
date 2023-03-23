@@ -128,5 +128,10 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+@app.route('/InsuranceBilling', methods=['GET', 'POST'])
+def InsuranceBilling():
+    return render_template('InsuranceBilling.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
