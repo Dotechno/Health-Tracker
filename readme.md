@@ -1,4 +1,4 @@
-# Healthtrack (Matt's Version)
+# Healthtrack (Version)
 
 ## Setup
 
