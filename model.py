@@ -18,6 +18,8 @@ class User(db.Model, UserMixin):
     def is_active(self):
         return True
 
+
+## important
 class serviceProvidedByClinic(db.Model):
     id = db.Column(db.Integer, primary_key= True)
     service_Type = db.Column(db.String(200),nullable = False)
@@ -27,6 +29,8 @@ class serviceProvidedByClinic(db.Model):
     appointment = db.relationship('appointment', backref = 'appointment',uselist = False)
     labOrder = db.relationship('labOrder', backref = 'labOrder',uselist = False)
 
+
+## not useful and Dont add to main branch
 class patient (db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(200),nullable=False)
@@ -36,21 +40,26 @@ class labOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
+    medicalEncounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
 
 class appointment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
+    physican_id = db.Column(db.Integer, db.ForeignKey('physican.id'))
 
 class prescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
-    
+    medicalEncounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
 
 class medicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     Encounter = db.Column(db.String(200), nullable = False)
     Patient = db.relationship('patient', backref = 'patient')
+    labOrder = db.relationship('labOrder', backref = 'labOrder')
+    prescription = db.relationship('prescription', backref = 'prescription')
     
 class physican(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(200), nullable = False)
+    appointment = db.relationship('appointment', backref = 'appointment')
