@@ -22,6 +22,17 @@ pip install -r requirements.txt
 # Setup DB 
 python setup.py
 ```
+## Naming Conventions
+
+### Structure
+- Models/Class: `CamelCase` i.e. `User`, `Patient`, `MedicalEncounter`
+- Fields/var: `snake_case` i.e. `first_name`, `last_name`, `telephone_number`
+- Router URL: `kebab-case` i.e. `admin-panel`, `nurse-panel`, `doctor-panel`
+- Filenames: `snake_case` i.e. `user.py`, `patient.py`, `medical_encounter.py`
+
+### Python
+- Functions: `snake_case` i.e. `get_user`, `get_patient`, `get_medical_encounter`
+- Reference: [pep8](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names)
 
 ## Branching Naming Convention
 
