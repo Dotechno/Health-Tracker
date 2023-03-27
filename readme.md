@@ -34,7 +34,7 @@ python setup.py
 - Functions: `snake_case` i.e. `get_user`, `get_patient`, `get_medical_encounter`
 - Reference: [pep8](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names)
 
-## Branching Naming Convention
+### Branching Naming Convention
 
 Examples
 - Features: `feature/add-admin-button-to-panel`
