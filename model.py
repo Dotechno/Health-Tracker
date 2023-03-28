@@ -56,10 +56,10 @@ class medicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     Encounter = db.Column(db.String(200), nullable = False)
     Patient = db.relationship('patient', backref = 'patient')
-    labOrder = db.relationship('labOrder', backref = 'labOrder')
-    prescription = db.relationship('prescription', backref = 'prescription')
+    lab_Order = db.relationship('labOrder', backref = 'LabOrder')
+    Prescription = db.relationship('prescription', backref = 'Prescription')
     
 class physican(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(200), nullable = False)
-    appointment = db.relationship('appointment', backref = 'appointment')
+    Appointment = db.relationship('appointment', backref = 'Appointment')

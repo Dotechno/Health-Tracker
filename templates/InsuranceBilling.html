@@ -10,11 +10,27 @@
 {% endblock %}
 
 {%block body%}
-<form>
-<tab>Hello</tab>
+<div class = "Content">
+    <h1>Insuranceing Billing</h1>
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Billing</th>
+            </tr>
+            {% for Lists in List%}
+                <tr>
+                    <td>{{Lists.name}}</td>
+                    <td>{{Lists.MedicalEncounter_id}}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
+        <form action = '/InsuranceBilling' method = 'POST'>
+            <input type="text" name  = 'Searches' id = 'Searches'>
+            <input type = 'submit' value = 'Search'>
+        </form>
 
-</form>
+</div>
 
 
 {% endblock %}

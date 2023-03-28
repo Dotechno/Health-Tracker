@@ -8,10 +8,14 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from forms import RegistrationForm, LoginForm
 from datetime import datetime
 
+
+
+
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
+
 
 # db = SQLAlchemy(app)
 
@@ -20,8 +24,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
-
+    from model import db, User, patient
 
 # Routes
 
@@ -130,8 +133,12 @@ def load_user(user_id):
 
 @app.route('/InsuranceBilling', methods=['GET', 'POST'])
 def InsuranceBilling():
-    return render_template('InsuranceBilling.html')
+    if request.method == 'POST':
+        Find = request.form['Search']
 
-
+    else:
+        List = patient.query.all()
+        return render_template('InsuranceBilling.html', List = List)
+   
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
