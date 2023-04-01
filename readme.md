@@ -1,5 +1,16 @@
 # Healthtrack
 
+## Table of Contents
+- [Setup](#setup)
+- [Naming Conventions](#naming-conventions)
+    - [Structure](#structure)
+    - [Python](#python)
+    - [Branching Naming Convention](#branching-naming-convention)
+- [Database Relationships Using SQLAlchemy](#database-relationships-using-sqlalchemy)
+    - [One-to-One](#one-to-one)
+    - [One-to-Many](#one-to-many)
+    - [Many-to-Many](#many-to-many)
+
 ## Setup
 
 ``` bash
@@ -35,88 +46,53 @@ python setup.py
 - Reference: [pep8](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names)
 
 ### Branching Naming Convention
-
 Examples
 - Features: `feature/add-admin-button-to-panel`
 - Refactor: `refactor/admin-panel/nurse-to-admin`
 - Fix: `fix/removed-annoying-alert-button`
 
 
+## Database Relationships Using SQLAlchemy
 
-# Obsoloete (old) Readme
+### One-to-One
+##### See [Video](https://www.youtube.com/watch?v=JI76IvF9Lwg&list=PLXmMXHVSvS-BlLA5beNJojJLlpE0PJgCW&index=25) for more information
+```python
+class Parent(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  child = db.relationship('Child', backref='parent', useList=False)
 
-## Amplify updates
-```sh
-rm -r amplify
-rm -r src/graphql
-rm -r src/ui-components
-rm src/API.ts src/aws-exports.js
-
-amplify pull --appId dd1gmnh1dmpn6 --envName iv
-amplify codegen
-amplify codegen models
+class Child(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'))
 ```
 
-## Naming Convention
+### One-to-Many
+##### See [Video](https://www.youtube.com/watch?v=VVX7JIWx-ss&list=PLXmMXHVSvS-BlLA5beNJojJLlpE0PJgCW&index=5) for more information
+```python
+class Owner(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  pets = db.relationship('Pet', backref='owner')
 
-Examples
-- Features: `feature/add-admin-button-to-panel`
-- Refactor: `refactor/admin-panel/nurse-to-admin`
-- Fix: `fix/removed-annoying-alert-button`
-
-
-## Installation
-
-Clone the front and backend project
-
-*Please don't create a folder to git clone. Just clone repo to path. such as charlie's directory structure: C:\Users\kenzh\Work,*
-```bash
-git clone https://github.com/Dotechno/HealthtrackV8
-cd HealthtrackV8
-
+class Pet(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  owner_id = db.Column(db.Integer, db.ForeignKey('owner.id'))
 ```
 
-*Please when you amplify pull into folder, please amplify to HealthTracker V8 folder*
-```bash
-amplify pull --appId dd1gmnh1dmpn6 --envName dev
+### Many-to-Many
+##### See [Video](https://www.youtube.com/watch?v=47i-jzrrIGQ&list=PLXmMXHVSvS-BlLA5beNJojJLlpE0PJgCW&index=7) for more information
+```python
+# creates another table that holds the primary 
+# keys of both tables being referenced
+user_channel = db.Table('user_channel',
+  db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+  db.Column('channel_id', db.Integer, db.ForeignKey('channel.id')),
+)
+
+class User(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  following = db.relationship('Channel', secondary=user_channel,backref='followers')
+
+class Channel(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
 ```
 
-Install yarn and run a dev server
-```
-npm install --global yarn
-yarn install
-yarn start
-```
-
-## Deployment FAQ
-### Vscode not running script disable:
-![Script errors](./files/script.png)
-
-### Solution: [Reference](https://github.com/Microsoft/vscode-python/issues/2559)
-  1. open window powershell
-  2. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-  3. `Get-ExecutionPolicy`
-  4. `Get-ExecutionPolicy -LIST`
-
-  
-
-### Create an account:
-
-Just put your email and strong Password generated from Google Chrome Password manager
-
-If you have problem,
-
----------
-
-### Error: Amplify has not been configure correctly.
-![Amplify Errors](./files/amplify.png)
-        
-### Solution: [Stackoverflow](https://stackoverflow.com/questions/63605779/autherror-error-amplify-has-not-been-configured-correctly#comment115783887_63605780)
-    1. npm un aws-amplify @aws-amplify/ui-react
-    2. npm i aws-amplify @aws-amplify/ui-react
-
-# Documentations
-## Change router settings
-`router.tsx`: in nav and `<Routes>`
-
-`index.tsx`: do it
