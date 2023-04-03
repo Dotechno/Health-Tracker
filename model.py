@@ -1,10 +1,12 @@
 from __main__ import app
+from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 db = SQLAlchemy(app)
+
 
 
 class User(db.Model, UserMixin):
@@ -18,3 +20,21 @@ class User(db.Model, UserMixin):
 
     def is_active(self):
         return True
+
+ # Model for  creating prescription of Pharmacy Order Tracking Module   
+class Prescription(db.Model):
+    __bind_key__ ='prescription'
+    id = db.Column(db.Integer, primary_key=True)
+    physician_name = db.Column(db.String(200), nullable=False)
+    medication = db.Column(db.String(200), nullable=False)
+    dosage=db.Column(db.Text, nullable=True)
+    frequency=db.Column(db.String(200), nullable=True)
+    filled_by=db.Column(db.String(200),nullable=True)
+    date_filled=db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<User %r>' % self.id
+
+    def is_active(self):
+        return True
+

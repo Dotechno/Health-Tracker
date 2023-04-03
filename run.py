@@ -10,7 +10,9 @@ from datetime import datetime
 
 # Initialize app
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # db = SQLAlchemy(app)
@@ -20,7 +22,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
+    from model import db, User, Prescription
 
 
 # Routes
@@ -121,6 +123,33 @@ def admin():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+# Route for Create Prescription
+
+@app.route('/create_prescription', methods=['POST', 'GET'])
+def create_prescription():
+    #return render_template('create_prescription.html')
+    if request.method == 'POST':
+        
+        id=request.form['id']
+        physician_name=request.form.get("PhysicianName")
+        medication=request.form.get('Medication')
+        dosage=request.form.get('dosage')
+        frequency=request.form.get('frequency')
+        filled_by=request.form.get('filled_by')
+        Details=Prescription(id=id,physicianName=physician_name,medication=medication,dosage=dosage,frequency=frequency,filledBy=filled_by)
+        db.session.add(Details)
+        db.session.commit()
+        flash(f'Prescription added!', 'success')
+        return redirect(url_for('create_prescription'))
+
+
+
+    else:
+        return render_template('admin.html')
+
+
+
 
 
 @ login_manager.user_loader
