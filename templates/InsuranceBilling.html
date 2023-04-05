@@ -4,30 +4,26 @@
 
 
 {%block head%}
-
-
+<nav>
+</nav>
 
 {% endblock %}
 
 {%block body%}
 <div class = "Content">
-    <h1>Insuranceing Billing</h1>
-        <table>
-            <tr>
-                <th>Service</th>
-                <th>Billing</th>
-            </tr>
-            {% for Lists in List%}
-                <tr>
-                    <td>{{Lists.name}}</td>
-                    <td>{{Lists.MedicalEncounter_id}}</td>
-                </tr>
-            {% endfor %}
-        </table>
+        <div>
+            <p>{{Find}}</p>
+            <p>Patient: {{person['name']}}</p>
+            <p>Medical Encounter: {{person['ME']}}</p>
+            <p>Physician: {{person['Physican']}}</p>
+            <p>prescription: {{person['Prescription']}}</p>
+
+        </div>
 
         <form action = '/InsuranceBilling' method = 'POST'>
-            <input type="text" name  = 'Searches' id = 'Searches'>
-            <input type = 'submit' value = 'Search'>
+            <p>Patient Name</p>
+            <input type = 'text' name = 'PatientName' placeholder = 'Patient Name' required/>
+            <input type = 'submit' value = 'Submit'/>
         </form>
 
 </div>

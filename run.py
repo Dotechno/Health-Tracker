@@ -5,8 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, SearchForm
 from datetime import datetime
+
+
+
+
 
 
 
@@ -17,6 +21,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 
+List = [{
+    "name": "Charlie"
+}]
+
+
 # db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
@@ -24,7 +33,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, patient
+    from model import db, User, patient, medicalEncounter, prescription, appointment, labOrder, physican
 
 # Routes
 
@@ -131,14 +140,56 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.route('/InsuranceBilling', methods=['GET', 'POST'])
-def InsuranceBilling():
-    if request.method == 'POST':
-        Find = request.form['Search']
 
-    else:
-        List = patient.query.all()
-        return render_template('InsuranceBilling.html', List = List)
-   
+
+
+@app.route('/InsuranceBilling', methods=['GET','POST'])
+def InsuranceBilling():
+     if request.method == 'POST':
+         Find = request.form["PatientName"]
+         name = patient.query.filter_by(name = Find).first()
+         ME = medicalEncounter.query.filter_by(id = name.MedicalEncounter_id).first()
+         Prescription = prescription.query.filter_by(id = ME.prescription_id).first()
+         phyiscian = physican.query.filter_by(id = name.physican_id).first()
+         personInfo = {
+                'name': name.name,
+                'ME': ME.Encounter,
+                'Prescription': Prescription.name,
+                'Physican': phyiscian.name
+            }
+         return render_template('InsuranceBilling.html',person = personInfo,Find = Find)
+     else:
+         return render_template('InsuranceBilling.html')
+
+
+@app.route('/Founded/<Find>', methods=['GET','POST'])
+def Search(Find):
+    name = patient.query.filter_by(name = Find).first()
+    ME = medicalEncounter.query.filter_by(id = name.MedicalEncounter_id).first()
+    return render_template('Search.html', name = name,ME = ME)
+
+
+
+
+    # if request.method == 'POST':
+    #     Find = request.form.get('Searches')
+    #     name = patient.query.all()
+    #     list = patient.query.filter_by(name = Find)
+    #     ME = medicalEncounter.query.filter_by(id =patient.MedicalEncounter_id)
+    #     if Find != None:
+    #         PersonInfo = { 
+    #         'Name': list,
+    #         'ME': ME
+    #         }
+    #         return render_template('InsuranceBilling.html', PersonInfo=PersonInfo, name=name)
+    #     else:
+    #         return render_template('InsuranceBilling.html', error = "No Patient Found", patients=name)
+
+    # return render_template('InsuranceBilling.html', form=form)
+    
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
