@@ -12,6 +12,8 @@ from datetime import datetime
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db'}
+
 
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
@@ -137,7 +139,7 @@ def create_prescription():
         dosage=request.form.get('dosage')
         frequency=request.form.get('frequency')
         filled_by=request.form.get('filled_by')
-        Details=Prescription(id=id,physicianName=physician_name,medication=medication,dosage=dosage,frequency=frequency,filledBy=filled_by)
+        Details=Prescription(id=id,physician_name=physician_name,medication=medication,dosage=dosage,frequency=frequency,filled_by=filled_by)
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
@@ -146,7 +148,16 @@ def create_prescription():
 
 
     else:
-        return render_template('admin.html')
+        return render_template('create_prescription.html')
+    
+    # Route for retrieve Prescription
+
+@app.route('/retrieve_prescription', methods=['POST', 'GET'])
+def retrieve_prescription():
+    #return render_template('create_prescription.html')
+    tasks = Prescription.query.order_by(Prescription.id).all()
+    return render_template('retrieve_prescription.html', tasks=tasks)
+
 
 
 
