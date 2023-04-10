@@ -37,4 +37,20 @@ class Prescription(db.Model):
 
     def is_active(self):
         return True
+# Model for Adding Medication  Details
+class Medication(db.Model):
+    __bind_key__ ='medication'
+    id = db.Column(db.Integer, primary_key=True)
+    medication = db.Column(db.String(200), nullable=False)
+    description=db.Column(db.String(500),nullable=False)
+    dosage=db.Column(db.Text, nullable=True)
+    frequency=db.Column(db.String(200), nullable=True)
+    side_effects=db.Column(db.String(200),nullable=True)
+    interactions=db.Column(db.String(200),nullable=True)
+    
+    def __repr__(self):
+        return '<User %r>' % self.id
+
+    def is_active(self):
+        return True
 

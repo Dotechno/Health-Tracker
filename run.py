@@ -12,7 +12,9 @@ from datetime import datetime
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db'}
+app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db',
+                                'medication':'sqlite:///medication.db'}
+
 
 
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
@@ -24,7 +26,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Prescription
+    from model import db, User, Prescription, Medication
 
 
 # Routes
@@ -159,8 +161,35 @@ def retrieve_prescription():
     return render_template('retrieve_prescription.html', tasks=tasks)
 
 
+# Route for adding medication
+@app.route('/add_medication', methods=['POST', 'GET'])
+def add_medication():
+    if request.method == 'POST':
+        
+        id=request.form['id']
+        medication=request.form.get('Medication')
+        description=request.form.get('desc')
+        dosage=request.form.get('dosage')
+        frequency=request.form.get('frequency')
+        side_effects=request.form.get('side_effects')
+        interactions=request.form.get('interactions')
+        Details=Medication(id=id,medication=medication,description=description,dosage=dosage,frequency=frequency,side_effects=side_effects,interactions=interactions)
+        db.session.add(Details)
+        db.session.commit()
+        flash(f'Prescription added!', 'success')
+        return redirect(url_for('add_medication'))
 
 
+
+    else:
+        return render_template('add_medication.html')
+     # Route for retrieve Medications
+
+@app.route('/retrieve_medication', methods=['POST', 'GET'])
+def retrieve_medication():
+    #return render_template('create_prescription.html')
+    tasks = Medication.query.order_by(Medication.id).all()
+    return render_template('retrieve_medication.html', tasks=tasks)
 
 
 @ login_manager.user_loader

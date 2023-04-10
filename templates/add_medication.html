@@ -10,11 +10,11 @@
 
 
     {% endblock %}
-    <script>
+     <script>
       function myFunction() {
-        alert("Prescription Successfully Added !");
+        alert("Medication Successfully Added !");
       }
-      </script>
+      </script> 
 
     {% block body %}
     
@@ -22,27 +22,28 @@
         <BR>
 
           
-        <form action="" method="POST" id="prescription_form">
+        <form action="" method="POST" id="medication_form">
           
         <br/>
         <fieldset>
 
           <legend>Prescription Information</legend>
           <div class="item">
-            <label > Prescription ID <span>*</span></label>
+            <label > Medication ID <span>*</span></label>
             <input type="number" name="id" id="id" required/>
           </div>
-          <div class="item">
-            <label for="lname"> Physician Name <span>*</span></label>
-            <input type="text" name="PhysicianName" id="PhysicianName" required/>
-          </div>
+          
           
           <div class="item">
-            <label for="initial">Medication Name<span>*</span></label>
+            <label >Medication Name<span>*</span></label>
             <input type="text" name="Medication" id="Medication" required/>
           </div>
           <div class="item">
-            <label for="phone"> Dosage<span>*</span></label>
+            <label > Description<span>*</span></label>
+            <input type="text"  name="desc" id="desc" required/>
+          </div>
+          <div class="item">
+            <label > Dosage<span>*</span></label>
             <input type="text"  name="dosage" id="dosage" required/>
           </div>
           
@@ -53,15 +54,14 @@
 
 
           <div class="item">
-            <label for="phone"> Filled By<span>*</span></label>
-            <input type="text"   name="filled_by" id="filled_by" required/>
+            <label > Side Effects<span>*</span></label>
+            <input type="text"   name="side_effects" id="side_effects" required/>
           </div>
 
       
           <div class="item">
-            <label for="date">Date filled <span>*</span></label>
-            <input id="date" type="date" name="date" required/>
-            <i class="fas fa-calendar-alt"></i>
+            <label> Interactions <span>*</span></label>
+            <input id="interactions" type="text" name="interactions" required/>
           </div>
         
           
@@ -71,7 +71,7 @@
           <button type="reset" href="/" onclick="myFunction()">Clear</button>
 
         </div>
-        <a href="retrieve_prescription">Click here to retrieve all prescriptions</a>
+        <a href="retrieve_medication">Click here to retrieve all medication</a>
 
       </form>
     </div>
