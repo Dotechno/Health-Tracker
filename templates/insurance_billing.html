@@ -1,0 +1,35 @@
+{%extends 'base.html'%}
+
+
+{%block head%}
+<nav>
+</nav>
+
+{% endblock %}
+
+{%block body%}
+<div class = "Content">
+        <div>
+        {%if not is_get%}
+            <p>{{Find}}</p>
+            <p>Patient: {{PatientInfo.name}}</p>
+            <p>Medical Encounter: {{PatientInfo.ME}}</p>
+            <p>Carrier: {{PatientInfo.Carrier_Name}}</p>
+            <p>Insurance Address: {{PatientInfo.Insurance_address}}</p>
+            
+            <p>Services:
+            {%for service in services%}
+            {{service.service_description}}
+            {%endfor%}
+            </p>
+        {%endif%}
+        </div>
+
+        <form action = '/insurance_billing' method = 'POST'>
+            <p>Patient Name</p>
+            <input type = 'text' name = 'PatientName' placeholder = 'Patient Name' required/>
+            <input type = 'submit' value = 'Submit'/>
+        </form>
+
+</div>
+{% endblock %}

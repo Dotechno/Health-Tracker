@@ -4,9 +4,8 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy import Enum
 
+
 db = SQLAlchemy(app)
-
-
 
 
 class User(db.Model, UserMixin):
@@ -22,54 +21,62 @@ class User(db.Model, UserMixin):
         return True
 
 
-## important
-class serviceProvidedByClinic(db.Model):
-    id = db.Column(db.Integer, primary_key= True)
-    service_Type = db.Column(db.String(200),nullable = False)
-    service_Description = db.Column(db.String(200), nullable = False)
-    cost_For_Service = db.Column(db.Float, nullable = False)
-    prescription= db.relationship('prescription', backref = 'prescription',uselist = False)
-    appointment = db.relationship('appointment', backref = 'appointment',uselist = False)
-    labOrder = db.relationship('labOrder', backref = 'labOrder',uselist = False)
+class ServiceProvidedByClinic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    service_description = db.Column(db.String(200), nullable=False)
+    cost_for_service = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
+class Patient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    medical_encounter = db.relationship('MedicalEncounter', backref='patient')
+    physician = db.relationship('Physician', backref='patient')
+    insurance = db.relationship('Insurance', backref='patient')
+    serviceprovidedbyclinic = db.relationship('ServiceProvidedByClinic', backref='patient')
 
-## not useful and Dont add to main branch
-class patient (db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(200),nullable=False)
-    MedicalEncounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
-    physican_id = db.Column(db.Integer, db.ForeignKey('physican.id'))
-
-class medicalEncounter(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    Encounter = db.Column(db.String(200), nullable = False)
-    Patient = db.relationship('patient', backref = 'patient')
-    prescription_id = db.Column(db.Integer, db.ForeignKey('prescription.id'))
-    labOrder_id = db.Column(db.Integer, db.ForeignKey('labOrder.id'))
+class MedicalEncounter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    encounter = db.Column(db.String(200), nullable=False)
+    prescription = db.relationship('Prescription', backref='medical_encounter')
+    LabOrder = db.relationship('LabOrder', backref='lab_order')
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    date= db.Column(db.Date, nullable=False)
     
-class labOrder(db.Model):
+class LabOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
-    medicalEncounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
-    lab_Order = db.relationship('medicalEncounter', backref = 'medicalEncounter')
+    date = db.Column(db.Date, nullable=False)
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
 
-
-class prescription(db.Model):
+class Prescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
-    Prescription = db.relationship('medicalEncounter', backref = 'Prescription')
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
+    date = db.Column(db.Date, nullable=False)
 
 
-class physican(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(200), nullable = False)
-    Appointment = db.relationship('appointment', backref = 'Appointment')
-    Patient = db.relationship('patient', backref = 'Patients')
+class Physician(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    appointment = db.relationship('Appointment', backref='appointment')
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
-class appointment(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(200), nullable = False)
-    service_provided_id = db.Column(db.Integer, db.ForeignKey('service_provided_by_clinic.id'))
-    physican_id = db.Column(db.Integer, db.ForeignKey('physican.id'))
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
+
+
+class InsuranceStatus(Enum):
+    on_time = 'Pays on time'
+    late = 'Late in payments'
+    diffcult = 'Difficult to get payments'
+
+class Insurance (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))

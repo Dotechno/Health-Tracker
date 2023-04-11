@@ -7,23 +7,13 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from forms import RegistrationForm, LoginForm, SearchForm
 from datetime import datetime
-
-
-
-
-
-
+from Billing import cost
 
 
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
-
-
-List = [{
-    "name": "Charlie"
-}]
 
 
 # db = SQLAlchemy(app)
@@ -33,9 +23,9 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, patient, medicalEncounter, prescription, appointment, labOrder, physican
-
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder,Insurance
 # Routes
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -44,34 +34,6 @@ def index():
     else:
         return redirect(url_for('admin'))
 
-
-@app.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'There was a problem deleting that task'
-
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
-
-    if request.method == 'POST':
-        task.title = request.form['title']
-        task.content = request.form['content']
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue updating your task'
-    else:
-        return render_template('upda\watchte.html', task=task)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -140,54 +102,92 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
-
-
-@app.route('/InsuranceBilling', methods=['GET','POST'])
+@app.route('/insurance_billing', methods=['GET', 'POST'])
 def InsuranceBilling():
-     if request.method == 'POST':
-         Find = request.form["PatientName"]
-         name = patient.query.filter_by(name = Find).first()
-         ME = medicalEncounter.query.filter_by(id = name.MedicalEncounter_id).first()
-         Prescription = prescription.query.filter_by(id = ME.prescription_id).first()
-         phyiscian = physican.query.filter_by(id = name.physican_id).first()
-         personInfo = {
-                'name': name.name,
-                'ME': ME.Encounter,
-                'Prescription': Prescription.name,
-                'Physican': phyiscian.name
-            }
-         return render_template('InsuranceBilling.html',person = personInfo,Find = Find)
-     else:
-         return render_template('InsuranceBilling.html')
+    if request.method == 'POST':
+        find = request.form["PatientName"]
+        find = "John Doe"
+        # find the patient names
+        
+        patient = Patient.query.filter_by(name=find).first()
+        if patient is None:
+            return render_template('insurance_billing.html', is_get=True)
+        
+        all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        physician = Physician.query.filter_by(patient_id=patient.id).first()
+        insurance = Insurance.query.filter_by(patient_id=patient.id).first()
+        # query all the prescriptions from db not only from the patient
+        # prescriptions = Prescription.query.filter_by(medical_encounter_id=me.id).all()
+        all_prescriptions = Prescription.query.all()
+        me_list = []
+        for me in all_me:
+            if me.patient_id == patient.id:
+                me.list = me_list.append(me)
+
+        
+        # filters the prescriptions that belong to the patient
+        prescriptions = []
+        refill = []
+        for prescription in all_prescriptions:
+            if prescription.medical_encounter_id == me.id:
+                prescriptions.append(prescription)
+                refill.append(prescription.date)
+        
+        all_lab_order = LabOrder.query.all()
+
+        lab_order_list = []
+        lab_order_list_dates = []
+        for labOrder in all_lab_order:
+            if labOrder.medical_encounter_id == me.id:
+                lab_order_list.append(labOrder)
+                lab_order_list_dates.append(labOrder.date)
+
+        # add a new service to the patient medical encounter and use a unique id
+        
+        costs = (cost['Physician'] * len(me_list)) + (cost['Prescription'] * len(prescriptions)) + (cost['Laborder'] * len(lab_order_list))
+
+        # TODO: Add the following snippet to lab order med. encounter prescription form submission
+        # for prescription in prescriptions:
+        #     service = ServiceProvidedByClinic(date = prescription.date ,service_description= prescription.name, cost_for_service= cost['Prescription'], patient_id = patient.id )
+        #     db.session.add(service)
+        #     db.session.commit()
+
+        # for labOrder in lab_order_list:
+        #     service = ServiceProvidedByClinic(date = labOrder.date ,service_description= labOrder.name, cost_for_service= cost['Laborder'] , patient_id = patient.id )
+        #     db.session.add(service)
+        #     db.session.commit()
+
+        # for me in me_list:
+        #     service = ServiceProvidedByClinic(date = me.date ,service_description= me.encounter, cost_for_service= cost['Physician'] , patient_id = patient.id)
+        #     db.session.add(service)
+        #     db.session.commit()
+        
+        all_service  = ServiceProvidedByClinic.query.order_by(ServiceProvidedByClinic.date.asc()).all()
+        services = []
+        
+        for service in all_service:
+            if service.patient_id == patient.id:
+                services.append(service)
+                
+        personInfo = {
+            'name': patient.name,
+            'ME': me.encounter,
+            'service': service.cost_for_service,
+            "Carrier_Name": insurance.name,
+            "Insurance_address": insurance.address,
+        }
+        return render_template('insurance_billing.html', PatientInfo=personInfo,services = services, is_get=False)
+    else:
+        return render_template('insurance_billing.html', is_get=True)
 
 
-@app.route('/Founded/<Find>', methods=['GET','POST'])
-def Search(Find):
-    name = patient.query.filter_by(name = Find).first()
-    ME = medicalEncounter.query.filter_by(id = name.MedicalEncounter_id).first()
-    return render_template('Search.html', name = name,ME = ME)
-
-
-
-
-    # if request.method == 'POST':
-    #     Find = request.form.get('Searches')
-    #     name = patient.query.all()
-    #     list = patient.query.filter_by(name = Find)
-    #     ME = medicalEncounter.query.filter_by(id =patient.MedicalEncounter_id)
-    #     if Find != None:
-    #         PersonInfo = { 
-    #         'Name': list,
-    #         'ME': ME
-    #         }
-    #         return render_template('InsuranceBilling.html', PersonInfo=PersonInfo, name=name)
-    #     else:
-    #         return render_template('InsuranceBilling.html', error = "No Patient Found", patients=name)
-
-    # return render_template('InsuranceBilling.html', form=form)
-    
-
+# @app.route('/search_insurance/<find>', methods=['GET', 'POST'])
+# def SearchInsurance(find):
+#     if request.method == 'POST':
+#         find = request.form["PatientName"]
+#         return redirect(url_for('InsuranceBilling', find=find))
+#     else:
+#         return render_template('search_insurance.html', is_get=True)
 
 
 
