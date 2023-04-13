@@ -20,7 +20,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
+    from model import db, User, Patient
 
 
 # Routes
@@ -91,7 +91,24 @@ def logout():
     return redirect(url_for('index'))
 
 
-@ login_manager.user_loader
+# @app.route('/members/<string:username>')
+@app.route('/members/')
+def members(username=None):
+    if username == None:
+        return render_template(template_name_or_list='members.html')
+
+    user = User.query.filter_by(username=username).first()
+    return render_template('members.html', user=user)
+
+# handles 404
+
+
+@app.errorhandler(404)
+def to404(e):
+    return render_template('404.html')
+
+
+@login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
