@@ -6,7 +6,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 from forms import RegistrationForm, LoginForm, SearchForm
-from datetime import datetime
+from datetime import datetime, timedelta
+
+
 
 
 # Initialize app
@@ -16,7 +18,7 @@ app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder, Insurance
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder, Insurance, InsuranceStatus
     
 
 
@@ -35,12 +37,12 @@ if not 'models' in sys.modules:
 
 # class ServiceProvidedByClinic(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     service_type = db.Column(db.String(200), nullable=False)
 #     service_description = db.Column(db.String(200), nullable=False)
-#     prescriptions = db.Column(db.String(200), nullable=False)
 #     cost_for_service = db.Column(db.Float, nullable=False)
-#     lab_order_id = db.Column(db.Integer, db.ForeignKey('lab_order.id'))
-#     appointment_id = db.Column(db.Integer, db.ForeignKey('appointment.id'))
+#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+#     due_date = db.Column(db.Date, nullable=False)
+#     date = db.Column(db.Date, nullable=False)
+#     date_paid = db.Column(db.Date, nullable=False)
 
 # class Patient(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -92,21 +94,20 @@ with app.app_context():
     # create user
     user = User(username='admin', password='password', roles='admin')
     patient = Patient(name = 'John Doe')
-    carrier = Insurance(name = 'Blue Cross Blue Shield', address = '123 Main St', status = 'Active', patient_id = 1)
+    carrier = Insurance(name = 'Blue Cross Blue Shield', address = '123 Main St', status='active', patient_id=1, insurance_carrier_id=1)
     medical_encounter = MedicalEncounter(encounter = 'Fever', patient_id = 1, date = datetime.now())
     lab_order = LabOrder(name = 'Blood Test', medical_encounter_id = 1, date = datetime.now())
     prescription = Prescription(name = 'Tylenol', medical_encounter_id = 1, date = datetime.now())
-    physician = Physician(name = 'Dr. Smith', patient_id = 1)
+    physician = Physician(name = 'Dr. Smith', patient_id = 1) 
     appointment = Appointment(name = 'Dr. Smith', physician_id = 1)
-    
+    service = ServiceProvidedByClinic( service_description = 'Blood Test', cost_for_service = 100.00, date = datetime.now(), due_date = datetime.now() + timedelta(days = 30),patient_id =1)
 
 
 
 
 
     # add to database
-    db.session.add(user); db.session.add(carrier); db.session.add(patient); db.session.add(medical_encounter); db.session.add(lab_order); db.session.add(prescription); db.session.add(physician); db.session.add(appointment)
-
+    db.session.add(user); db.session.add(carrier); db.session.add(patient); db.session.add(medical_encounter); db.session.add(lab_order); db.session.add(prescription); db.session.add(physician); db.session.add(appointment); db.session.add(service)
 
 
     db.session.commit()

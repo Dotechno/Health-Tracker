@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Invoice {{ invoice.id }}</title>
+  </head>
+  <body>
+    <h1>Invoice {{ invoice.id }}</h1>
+    <p>Patient: {{ invoice.patient_name }}</p>
+    <p>Insurance Carrier: {{ invoice.insurance.name }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Cost</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.date }}</td>
+          <td>{{ item.service.description }}</td>
+          <td>{{ item.cost }}</td>
+          <td>{{ item.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">Total</td>
+          <td>{{ invoice.total_cost }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

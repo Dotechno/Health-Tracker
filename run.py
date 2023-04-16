@@ -1,6 +1,8 @@
 import sys
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+
+
+from flask import Flask, abort, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -23,7 +25,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder,Insurance
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder,Insurance, Invoice, InvoiceLineItem
 # Routes
 
 
@@ -114,6 +116,7 @@ def InsuranceBilling():
             return render_template('insurance_billing.html', is_get=True)
         
         all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        print(all_me)
         physician = Physician.query.filter_by(patient_id=patient.id).first()
         insurance = Insurance.query.filter_by(patient_id=patient.id).first()
         # query all the prescriptions from db not only from the patient
@@ -179,6 +182,37 @@ def InsuranceBilling():
         return render_template('insurance_billing.html', PatientInfo=personInfo,services = services, is_get=False)
     else:
         return render_template('insurance_billing.html', is_get=True)
+
+
+@app.route('/invoices', methods=['GET', 'POST'])
+def generate_invoice():
+    if request.method == 'POST':
+        patient_name = request.form['patient_name']
+        insurance_carrier_id = request.form['insurance_carrier_id']
+        service_ids = request.form.getlist('service_ids')
+        invoice = Invoice(patient_name=patient_name, insurance_carrier_id=insurance_carrier_id, total_cost=0.0)
+        db.session.add(invoice)
+        db.session.commit()
+        for service_id in service_ids:
+            service = ServiceProvidedByClinic.query.get(service_id)
+            line_item = InvoiceLineItem(invoice_id=invoice.id, service_id=service_id, date=datetime.now(),
+                                        cost=service.cost, status='unpaid')
+            db.session.add(line_item)
+            invoice.total_cost += service.cost
+        db.session.commit()
+        return redirect(url_for('get_invoice', invoice_id=invoice.id))
+    else:
+        insurance_carriers = Insurance.query.all()
+        services = ServiceProvidedByClinic.query.all()
+        return render_template('invoices.html', insurance_carriers=insurance_carriers, services=services)
+
+@app.route('/invoices/<int:invoice_id>')
+def get_invoice(invoice_id):
+    invoice = Invoice.query.get(invoice_id)
+    if not invoice:
+        abort(404)
+    items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+    return render_template('invoice.html', invoice=invoice, items=items)
 
 
 # @app.route('/search_insurance/<find>', methods=['GET', 'POST'])
