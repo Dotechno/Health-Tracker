@@ -161,6 +161,26 @@ def retrieve_prescription():
     tasks = Prescription.query.order_by(Prescription.id).all()
     return render_template('retrieve_prescription.html', tasks=tasks)
 
+@app.route('/retrieve_prescription_based', methods=['POST', 'GET'])
+def retrieve_prescription_based():
+    
+    if request.method == 'POST':
+
+        id=request.form['prescription_id']
+        print(id)
+        name=request.form['patient_name']
+        print(name)
+        medicine=request.form['prescribed_medication']
+        print(medicine)
+        #return render_template('create_prescription.html')
+        tasks = Prescription.query.filter((Prescription.id==id) | ((Prescription.patient_name==name) & (Prescription.medication==medicine)))
+        print(tasks)
+        return render_template('retrieve_prescription_based.html',tasks=tasks)
+        
+    else:
+        return render_template('retrieve_prescription_based.html')
+    
+
 
 # Route for adding medication
 @app.route('/add_medication', methods=['POST', 'GET'])
