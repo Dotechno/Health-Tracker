@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>Add Lab Test Type</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class = "content">
+    <a href="/lab_tracking/">Return to Lab Tracker</a>
+
+
+    <form action= '/lab_tracking_add_test/' method="POST"> 
+        <h1>Add Test Type</h1>
+        
+        <label for="testname">Test name:</label>
+        <input type="text" name="testname" id="testname"><br>
+        <label for="lowrange">Low End of Healthy Range of Results:</label>
+        <input type="text" name="lowrange" id="lowrange"><br>
+        <label for="highrange">High End of Healthy Range of Results:</label>
+        <input type="text" name="highrange" id="highrange"><br>
+
+        <input type="submit" value="Add Lab Test Type">
+    </form>
+</div>
+
+
+    
+{% endblock %}
+

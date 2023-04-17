@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>Lab Tracking</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class = "content">
+    <a href="/lab_tracking_add_order/">Add Lab order</a> <a href="/lab_tracking_add_test/">Add Lab Test Type</a>
+    <h1>Lab Tracker</h1>
+    
+
+    <table> <!-- Main Table -->
+        <tr>
+            <th>Patient</th>
+            <th>Physician</th>
+            <th>Lab Technician</th>
+            <th>Test Date</th>
+            <th>Result</th>
+            <th>Delete Lab Order</th>
+
+        </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.patient_name }}</td>
+                <td>{{ order.physician_name }}</td>
+                <td>{{ order.lab_test_technician }}</td>
+                <td>{{ order.lab_test_date }}</td>
+                <td>{{ order.lab_test_result }}</td>
+                <td>
+                    <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+
+    
+{% endblock %}
+
