@@ -135,13 +135,14 @@ def create_prescription():
     #return render_template('create_prescription.html')
     if request.method == 'POST':
         
-        id=request.form['id']
+        patient_name=request.form['patient_name']
         physician_name=request.form.get("PhysicianName")
         medication=request.form.get('Medication')
         dosage=request.form.get('dosage')
         frequency=request.form.get('frequency')
         filled_by=request.form.get('filled_by')
-        Details=Prescription(id=id,physician_name=physician_name,medication=medication,dosage=dosage,frequency=frequency,filled_by=filled_by)
+       # med_enc=request.form.get('med_enc')
+        Details=Prescription(patient_name=patient_name,physician_name=physician_name,medication=medication,dosage=dosage,frequency=frequency,filled_by=filled_by)
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
