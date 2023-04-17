@@ -39,7 +39,7 @@ class Invoice(db.Model):
     insurance_carrier_id = db.Column(
         db.Integer, db.ForeignKey('insurance.id'), nullable=False)
     total_cost = db.Column(db.Float, nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    date = db.Column(db.Date, nullable=False, default=datetime.utcnow())
     status = db.Column(db.String(20), nullable=False, default='unpaid')
 
 
@@ -48,8 +48,8 @@ class InvoiceLineItem(db.Model):
     invoice_id = db.Column(db.Integer, db.ForeignKey(
         'invoice.id'), nullable=False)
     service_id = db.Column(db.Integer, db.ForeignKey(
-        'service_provided_by_clinic.id'), nullable=False)  # Fix the table name here
-    date = db.Column(db.DateTime, nullable=False)
+        'service_provided_by_clinic.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
     cost = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(30), nullable=False)
 

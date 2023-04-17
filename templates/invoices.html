@@ -21,7 +21,7 @@
     <label for="services">Services:</label>
     <br>
     {% for service in services %}
-    <input type="checkbox" name="service_ids" value="{{ service.id }}"> {{ service.name }} - ${{ service.cost }}
+    <input type="checkbox" name="service_ids" value="{{ service.id }}"> {{ service.service_description }}
     <br>
     {% endfor %}
     <br>

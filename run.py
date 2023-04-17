@@ -7,8 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 from forms import RegistrationForm, LoginForm, SearchForm
-from datetime import datetime
-from Billing import cost
+from datetime import datetime, timedelta
 
 
 # Initialize app
@@ -115,7 +114,6 @@ def InsuranceBilling():
 
         all_me = MedicalEncounter.query.order_by(
             MedicalEncounter.date.asc()).all()
-        print(all_me)
         physician = Physician.query.filter_by(patient_id=patient.id).first()
         insurance = Insurance.query.filter_by(patient_id=patient.id).first()
         # query all the prescriptions from db not only from the patient
@@ -145,10 +143,7 @@ def InsuranceBilling():
 
         # add a new service to the patient medical encounter and use a unique id
 
-        costs = (cost['Physician'] * len(me_list)) + (cost['Prescription']
-                                                      * len(prescriptions)) + (cost['Laborder'] * len(lab_order_list))
-
-        # TODO: Add the following snippet to lab order med. encounter prescription form submission
+        # @TODO: Add the following snippet to lab order med. encounter prescription form submission
         # for prescription in prescriptions:
         #     service = ServiceProvidedByClinic(date = prescription.date ,service_description= prescription.name, cost_for_service= cost['Prescription'], patient_id = patient.id )
         #     db.session.add(service)
@@ -190,40 +185,48 @@ def generate_invoice():
         patient_name = request.form['patient_name']
         insurance_carrier_id = request.form['insurance_carrier_id']
         service_ids = request.form.getlist('service_ids')
+        patient = Patient.query.filter_by(name=patient_name).first()
+
         invoice = Invoice(patient_name=patient_name,
                           insurance_carrier_id=insurance_carrier_id, total_cost=0.0)
         db.session.add(invoice)
         db.session.commit()
+
         for service_id in service_ids:
             service = ServiceProvidedByClinic.query.get(service_id)
             line_item = InvoiceLineItem(invoice_id=invoice.id, service_id=service_id, date=datetime.now(),
-                                        cost=service.cost, status='unpaid')
+                                        cost=service.cost_for_service, status='unpaid')
             db.session.add(line_item)
-            invoice.total_cost += service.cost
+            invoice.total_cost += service.cost_for_service
         db.session.commit()
         return redirect(url_for('get_invoice', invoice_id=invoice.id))
     else:
         insurance_carriers = Insurance.query.all()
         services = ServiceProvidedByClinic.query.all()
-        return render_template('invoices.html', insurance_carriers=insurance_carriers, services=services)
+        payment_due_date = datetime.now() + timedelta(days=30)
+
+        return render_template('invoices.html', insurance_carriers=insurance_carriers, services=services, issued_date=datetime.now(),
+                               payment_due_date=payment_due_date)
 
 
 @app.route('/invoices/<int:invoice_id>')
 def get_invoice(invoice_id):
-    invoice = Invoice.query.get(invoice_id)
+    invoice = Invoice.query.get(
+        invoice_id)
+
+    all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
+
+    all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+    physician = Physician.query.filter_by(patient_id=all_patient.id).first()
+    insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
+
     if not invoice:
         abort(404)
     items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
-    return render_template('invoice.html', invoice=invoice, items=items)
+    payment_due_date = datetime.now() + timedelta(days=30)
 
-
-# @app.route('/search_insurance/<find>', methods=['GET', 'POST'])
-# def SearchInsurance(find):
-#     if request.method == 'POST':
-#         find = request.form["PatientName"]
-#         return redirect(url_for('InsuranceBilling', find=find))
-#     else:
-#         return render_template('search_insurance.html', is_get=True)
+    return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=datetime.now(),
+                           payment_due_date=payment_due_date, delta30days=timedelta(days=30))
 
 
 if __name__ == '__main__':

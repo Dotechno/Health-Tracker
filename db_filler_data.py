@@ -102,6 +102,8 @@ with app.app_context():
     appointment = Appointment(name='Dr. Smith', physician_id=1)
     service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date=datetime.now(
     ), due_date=datetime.now() + timedelta(days=30), patient_id=1)
+    service1 = ServiceProvidedByClinic(service_description='X-Rays', cost_for_service=200.00, date=datetime.now(), due_date=datetime.now(
+    ) + timedelta(days=30), patient_id=1)
 
     # add to database
     db.session.add(user)
@@ -112,6 +114,7 @@ with app.app_context():
     db.session.add(physician)
     db.session.add(appointment)
     db.session.add(service)
+    db.session.add(service1)
     db.session.add(carrier)
 
     db.session.commit()
