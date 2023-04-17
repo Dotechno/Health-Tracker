@@ -59,6 +59,16 @@ class MedicalEncounter(db.Model):  # Jordan
         'patient.id'), nullable=False)
 
 
+class VitalSign(db.model):
+    id = db.Column(db.Integer, primary_key=True)
+    body_temperature = db.Column(db.Double, nullable=False)
+    pulse_rate = db.Column(db.Double, nullable=False)
+    respiration_rate = db.Column(db.Double, nullable=False)
+    blood_pressure = db.Column(db.Double, nullable=False)
+    encounter_key = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+
+
 class Physician(db.Model):  # Jordan
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.Integer, nullable=False)
