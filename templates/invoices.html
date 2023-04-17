@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Generate Invoice</title>
-  </head>
-  <body>
-    <h1>Generate Invoice</h1>
-    <form method="post" action="{{ url_for('generate_invoice') }}">
-      <label for="patient_name">Patient Name:</label>
-      <input type="text" name="patient_name" required>
-      <br>
-      <label for="insurance_carrier_id">Insurance Carrier:</label>
-      <select name="insurance_carrier_id" required>
-        {% for carrier in insurance_carriers %}
-        <option value="{{ carrier.id }}">{{ carrier.name }}</option>
-        {% endfor %}
-      </select>
-      <br>
-      <label for="services">Services:</label>
-      <br>
-      {% for service in services %}
-      <input type="checkbox" name="service_ids" value="{{ service.id }}"> {{ service.name }} - ${{ service.cost }}
-      <br>
+
+<head>
+  <title>Generate Invoice</title>
+</head>
+
+<body>
+  <h1>Generate Invoice</h1>
+  <form method="post" action="{{ url_for('generate_invoice') }}">
+    <label for="patient_name">Patient Name:</label>
+    <input type="text" name="patient_name" required>
+    <br>
+    <label for="insurance_carrier_id">Insurance Carrier:</label>
+    <select name="insurance_carrier_id" required>
+      {% for carrier in insurance_carriers %}
+      <option value="{{ carrier.id }}">{{ carrier.name }}</option>
       {% endfor %}
-      <br>
-      <input type="submit" value="Generate Invoice">
-    </form>
-  </body>
+    </select>
+    <br>
+    <label for="services">Services:</label>
+    <br>
+    {% for service in services %}
+    <input type="checkbox" name="service_ids" value="{{ service.id }}"> {{ service.name }} - ${{ service.cost }}
+    <br>
+    {% endfor %}
+    <br>
+    <input type="submit" value="Generate Invoice">
+  </form>
+</body>
+
 </html>
