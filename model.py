@@ -55,7 +55,9 @@
 #         return True
 
 from __main__ import app
-from datetime import datetime
+from datetime import date
+from sqlalchemy import Column, Date
+
 
 
 from flask_sqlalchemy import SQLAlchemy
@@ -157,7 +159,7 @@ class Prescription(db.Model):  # Shweta
     dosage = db.Column(db.Text, nullable=True)
     frequency = db.Column(db.String(200), nullable=True)
     filled_by = db.Column(db.String(200), nullable=True)
-    date_filled = db.Column(db.DateTime, default=datetime.utcnow)
+    date_filled = db.Column(Date, default=date.today)
     #medical_encounter_id = db.Column(
      #   db.Integer, db.ForeignKey(MedicalEncounter.id))
 
