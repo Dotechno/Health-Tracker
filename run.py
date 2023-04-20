@@ -110,12 +110,12 @@ def search_equipment():
 @app.route("/equipment", methods=['GET', 'POST'])
 def equipment():
     if request.method == 'POST':
-# id
-# type
-# description
-# department
-# is_leased
-# is_owned
+        # id
+        # type
+        # description
+        # department
+        # is_leased
+        # is_owned
         equipment_id = request.form.get('equipment_id')
         equipment_type = request.form.get('equipment_type')
         description = request.form.get('description')
