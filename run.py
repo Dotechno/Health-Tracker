@@ -93,8 +93,29 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/equipment")
+@app.route("/equipment", methods=['GET', 'POST'])
 def equipment():
+    if request.method == 'POST':
+        equipment_id = request.form.get('equipment_id')
+        equipment_type = request.form.get('equipment_type')
+        description = request.form.get('description')
+        department = request.form.get('department')
+        is_owned = request.form.get('is_owned')
+        if is_owned == 'on':
+            is_owned = True
+
+        equipment = Equipment(equipment_id=equipment_id, equipment_type=equipment_type, description=description, department=department, is_leased=is_leased, is_owned=is_owned)
+        db.session.add(equipment)
+        db.session.commit()
+        flash(f'Equipment added!', 'success')
+        return redirect(url_for('equipment'))
+# id
+# type
+# description
+# department
+# is_leased
+# is_owned
+
     equipments = Equipment.query.all()
     return render_template('equipment.html', equipments=equipments)
 
