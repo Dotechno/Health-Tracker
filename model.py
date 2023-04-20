@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from enum import Enum
 
 
+from datetime import datetime
 db = SQLAlchemy(app)
 
 
@@ -77,35 +78,64 @@ class Insurance(db.Model):
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
+    telephone = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    date_of_birth = db.Column(db.Date, nullable=False)
+    gender = db.Column(db.String(200), nullable=False)
     medical_encounter = db.relationship('MedicalEncounter', backref='patient')
-    physician = db.relationship('Physician', backref='patient')
+    primary_physician = db.relationship('Physician', backref='patient')
     insurance = db.relationship('Insurance', backref='patient')
-    serviceprovidedbyclinic = db.relationship(
-        'ServiceProvidedByClinic', backref='patient')
+    current_medication = db.relationship('Medication', backref='patient')
+    current_appointments = db.relationship('Appointment', backref='patient')
+    
 
 
 class MedicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    encounter = db.Column(db.String(200), nullable=False)
-    prescription = db.relationship('Prescription', backref='medical_encounter')
-    LabOrder = db.relationship('LabOrder', backref='lab_order')
+    encounter_date = db.Column(db.Date, nullable=False)
+    practitioner_type = db.Column(db.String(200), nullable=False)
+    complaint = db.Column(db.String(200), nullable=False)
+    diagnosis = db.Column(db.String(200), nullable=False)
+    treatment = db.Column(db.String(200), nullable=False)
+    referral = db.Column(db.String(200), nullable=False)
+    recommended_followup = db.Column(db.String(200), nullable=False)
+    notes = db.Column(db.String(200), nullable=False)
+    submission_date = db.Column(db.Date, nullable=False)
+    lab_order = db.relationship('LabOrder', backref='medical_encounter')
+    vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
+    prescription= db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    date = db.Column(db.Date, nullable=False)
 
+
+class VitalSign(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body_temperature = db.Column(db.Double, nullable=False)
+    pulse_rate = db.Column(db.Double, nullable=False)
+    respiration_rate = db.Column(db.Double, nullable=False)
+    blood_pressure = db.Column(db.Double, nullable=False)
+    encounter_key = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+    
+class Medication(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    dosage = db.Column(db.String(200), nullable=False)
+    frequency = db.Column(db.String(200), nullable=False)
+    duration = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+#Copy into ChatGPT and ask to make a python flask form
 
 class LabOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    medical_encounter_id = db.Column(
-        db.Integer, db.ForeignKey('medical_encounter.id'))
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
 
 
 class Prescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    medical_encounter_id = db.Column(
-        db.Integer, db.ForeignKey('medical_encounter.id'))
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
     date = db.Column(db.Date, nullable=False)
 
 
@@ -120,3 +150,4 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))

@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from forms import RegistrationForm, LoginForm
+from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime
 
 # Initialize app
@@ -20,7 +20,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
+    from model import db, User, Patient, MedicalEncounter
 
 
 # Routes
@@ -82,6 +82,53 @@ def login():
             return render_template('login.html', form=form, title='Login', login_error=True)
 
 
+
+@app.route('/patient', methods=['GET','POST'])
+def create_patient():
+    form = PatientForm()
+    if request.method == 'POST':
+        name=form.name.data
+        telephone=form.telephone.data
+        address=form.address.data
+        date_of_birth=form.date_of_birth.data
+        gender=form.gender.data
+        # push to db without validation
+        patient = Patient(name=name, telephone=telephone, address=address, date_of_birth=date_of_birth, gender=gender)
+        db.session.add(patient)
+        db.session.commit()
+        
+        return "Good job"
+
+    return render_template('patient.html', form=form)
+    
+
+@app.route('/medical_encounter', methods=['GET','POST'])
+def create_medical_encounter():
+    form = MedicalEncounterForm()
+    if request.method == 'POST':
+        encounter_date=form.encounter_date.data
+        practitioner_type=form.practitioner_type.data
+        complaint=form.complaint.data
+        diagnosis=form.diagnosis.data
+        treatment=form.treatment.data
+        referral=form.referral.data
+        recommended_followup=form.recommended_followup.data
+        notes=form.notes.data
+        submission_date=form.submission_date.data
+        patient_id=Patient.query.filter_by(name=form.patient_name.data).first().id
+        
+        # push to db without validation
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+        db.session.add(medical_encounter)
+        db.session.commit()
+        
+        return "Good job"
+
+    return render_template('medical_encounter.html', form=form)
+
+
+#Create a form similar to login and fill that in
+
 @app.route('/admin')
 def admin():
     users = User.query.order_by(User.username).all()
@@ -101,6 +148,3 @@ def load_user(user_id):
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
-
-
-@app.route('/patient')
