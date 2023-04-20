@@ -92,10 +92,30 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/search_equipment/', methods=['GET', 'POST'])
+def search_equipment():
+    if request.method == 'POST':
+        search_item = request.form.get('search_item')
+        if search_item:
+            equipments = Equipment.query.filter(Equipment.type.like('%'+search_item+'%')).all()
+            return render_template('equipment.html', equipments=equipments)
+        else:
+            equipments = Equipment.query.all()
+            return render_template('equipment.html', equipments=equipments)
+    equipments = Equipment.query.all()
+    return redirect(url_for('equipment'))
+
+
 
 @app.route("/equipment", methods=['GET', 'POST'])
 def equipment():
     if request.method == 'POST':
+# id
+# type
+# description
+# department
+# is_leased
+# is_owned
         equipment_id = request.form.get('equipment_id')
         equipment_type = request.form.get('equipment_type')
         description = request.form.get('description')
@@ -103,18 +123,16 @@ def equipment():
         is_owned = request.form.get('is_owned')
         if is_owned == 'on':
             is_owned = True
-
-        equipment = Equipment(equipment_id=equipment_id, equipment_type=equipment_type, description=description, department=department, is_leased=is_leased, is_owned=is_owned)
+            is_leased = False
+        else:
+            is_owned = False
+            is_leased = True
+        equipment = Equipment(id=equipment_id, type=equipment_type, description=description, department=department, is_leased=is_leased, is_owned=is_owned)
         db.session.add(equipment)
         db.session.commit()
         flash(f'Equipment added!', 'success')
         return redirect(url_for('equipment'))
-# id
-# type
-# description
-# department
-# is_leased
-# is_owned
+
 
     equipments = Equipment.query.all()
     return render_template('equipment.html', equipments=equipments)
