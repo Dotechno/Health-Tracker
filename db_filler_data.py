@@ -104,7 +104,7 @@ with app.app_context():
     ), due_date=datetime.now() + timedelta(days=30), patient_id=1)
     service1 = ServiceProvidedByClinic(service_description='X-Rays', cost_for_service=200.00, date=datetime.now(), due_date=datetime.now(
     ) + timedelta(days=30), patient_id=1)
-
+    
     # add to database
     db.session.add(user)
     db.session.add(patient)

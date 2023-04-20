@@ -226,7 +226,7 @@ def get_invoice(invoice_id):
     payment_due_date = datetime.now() + timedelta(days=30)
 
     return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=datetime.now(),
-                           payment_due_date=payment_due_date, delta30days=timedelta(days=30))
+                           payment_due_date=payment_due_date, delta30days=timedelta(days=30), total_cost=invoice.total_cost)
 
 
 if __name__ == '__main__':
