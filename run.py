@@ -20,8 +20,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
-
+    from model import db, User, Equipment, Vendors, EquipmentMaintenance, EquipmentLeased, EquipmentOwned
 
 # Routes
 
@@ -31,35 +30,6 @@ def index():
         return redirect(url_for('login'))
     else:
         return redirect(url_for('admin'))
-
-
-@app.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'There was a problem deleting that task'
-
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
-
-    if request.method == 'POST':
-        task.title = request.form['title']
-        task.content = request.form['content']
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue updating your task'
-    else:
-        return render_template('upda\watchte.html', task=task)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -121,6 +91,13 @@ def admin():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route("/equipment")
+def equipment():
+    equipments = Equipment.query.all()
+    return render_template('equipment.html', equipments=equipments)
+
 
 
 @ login_manager.user_loader
