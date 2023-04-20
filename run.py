@@ -124,7 +124,7 @@ def create_medical_encounter():
         
         return "Good job"
 
-    return render_template('medical_encounter.html', form=form)
+    return render_template('create_medical_encounter.html', form=form)
 
 
 #Create a form similar to login and fill that in

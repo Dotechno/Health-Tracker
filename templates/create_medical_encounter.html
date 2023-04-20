@@ -1,0 +1,94 @@
+<form action ="{{ url_for('create_medical_encounter') }}", method ="POST">
+    <div>
+        {{ form.patient_name(class="form-control", placeholder = 'Patient Name', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.patient_name.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div>
+        {{ form.encounter_date(class="form-control", placeholder ='Encounter Date', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.encounter_date.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.practitioner_type(class="form-control", placeholder ='Type of Practitioner', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.practitioner_type.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        {{ form.complaint(class="form-control", placeholder ='Patient Complaints', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.complaint.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.diagnosis(class="form-control", placeholder ='Diagnosis', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.diagnosis.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.treatment(class="form-control", placeholder ='Treatment Plan', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.treatment.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.referral(class="form-control", placeholder ='Referral to Specialists', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.referral.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.recommended_followup(class="form-control", placeholder ='Recommended Followup', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.recommended_followup.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.notes(class="form-control", placeholder ='Notes', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.notes.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.submission_date(class="form-control", placeholder ='Medical Encounter Submission Date', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.submission_date.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.submit }}
+    </div>
+    
+</form>
