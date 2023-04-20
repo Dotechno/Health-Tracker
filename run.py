@@ -33,35 +33,6 @@ def index():
         return redirect(url_for('admin'))
 
 
-@app.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'There was a problem deleting that task'
-
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
-
-    if request.method == 'POST':
-        task.title = request.form['title']
-        task.content = request.form['content']
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue updating your task'
-    else:
-        return render_template('upda\watchte.html', task=task)
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -130,3 +101,6 @@ def load_user(user_id):
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
+
+
+@app.route('/patient')
