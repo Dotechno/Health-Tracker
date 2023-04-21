@@ -97,12 +97,12 @@ def create_patient():
         db.session.add(patient)
         db.session.commit()
         
-        return "Good job"
+        return "Patient Added"
 
     return render_template('patient.html', form=form)
     
 
-@app.route('/medical_encounter', methods=['GET','POST'])
+@app.route('/create_medical_encounter', methods=['GET','POST'])
 def create_medical_encounter():
     form = MedicalEncounterForm()
     if request.method == 'POST':
@@ -115,16 +115,21 @@ def create_medical_encounter():
         recommended_followup=form.recommended_followup.data
         notes=form.notes.data
         submission_date=form.submission_date.data
-        patient_id=Patient.query.filter_by(name=form.patient_name.data).first().id
-        
+        patient_name=Patient.query.filter_by(name=form.patient_name.data).first()
+        practitioner_id=form.practitioner_id.data
         # push to db without validation
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_name, practitioner_id=practitioner_id)
         db.session.add(medical_encounter)
         db.session.commit()
         
-        return "Good job"
+        return "Medical Encounter Added"
 
     return render_template('create_medical_encounter.html', form=form)
+
+@app.route('/medical_encounter', methods=['GET','POST'])
+def medical_encounter():
+    medical_encounters = MedicalEncounter.query.order_by(MedicalEncounter.encounter_date).all()
+    return render_template('medical_encounter.html', mes=medical_encounters)
 
 
 #Create a form similar to login and fill that in

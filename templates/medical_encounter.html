@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>INSERT TITLE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="../static/css/physician.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+    <script src="../static/javascript/physcian.js"></script>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dataTables_filter">
+                <label>Search:
+                    <input type="search" class="form-control form-control-sm" placeholder=""
+                        aria-controls="physcian-table">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Equipment!
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="content">
+                        <div class="content">
+                            <form action="" method="POST">
+                                <h1>Add Equipment</h1>
+
+                                <label for="ptname" id="ptnameLabel">Equipment:</label>
+                                <input type="text" name="ptname" id="ptname"><br>
+                                <label for="phname" id="phnameLabel">Physician Name:</label>
+                                <input type="text" name="phname" id="phname"><br>
+                                <label for="lbtech" id="lbtechLabel">Lab test Technician:</label>
+                                <input type="text" name="lbtech" id="lbtech"><br>
+                                <label for="lbresult" id="lbresultLabel">Lab test result:</label>
+                                <input type="text" name="lbresult" id="lbresult"><br>
+                                <label for="lbdate" id="lbdateLabel">Lab test date:</label>
+                                <input type="date" name="lbdate" id="lbdate">
+                                <label for="lbtime" id="lbtimeLabel">Lab test time:</label>
+                                <input type="time" step="1" name="lbtime" id="lbtime"><br>
+                                <input type="submit" value="Add Lab Order Data">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div div class="mt-5">
+        <table class="table center" id="physcian-table">
+            <thead>
+                <tr>
+                    <th>Encounter Date</th>
+                    <th>Practitioner ID</th>
+                    <th>Patient ID</th>
+                    <th>Encounter's Submission Date</th>
+                    <th>Type of Practitioner</th>
+                    <th>Patient Complaints</th>
+                    <th>Diagnosis</th>
+                    <th>Treatment Plan</th>
+                    <th>Referral to Specialist</th>
+                    <th>Recommended Followup</th>
+                    <th>Doctor's Notes</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for me in mes %}
+                <tr>
+                    <td>{{ me.encounter_date}}</td>
+                    <td>{{ me.practitioner_id}}</td>
+                    <td>{{ me.patient_id}}</td>
+                    <td>{{ me.submission_date }}</td>
+                    <td>{{ me.practitioner_type }}</td>
+                    <td>{{ me.complaint }}</td>
+                    <td>{{ me.diagnosis }}</td>
+                    <td>{{ me.treatment }}</td>
+                    <td>{{ me.referral }}</td>
+                    <td>{{ me.recommended_followup }}</td>
+                    <td>{{ me.notes }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="openConfirmModal()">{{me.maintenance}}</button>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                <button type="button" class="btn btn-primary">Confirm</button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

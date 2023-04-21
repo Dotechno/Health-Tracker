@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, InputRequired
 
 
@@ -23,22 +23,17 @@ class LoginForm(FlaskForm):
 
 
 class PatientForm(FlaskForm):
-    name = StringField('Name', validators=[
-                       InputRequired(message='Name is required')])
-    telephone = StringField('Telephone', validators=[
-                            InputRequired(message='Telephone is required')])
-    address = StringField('Address', validators=[
-                          InputRequired(message='Address is required')])
-    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d',
-                              validators=[InputRequired(message='Date of Birth is required')])
-    gender = SelectField('Gender', choices=[('male', 'Male'), ('female', 'Female')], validators=[
-                         InputRequired(message='Gender is required')])
+    name = StringField('Name', validators=[InputRequired(message='Name is required')])
+    telephone = StringField('Telephone', validators=[InputRequired(message='Telephone is required')])
+    address = StringField('Address', validators=[InputRequired(message='Address is required')])
+    date_of_birth = DateField('Date of Birth', format='%Y-%m-%d',validators=[InputRequired(message='Date of Birth is required')])
+    gender = SelectField('Gender', choices=[('male', 'Male'), ('female', 'Female')], validators=[InputRequired(message='Gender is required')])
     submit = SubmitField('Create Patient')
 
 
 class MedicalEncounterForm(FlaskForm):
-    encounter_date = DateField(
-        'Encounter Date', format='%Y-%m-%d', validators=[InputRequired()])
+    encounter_date = DateField('Encounter Date', format='%Y-%m-%d', validators=[InputRequired()])
+    practitioner_id = StringField('Practitioner ID', validators=[InputRequired()])
     practitioner_type = StringField('Practitioner Type', validators=[InputRequired()])
     complaint = StringField('Complaint', validators=[InputRequired()])
     diagnosis = StringField('Diagnosis', validators=[InputRequired()])
