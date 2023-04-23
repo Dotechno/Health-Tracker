@@ -12,7 +12,6 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
-
 app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db',
                                 'medication':'sqlite:///medication.db'}
 
