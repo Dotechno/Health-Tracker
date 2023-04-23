@@ -91,6 +91,11 @@ def logout():
     return redirect(url_for('index'))
 
 
+@ app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+
 # @app.route('/members/<string:username>')
 @app.route('/members/')
 def members(username=None):
@@ -102,6 +107,10 @@ def members(username=None):
 
 
 @app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
+
 # handles 404
 @app.errorhandler(404)
 def to404(e):
