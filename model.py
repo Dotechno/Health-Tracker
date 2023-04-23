@@ -75,7 +75,7 @@ class Physician(db.Model):  # Jordan
     appointments = db.relationship('Appointment', backref='physician')
 
 
-# Model for  creating prescription of Pharmacy Order Tracking Module
+# Model for creating prescription of Pharmacy Order Tracking Module
 class Prescription(db.Model):  # Shweta
     __bind_key__ = 'prescription'
     id = db.Column(db.Integer, primary_key=True)

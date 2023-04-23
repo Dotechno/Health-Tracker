@@ -10,8 +10,11 @@ from datetime import datetime
 
 # Initialize app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
+
+app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db',
+                                'medication':'sqlite:///medication.db'}
 
 # db = SQLAlchemy(app)
 
@@ -72,11 +75,18 @@ def login():
             # Valid credentials, log user in and redirect to homepage
             flash(f'Logged in as {username}!', 'success')
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('admin'))
+            return redirect(url_for('dashboard'))
         else:
             # Invalid credentials, show error message
             flash('Login Unsuccessful. Please check username and password', 'danger')
             return render_template('login.html', form=form, title='Login', login_error=True)
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    if request.method == 'GET':
+        return render_template('dashboard.html')
 
 
 @app.route('/admin')
@@ -110,6 +120,12 @@ def members(username=None):
 def about_us():
     return render_template('about_us.html')
 
+
+# handles 401
+@app.errorhandler(401)
+def to401(e):
+    # redirect to login page
+    return redirect(url_for('login'))
 
 # handles 404
 @app.errorhandler(404)
