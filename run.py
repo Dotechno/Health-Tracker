@@ -100,9 +100,9 @@ def members(username=None):
     user = User.query.filter_by(username=username).first()
     return render_template('members.html', user=user)
 
+
+@app.route('/about_us')
 # handles 404
-
-
 @app.errorhandler(404)
 def to404(e):
     return render_template('404.html')
