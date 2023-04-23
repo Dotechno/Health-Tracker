@@ -3,8 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
-app.config['SQLALCHEMY_BINDS']={'prescription':'sqlite:///prescription.db',
-                                'medication':'sqlite:///medication.db'}
+app.config['SQLALCHEMY_BINDS']={'medication':'sqlite:///medication.db'}
 
 if not 'models' in sys.modules:
     from model import db

@@ -77,7 +77,6 @@ class Physician(db.Model):  # Jordan
 
 # Model for creating prescription of Pharmacy Order Tracking Module
 class Prescription(db.Model):  # Shweta
-    __bind_key__ = 'prescription'
     id = db.Column(db.Integer, primary_key=True)
     patient_name = db.Column(db.String(200), db.ForeignKey('patient.name'))
     physician_name = db.Column(db.String(200), nullable=False)
@@ -97,7 +96,6 @@ class Prescription(db.Model):  # Shweta
 
 
 class Medication(db.Model):  # Shweta
-    __bind_key__ = 'medication'
     id = db.Column(db.Integer, primary_key=True)
     medication = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(500), nullable=False)
