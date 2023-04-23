@@ -125,6 +125,8 @@ def to401(e):
     return redirect(url_for('login'))
 
 # handles 404
+
+
 @app.errorhandler(404)
 def to404(e):
     return render_template('404.html')
