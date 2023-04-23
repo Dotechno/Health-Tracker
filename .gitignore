@@ -2,6 +2,8 @@ package.json
 explore.ipynb
 instance/
 
+.vscode/
+
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
