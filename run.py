@@ -102,7 +102,7 @@ def load_user(user_id):
 
 
 @app.route('/insurance_billing', methods=['GET', 'POST'])
-def InsuranceBilling():
+def insurance_billing():
     if request.method == 'POST':
         find = request.form["PatientName"]
         find = "John Doe"
@@ -179,8 +179,8 @@ def InsuranceBilling():
         return render_template('insurance_billing.html', is_get=True)
 
 
-@app.route('/invoices', methods=['GET', 'POST'])
-def generate_invoice():
+@app.route('/create_invoice', methods=['GET', 'POST'])
+def create_invoice():
     if request.method == 'POST':
         patient_name = request.form['patient_name']
         insurance_carrier_id = request.form['insurance_carrier_id']
@@ -194,40 +194,65 @@ def generate_invoice():
 
         for service_id in service_ids:
             service = ServiceProvidedByClinic.query.get(service_id)
+            
             line_item = InvoiceLineItem(invoice_id=invoice.id, service_id=service_id, date=datetime.now(),
                                         cost=service.cost_for_service, status='unpaid')
             db.session.add(line_item)
             invoice.total_cost += service.cost_for_service
         db.session.commit()
-        return redirect(url_for('get_invoice', invoice_id=invoice.id))
+        return redirect(url_for('invoice', invoice_id=invoice.id))
     else:
         insurance_carriers = Insurance.query.all()
         services = ServiceProvidedByClinic.query.all()
         payment_due_date = datetime.now() + timedelta(days=30)
 
-        return render_template('invoices.html', insurance_carriers=insurance_carriers, services=services, issued_date=datetime.now(),
+        return render_template('create_invoice.html', insurance_carriers=insurance_carriers, services=services, issued_date=datetime.now(),
                                payment_due_date=payment_due_date)
 
 
-@app.route('/invoices/<int:invoice_id>')
-def get_invoice(invoice_id):
-    invoice = Invoice.query.get(
+@app.route('/invoice/<int:invoice_id>', methods = ['POST', 'GET'])
+def invoice(invoice_id):
+    if request.method == 'POST':
+        items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        for item in items:
+            item.status = 'paid'
+        db.session.commit()
+        return render_template('success.html')
+        
+        
+        # invoice = Invoice.query.get(
+        # invoice_id)
+
+        # all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
+
+        # all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        # physician = Physician.query.filter_by(patient_id=all_patient.id).first()
+        # insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
+
+        # if not invoice:
+        #     abort(404)
+        # items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        # payment_due_date = datetime.now() + timedelta(days=30)
+        # due_date = f"{(payment_due_date - datetime.today()).days}"
+        # return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=due_date,
+        #                     payment_due_date=payment_due_date, delta30days=timedelta(days=30), total_cost=invoice.total_cost)
+    else:
+        invoice = Invoice.query.get(
         invoice_id)
 
-    all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
+        all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
 
-    all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
-    physician = Physician.query.filter_by(patient_id=all_patient.id).first()
-    insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
+        all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        physician = Physician.query.filter_by(patient_id=all_patient.id).first()
+        insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
 
-    if not invoice:
-        abort(404)
-    items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
-    payment_due_date = datetime.now() + timedelta(days=30)
-
-    return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=datetime.now(),
-                           payment_due_date=payment_due_date, delta30days=timedelta(days=30), total_cost=invoice.total_cost)
-
+        if not invoice:
+            abort(404)
+        items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        payment_due_date = datetime.now() + timedelta(days=30)
+        due_date = f"{(payment_due_date - datetime.today()).days}"
+        return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=due_date,
+                            payment_due_date=payment_due_date, delta30days=timedelta(days=30), total_cost=invoice.total_cost)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002, host="0.0.0.0")
