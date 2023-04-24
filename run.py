@@ -91,7 +91,10 @@ def dashboard():
 
 
 @app.route('/admin')
+@login_required
 def admin():
+    if current_user.roles != 'admin':
+        return redirect(url_for('index'))
     users = User.query.order_by(User.username).all()
     return render_template('admin.html', users=users)
 
