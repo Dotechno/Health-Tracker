@@ -83,7 +83,11 @@ def login():
 @login_required
 def dashboard():
     if request.method == 'GET':
-        return render_template('dashboard.html')
+        current_user_name = current_user.username
+        # check for capitalizations for first letters
+        current_user_name = current_user_name.title()
+        print(current_user_name)
+        return render_template('dashboard.html', loggedin_user=current_user_name)
 
 
 @app.route('/admin')
