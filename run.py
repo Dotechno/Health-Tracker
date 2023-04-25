@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
+
 # db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
@@ -90,10 +91,18 @@ def dashboard():
         return render_template('dashboard.html', loggedin_user=current_user_name)
 
 
+@app.route('/demo_dashboard', methods=['GET', 'POST'])
+def demo_dashboard():
+    # check for capitalizations for first letters
+    return render_template('demo_dashboard.html')
+
+
 @app.route('/admin')
 @login_required
 def admin():
     if current_user.roles != 'admin':
+        # loguser out if not admin
+        logout_user()
         return redirect(url_for('index'))
     users = User.query.order_by(User.username).all()
     return render_template('admin.html', users=users)
