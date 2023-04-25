@@ -1,16 +1,12 @@
-{% extends 'base.html' %}
-
-
-{% block head %}
+{% extends "dashboard.html" %}
+{% block main_content %}
 <title>Lab Tracking</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-{% endblock %}
 
-{% block body %}
-<div class = "content">
+<div class="content">
     <a href="/lab_tracking_add_order/">Add Lab order</a> <br> <a href="/lab_tracking_add_test/">Add Lab Test Type</a>
     <h1>Lab Tracker</h1>
-    
+
     <form action="/lab_tracking/" method="POST">
         <select class="form-control" id="search-select" name="search_type">
             <option value="patient">Search by Patient</option>
@@ -20,50 +16,50 @@
         </select>
         <select class="form-control" id="lab-test-select" name="lab_tester" disabled>
             {% if lab_test %}
-                {% for test in lab_test %}
-                    <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
-                {% endfor %}
+            {% for test in lab_test %}
+            <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
+            {% endfor %}
             {% else %}
-                <option>No lab tests found.</option>
+            <option>No lab tests found.</option>
             {% endif %}
 
         </select>
         <input type="text" name="search_query" id="search_query" placeholder="Type Here">
-        
-        
+
+
 
         <script>
-            document.getElementById("search-select").addEventListener("change", function() {
+            document.getElementById("search-select").addEventListener("change", function () {
                 if (this.value == "labphy") {
                     document.getElementById("lab-test-select").removeAttribute("disabled");
                     document.getElementById("search_query").removeAttribute("disabled");
-                } 
+                }
                 else if (this.value == "test") {
                     document.getElementById("lab-test-select").removeAttribute("disabled");
                     document.getElementById("search_query").setAttribute("disabled", "");
-                } 
+                }
                 else if (this.value == "physician") {
                     document.getElementById("lab-test-select").setAttribute("disabled", "");
                     document.getElementById("search_query").removeAttribute("disabled");
-                } 
+                }
                 else if (this.value == "patient") {
                     document.getElementById("lab-test-select").setAttribute("disabled", "");
                     document.getElementById("search_query").removeAttribute("disabled");
-                } 
+                }
                 else {
                     document.getElementById("lab-test-select").setAttribute("disabled", "");
                     document.getElementById("search_query").setAttribute("disabled", "");
                 }
             });
         </script>
-        
+
         <label for="start-date">Start Date:</label>
         <input type="date" id="start-date" name="start-date" value="{{ start_date }}">
         <label for="end-date">End Date:</label>
         <input type="date" id="end-date" name="end-date" value="{{ end_date }}">
 
         <button type="submit">Search</button>
-      </form>
+    </form>
 
 
     <table> <!-- Main Table -->
@@ -78,24 +74,23 @@
 
         </tr>
         {% for order in orders %}
-            <tr>
-                <td>{{ order.patient_name }}</td>
-                <td>{{ order.test_name }}</td>
-                <td>{{ order.lab_test_result }}</td>
-                <td>{{ order.lab_order_date }}</td>
-                <td>{{ order.lab_test_date }}</td>
-                <td>{{ order.physician_name }}</td>
-                <!--<td>{{ order.lab_test_technician }}</td>-->
-                <td>
-                    <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>{{ order.patient_name }}</td>
+            <td>{{ order.test_name }}</td>
+            <td>{{ order.lab_test_result }}</td>
+            <td>{{ order.lab_order_date }}</td>
+            <td>{{ order.lab_test_date }}</td>
+            <td>{{ order.physician_name }}</td>
+            <!--<td>{{ order.lab_test_technician }}</td>-->
+            <td>
+                <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a>
+            </td>
+        </tr>
         {% endfor %}
     </table>
 
 </div>
 
 
-    
-{% endblock %}
 
+{% endblock %}
