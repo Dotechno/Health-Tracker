@@ -342,9 +342,7 @@ def retrieve_prescription():
 
 @app.route('/retrieve_prescription_based', methods=['POST', 'GET'])
 def retrieve_prescription_based():
-
     if request.method == 'POST':
-
         id = request.form['prescription_id']
         name = request.form['patient_name']
         medicine = request.form['prescribed_medication']
