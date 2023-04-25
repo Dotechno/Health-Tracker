@@ -89,7 +89,6 @@ class Patient(db.Model):
     current_appointments = db.relationship('Appointment', backref='patient')
     
 
-
 class MedicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
@@ -108,6 +107,7 @@ class MedicalEncounter(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
+    
 class VitalSign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body_temperature = db.Column(db.Double, nullable=False)

@@ -1,0 +1,54 @@
+
+<form action ="{{ url_for('create_patient') }}", method ="POST">
+    <div>
+        {{ form.name(class="form-control", placeholder ='Username', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.name.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.telephone(class="form-control", placeholder ='Telephone Number', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.telephone.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        {{ form.address(class="form-control", placeholder ='Address', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.address.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.date_of_birth(class="form-control", placeholder ='Date of Birth', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.date_of_birth.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    
+    </div>
+
+    <div>
+        {{ form.gender(class="form-control", placeholder ='Gender', autocomplete ='off', autofocus=True) }}
+        <ul>
+            {% for error in form.gender.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        {{ form.submit }}
+    </div>
+    
+</form>

@@ -15,8 +15,7 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username',validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
@@ -33,7 +32,7 @@ class PatientForm(FlaskForm):
 
 class MedicalEncounterForm(FlaskForm):
     encounter_date = DateField('Encounter Date', format='%Y-%m-%d', validators=[InputRequired()])
-    practitioner_id = StringField('Practitioner ID', validators=[InputRequired()])
+    practitioner_id = SelectField('Practitioner ID', coerce=int)
     practitioner_type = StringField('Practitioner Type', validators=[InputRequired()])
     complaint = StringField('Complaint', validators=[InputRequired()])
     diagnosis = StringField('Diagnosis', validators=[InputRequired()])
@@ -42,6 +41,10 @@ class MedicalEncounterForm(FlaskForm):
     recommended_followup = StringField('Recommended Follow-up', validators=[InputRequired()])
     notes = StringField('Notes', validators=[InputRequired()])
     submission_date = DateField('Submission Date', format='%Y-%m-%d', validators=[InputRequired()])
-    patient_name = StringField('Patient Name', validators=[InputRequired()])
+    patient_name = StringField('Patient Name', validators=[DataRequired()])
+    patient_id = SelectField('Patient ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
 # Copy one of these form into CHat GPT
+
+
+

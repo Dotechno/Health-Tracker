@@ -20,7 +20,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter
+    from model import db, User, Patient, MedicalEncounter, Physician
 
 
 # Routes
@@ -82,8 +82,7 @@ def login():
             return render_template('login.html', form=form, title='Login', login_error=True)
 
 
-
-@app.route('/patient', methods=['GET','POST'])
+@app.route('/create_patient', methods=['GET','POST'])
 def create_patient():
     form = PatientForm()
     if request.method == 'POST':
@@ -99,12 +98,26 @@ def create_patient():
         
         return "Patient Added"
 
-    return render_template('patient.html', form=form)
-    
+    return render_template('create_patient.html', form=form)
 
+
+
+
+@app.route('/patient', methods=['GET','POST'])
+
+def patient():
+    patients = Patient.query.order_by(Patient.id).all()
+    return render_template('patient.html', patients=patients)
+
+  
 @app.route('/create_medical_encounter', methods=['GET','POST'])
 def create_medical_encounter():
     form = MedicalEncounterForm()
+    form.patient_id.choices = [(patient.id, patient.name) for patient in Patient.query.all()]
+    # form choices for practicioner_id and name
+    form.practitioner_id.choices = [(practitioner.id, practitioner.name) for practitioner in Physician.query.all()]
+
+    print (form.patient_id.choices)
     if request.method == 'POST':
         encounter_date=form.encounter_date.data
         practitioner_type=form.practitioner_type.data
@@ -115,10 +128,10 @@ def create_medical_encounter():
         recommended_followup=form.recommended_followup.data
         notes=form.notes.data
         submission_date=form.submission_date.data
-        patient_name=Patient.query.filter_by(name=form.patient_name.data).first()
-        practitioner_id=form.practitioner_id.data
-        # push to db without validation
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_name, practitioner_id=practitioner_id)
+        patient_id = form.patient_id.data
+        patient = Patient.query.get(patient_id)
+        patient_name = patient.name
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
         
@@ -130,6 +143,7 @@ def create_medical_encounter():
 def medical_encounter():
     medical_encounters = MedicalEncounter.query.order_by(MedicalEncounter.encounter_date).all()
     return render_template('medical_encounter.html', mes=medical_encounters)
+
 
 
 #Create a form similar to login and fill that in
