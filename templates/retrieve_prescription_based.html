@@ -1,119 +1,110 @@
-<!DOCTYPE html>
-<html>
-    {% block head %}
-   
-    <title>Prescription detailssss</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link href="../static/css/createprescription.css" rel="stylesheet">
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+{% extends "dashboard.html" %}
 
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"> </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+{% block main_content %}
+
+<title>Prescription detailssss</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+  integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link href="../static/css/createprescription.css" rel="stylesheet">
+<link href="../static/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 
 
-    <script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
-    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
+<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
 
-    <script type="text/javascript">
-        function myFunction() {
-          var a = document.forms["Form"]["prescription_id"].value;
-          var b = document.forms["Form"]["patient_name"].value;
-          var c = document.forms["Form"]["prescribed_medication"].value;
-          if (((a != null || a != "")) && ((b == null || b == "") && (c == null || c == "")))
-          {
-            //alert("Please Fill In ID or patient name and medication name");
-            return true;
-          }
-          else if(((a ==null || a == "")) && ((b != null || b != "") && (c == null || c == "")))
-          {
-            alert("Please fill medication name")
-            return False;
-          }
-          else if(((a ==null || a == "")) && ((b == null || b == "") && (c != null || c != "")))
-          {
-            alert("Please fill patient name")
-            return False;
-          }
-          else if(((a ==null || a == "")) && ((b == null || b == "") && (c == null || c == "")))
-          {
-            alert("Please fill the details")
-            return False;
-          }
-        }
-      </script>
-       <script>
-        $(document).ready(function() {
+<script type="text/javascript">
+  function myFunction() {
+    var a = document.forms["Form"]["prescription_id"].value;
+    var b = document.forms["Form"]["patient_name"].value;
+    var c = document.forms["Form"]["prescribed_medication"].value;
+    if (((a != null || a != "")) && ((b == null || b == "") && (c == null || c == ""))) {
+      //alert("Please Fill In ID or patient name and medication name");
+      return true;
+    }
+    else if (((a == null || a == "")) && ((b != null || b != "") && (c == null || c == ""))) {
+      alert("Please fill medication name")
+      return False;
+    }
+    else if (((a == null || a == "")) && ((b == null || b == "") && (c != null || c != ""))) {
+      alert("Please fill patient name")
+      return False;
+    }
+    else if (((a == null || a == "")) && ((b == null || b == "") && (c == null || c == ""))) {
+      alert("Please fill the details")
+      return False;
+    }
+  }
+</script>
+<script>
+  $(document).ready(function () {
     $('#example').DataTable();
-});
-    </script>
-    {% endblock %}
+  });
+</script>
+
+<div class="testbox">
+  <form action="/retrieve_prescription_based" method="POST" name="Form">
+    Enter Prescription ID <input type="text" name="prescription_id" id="prescription_id"> <br> <br>
+
+    OR
+    <br>
+    Enter Patient Name <input type="text" name="patient_name" id="patient_name">
+    Enter Prescribed Medication <input type="text" name="prescribed_medication" id="prescribed_medication">
+    <br>
+    <br>
+    <button type="submit" href="/" onclick="myFunction()">Submit</button>
+    <button type="reset" href="/" onclick="">Clear</button>
 
 
-    {% block body %}
+  </form>
 
-
-    <div class="testbox">
-        <form action="/retrieve_prescription_based" method="POST" name="Form">
-        Enter Prescription ID <input type="text" name="prescription_id" id="prescription_id"> <br> <br>
-
-        OR
-        <br>
-         Enter Patient Name <input type="text" name="patient_name" id="patient_name">
-         Enter Prescribed Medication <input type="text" name="prescribed_medication" id="prescribed_medication">
-         <br>
-         <br>
-           <button type="submit" href="/" onclick="myFunction()">Submit</button>
-           <button type="reset" href="/" onclick="">Clear</button>
-
-
-        </form>
-
-<br>
-<br>
+  <br>
+  <br>
 
 
 
-    <div class="container" >
-        {% if tasks %}
-        <table id="example" class="display nowrap" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Patient Name</th>
-                <th>Physician Name</th>
-                <th>Medication</th>
-                <th>Dosage</th>
-                <th>Frequency</th>
-                <th>Filled By</th>
-                <th>Date Created</th>
-                <th>Pharmacist Name</th>
+  <div class="container">
+    {% if tasks %}
+    <table id="example" class="display nowrap" style="width:100%">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient Name</th>
+          <th>Physician Name</th>
+          <th>Medication</th>
+          <th>Dosage</th>
+          <th>Frequency</th>
+          <th>Filled By</th>
+          <th>Date Created</th>
+          <th>Pharmacist Name</th>
 
-            </tr>
-        </thead>
-            {% for task in tasks %}
-            <tbody>
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>{{ task.patient_name }}</td>
-                <td>{{ task.physician_name }}</td>
-                <td>{{ task.medication }}</td>
-                <td>{{ task.dosage }}</td>
-                <td>{{ task.frequency }}</td>
-                <td>{{ task.filled_by }}</td>
-                <td>{{ task.date_filled }}</td>
-                <td>{{task.pharmacist_name}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-        {% endif %}
-        </div>
-{% endblock %}
-<a href="generate_report">Click here to generate report   </a>
+        </tr>
+      </thead>
+      {% for task in tasks %}
+      <tbody>
+        <tr>
+          <td>{{ task.id }}</td>
+          <td>{{ task.patient_name }}</td>
+          <td>{{ task.physician_name }}</td>
+          <td>{{ task.medication }}</td>
+          <td>{{ task.dosage }}</td>
+          <td>{{ task.frequency }}</td>
+          <td>{{ task.filled_by }}</td>
+          <td>{{ task.date_filled }}</td>
+          <td>{{task.pharmacist_name}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    <button type="button" onclick="location.href='/generate_report'">Generate report</button>
+
+  </div>
 
 </div>
-
-</html>
+{% endblock %}
