@@ -31,7 +31,8 @@ class User(db.Model, UserMixin):
 class LabTest(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     lab_test_name = db.Column(db.String(200), nullable=False)
-    range_of_normal_results = db.Column(db.String(200))
+    low_normal_results = db.Column(db.String(200))
+    high_normal_results=db.Column(db.String(200))
     #lab_order = db.relationship('LabOrder', backref='lab_test')
 
     def __repr__(self):

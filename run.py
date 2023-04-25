@@ -274,17 +274,24 @@ def lab_tracking_add_test():
     if request.method == 'POST':
         print(request.form.get('testname'))
         lab_testname = request.form['testname']
-        lab_lowrange = request.form['lowrange']
-        lab_highrange = request.form['highrange']
-        if(lab_lowrange == ""):
-            healthyrange = lab_highrange
-        elif( lab_highrange == ""):
-            healthyrange = lab_lowrange
+        lab_result_type = request.form['result_type']
+        if lab_result_type == "pos_neg":
+            lab_posinegi = request.form.get('posi_negi')
+            new_test = LabTest(lab_test_name = lab_testname, low_normal_results = lab_posinegi, high_normal_results = '')
+
+        #if(lab_lowrange == ""):
+        #    healthyrange = lab_highrange
+        #    new_test = LabTest(lab_test_name = lab_testname, low_normal_results = healthyrange)
+        #elif( lab_highrange == ""):
+        #    healthyrange = lab_lowrange
+        #    new_test = LabTest(lab_test_name = lab_testname, low_normal_results = healthyrange)
+        
+
         else:
-            healthyrange =  lab_lowrange + ' - ' + lab_highrange
+            lab_lowrange = request.form.get('lowrange')
+            lab_highrange = request.form.get('highrange')
+            new_test = LabTest(lab_test_name = lab_testname, low_normal_results = lab_lowrange, high_normal_results = lab_highrange)
 
-
-        new_test = LabTest(lab_test_name = lab_testname, range_of_normal_results = healthyrange)
 
         existing_test = LabTest.query.filter_by(lab_test_name=lab_testname).first()
         if existing_test:

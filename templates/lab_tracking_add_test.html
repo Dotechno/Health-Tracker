@@ -16,10 +16,41 @@
         
         <label for="testname">Test name:</label>
         <input type="text" name="testname" id="testname"><br>
-        <label for="lowrange">Low End of Healthy Range of Results:</label>
-        <input type="text" name="lowrange" id="lowrange"><br>
+        <label for="result_type">Type of Result:</label>
+        <select class="form-control" id="result_type" name="result_type">
+            <option value="int_range">Integer Range</option>
+            <option value="pos_neg">Positive/Negative</option>
+        </select>
+        <br><label for="lowrange">Low End of Healthy Range of Results:</label>
+        <input type="text" name="lowrange" id="lowrange" ><br>
         <label for="highrange">High End of Healthy Range of Results:</label>
-        <input type="text" name="highrange" id="highrange"><br>
+        <input type="text" name="highrange" id="highrange" ><br>
+        <label for="posi_negi">Healthy Result:</label>
+        <select class="form-control" id="posi_negi" name="posi_negi" disabled>
+            <option value="Positive">Positive</option>
+            <option value="Negative">Negative</option>
+        </select><br>
+
+        <script>
+            document.getElementById("result_type").addEventListener("change", function() {
+                if (this.value == "int_range") {
+                    document.getElementById("highrange").removeAttribute("disabled");
+                    document.getElementById("lowrange").removeAttribute("disabled");
+                    document.getElementById("posi_negi").setAttribute("disabled", "");
+
+                }
+                else if (this.value == "pos_neg") {
+                    document.getElementById("posi_negi").removeAttribute("disabled");
+                    document.getElementById("highrange").setAttribute("disabled", "");
+                    document.getElementById("lowrange").setAttribute("disabled", "");
+                }
+                else{
+                    document.getElementById("highrange").removeAttribute("disabled");
+                    document.getElementById("lowrange").removeAttribute("disabled");
+                    document.getElementById("posi_negi").setAttribute("disabled", "");
+                }
+            });
+        </script>
 
         <input type="submit" value="Add Lab Test Type">
     </form>
