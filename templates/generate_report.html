@@ -9,7 +9,6 @@
     <script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
 
-
     <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/searchbuilder/1.4.2/css/searchBuilder.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/datetime/1.4.0/css/dataTables.dateTime.min.css" rel="stylesheet"> 
@@ -30,16 +29,12 @@
 
     <!--for date-->
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
-
-
 
    <script>
 
     var minDate, maxDate;
      
-     // Custom filtering function which will search data in column four between two values
      // Custom filtering function which will search data in column four between two values
 $.fn.dataTable.ext.search.push(
   function( settings, data, dataIndex ) {
@@ -68,11 +63,10 @@ $.fn.dataTable.ext.search.push(
              format: 'YYYY-MM-DD'
          });
       
-         // DataTables initialisation
-         //var table = $('#example').DataTable( );
+         
          var table = $('#example').DataTable(
             {
-             dom:'Qlfrtip' ,buttons: [
+             dom:'BQlfrtip' ,buttons: [
                 'pdfHtml5'
            ]
             

@@ -2,7 +2,7 @@
 <html>
     {% block head %}
    
-    <title>Prescription detailssss</title>
+    <title>Prescription details</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link href="../static/css/createprescription.css" rel="stylesheet">
@@ -12,7 +12,6 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
-
 
     <script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
     <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -24,7 +23,6 @@
           var c = document.forms["Form"]["prescribed_medication"].value;
           if (((a != null || a != "")) && ((b == null || b == "") && (c == null || c == "")))
           {
-            //alert("Please Fill In ID or patient name and medication name");
             return true;
           }
           else if(((a ==null || a == "")) && ((b != null || b != "") && (c == null || c == "")))
@@ -51,10 +49,7 @@
     </script>
     {% endblock %}
 
-
     {% block body %}
-
-
     <div class="testbox">
         <form action="/retrieve_prescription_based" method="POST" name="Form">
         Enter Prescription ID <input type="text" name="prescription_id" id="prescription_id"> <br> <br>
@@ -67,14 +62,9 @@
          <br>
            <button type="submit" href="/" onclick="myFunction()">Submit</button>
            <button type="reset" href="/" onclick="">Clear</button>
-
-
         </form>
-
 <br>
 <br>
-
-
 
     <div class="container" >
         {% if tasks %}
