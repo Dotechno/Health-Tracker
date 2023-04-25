@@ -94,7 +94,7 @@ class Patient(db.Model):
     gender = db.Column(db.String(200), nullable=False)
 
 
-# Model for  creating prescription of Pharmacy Order Tracking Module
+# Model for creating prescription of Pharmacy Order Tracking Module
 class Prescription(db.Model):  # Shweta
     __bind_key__ = 'prescription'
     id = db.Column(db.Integer, primary_key=True)
@@ -129,3 +129,29 @@ class Medication(db.Model):  # Shweta
 
     def is_active(self):
         return True
+
+
+class LabTest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lab_test_name = db.Column(db.String(200), nullable=False)
+    low_normal_results = db.Column(db.String(200))
+    high_normal_results = db.Column(db.String(200))
+    # lab_order = db.relationship('LabOrder', backref='lab_test')
+
+    def __repr__(self):
+        return '<LabTest %r>' % self.id
+
+
+class LabOrder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_name = db.Column(db.String(200), nullable=False)
+    physician_name = db.Column(db.String(200), nullable=False)
+    lab_test_date = db.Column(db.DateTime, nullable=False)
+    lab_test_technician = db.Column(db.String(200), nullable=False)
+    lab_test_result = db.Column(db.String(200), nullable=False)
+    test_name = db.Column(db.String(200), nullable=False)
+    lab_order_date = db.Column(db.DateTime, nullable=False)
+    # test = db.Column(db.Integer, db.ForeignKey('lab_test.id'))
+
+    def __repr__(self):
+        return '<LabOrder %r>' % self.id
