@@ -6,11 +6,17 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 from forms import RegistrationForm, LoginForm
-from datetime import datetime
+from datetime import date, datetime
+from sqlalchemy import func
+
 
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
+app.config['SQLALCHEMY_BINDS'] = {'prescription': 'sqlite:///prescription.db',
+                                  'medication': 'sqlite:///medication.db'}
+
+
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 
@@ -21,7 +27,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User
+    from model import db, User, Prescription, Medication
 
 
 # Routes
@@ -112,6 +118,99 @@ def admin():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+# Route for Create Prescription
+
+
+@app.route('/create_prescription', methods=['POST', 'GET'])
+def create_prescription():
+    # return render_template('create_prescription.html')
+    if request.method == 'POST':
+
+        patient_name = request.form['patient_name']
+        physician_name = request.form.get("PhysicianName")
+        medication = request.form.get('Medication')
+        dosage = request.form.get('dosage')
+        frequency = request.form.get('frequency')
+        filled_by = request.form.get('filled_by')
+        pharmacist_name = request.form.get('pharmacist_name')
+       # med_enc=request.form.get('med_enc')
+        Details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
+                               dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name)
+        db.session.add(Details)
+        db.session.commit()
+        flash(f'Prescription added!', 'success')
+        return redirect(url_for('create_prescription'))
+
+    else:
+        return render_template('create_prescription.html')
+
+    # Route for retrieve Prescription # this is an extra route which is currently unused
+
+
+@app.route('/generate_report', methods=['POST', 'GET'])
+def retrieve_prescription():
+    # return render_template('create_prescription.html')
+    tasks = Prescription.query.order_by(Prescription.id).all()
+    return render_template('generate_report.html', tasks=tasks)
+
+# this is the current route used for retrieving based on the id or name and prescription name
+
+
+@app.route('/retrieve_prescription_based', methods=['POST', 'GET'])
+def retrieve_prescription_based():
+
+    if request.method == 'POST':
+
+        id = request.form['prescription_id']
+        name = request.form['patient_name']
+        medicine = request.form['prescribed_medication']
+        tasks = Prescription.query.filter((Prescription.id == id) | (
+            (Prescription.patient_name == name) & (Prescription.medication == medicine)))
+        return render_template('retrieve_prescription_based.html', tasks=tasks)
+
+    else:
+        return render_template('retrieve_prescription_based.html')
+
+
+# Route for adding medication
+@app.route('/add_medication', methods=['POST', 'GET'])
+def add_medication():
+    if request.method == 'POST':
+
+        medication = request.form.get('Medication')
+        description = request.form.get('desc')
+        dosage = request.form.get('dosage')
+        frequency = request.form.get('frequency')
+        side_effects = request.form.get('side_effects')
+        interactions = request.form.get('interactions')
+        Details = Medication(medication=medication, description=description, dosage=dosage,
+                             frequency=frequency, side_effects=side_effects, interactions=interactions)
+        db.session.add(Details)
+        db.session.commit()
+        flash(f'Prescription added!', 'success')
+        return redirect(url_for('add_medication'))
+
+    else:
+        return render_template('add_medication.html')
+
+     # Route for retrieve Medications
+
+
+@app.route('/retrieve_medication', methods=['POST', 'GET'])
+def retrieve_medication():
+    # return render_template('create_prescription.html')
+    # tasks = Medication.query.order_by(Medication.id).all()
+    # eturn render_template('retrieve_medication.html', tasks=tasks)
+    month = request.form.get('mon')
+    physician_name = request.form.get('physician_name')
+    physician_prescriptions = db.session.query(
+        Prescription.physician_name,
+
+        db.func.count(Prescription.medication).label('count')
+    ).filter(func.strftime('%m', Prescription.date_filled) == month,
+             Prescription.physician_name == physician_name).all()
+    return render_template('retrieve_medication.html', output=physician_prescriptions)
 
 
 @ app.route('/pricing')
