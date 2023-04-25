@@ -124,9 +124,8 @@ def logout():
 
 @app.route('/create_prescription', methods=['POST', 'GET'])
 def create_prescription():
-    # return render_template('create_prescription.html')
+    # return render_template('pharmacy_create_prescription.html')
     if request.method == 'POST':
-
         patient_name = request.form['patient_name']
         physician_name = request.form.get("PhysicianName")
         medication = request.form.get('Medication')
@@ -143,7 +142,7 @@ def create_prescription():
         return redirect(url_for('create_prescription'))
 
     else:
-        return render_template('create_prescription.html')
+        return render_template('pharmacy_create_prescription.html')
 
     # Route for retrieve Prescription # this is an extra route which is currently unused
 
@@ -152,7 +151,7 @@ def create_prescription():
 def retrieve_prescription():
     # return render_template('create_prescription.html')
     tasks = Prescription.query.order_by(Prescription.id).all()
-    return render_template('generate_report.html', tasks=tasks)
+    return render_template('pharmacy_generate_report.html', tasks=tasks)
 
 # this is the current route used for retrieving based on the id or name and prescription name
 
@@ -167,10 +166,10 @@ def retrieve_prescription_based():
         medicine = request.form['prescribed_medication']
         tasks = Prescription.query.filter((Prescription.id == id) | (
             (Prescription.patient_name == name) & (Prescription.medication == medicine)))
-        return render_template('retrieve_prescription_based.html', tasks=tasks)
+        return render_template('pharmacy_retrieve_prescription_based.html', tasks=tasks)
 
     else:
-        return render_template('retrieve_prescription_based.html')
+        return render_template('pharmacy_retrieve_prescription_based.html')
 
 
 # Route for adding medication
@@ -192,7 +191,7 @@ def add_medication():
         return redirect(url_for('add_medication'))
 
     else:
-        return render_template('add_medication.html')
+        return render_template('pharmacy_add_medication.html')
 
      # Route for retrieve Medications
 
@@ -210,7 +209,7 @@ def retrieve_medication():
         db.func.count(Prescription.medication).label('count')
     ).filter(func.strftime('%m', Prescription.date_filled) == month,
              Prescription.physician_name == physician_name).all()
-    return render_template('retrieve_medication.html', output=physician_prescriptions)
+    return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
 
 
 @ app.route('/pricing')
