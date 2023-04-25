@@ -138,6 +138,35 @@ def equipment():
     return render_template('equipment.html', equipments=equipments)
 
 
+@app.route('/maintenance_history/<int:equipment_id>')
+def maintenance_history(equipment_id):
+    maintenance_history = EquipmentMaintenance.query.filter_by(equipment_id=equipment_id).all()
+    equipment = Equipment.query.get(equipment_id)
+    return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+
+@app.route('/owned/<int:equipment_id>')
+def equipment_owned(equipment_id):
+    owned_information = EquipmentOwned.query.filter_by(equipment_id=equipment_id).all()
+    equipment = Equipment.query.get(equipment_id)
+    return render_template('owned.html', owned = owned_information, equipment=equipment)
+
+
+@app.route('/leased/<int:equipment_id>')
+def equipment_leased(equipment_id):
+    leased_information = EquipmentLeased.query.filter_by(equipment_id=equipment_id).all()
+    equipment = Equipment.query.get(equipment_id)
+    return render_template('leased.html', leased=leased_information, equipment=equipment)
+
+@app.route('/vendors')
+def vendors():
+    equipment_data = Equipment.query.all()
+    # Iterating over the equipment objects and getting the vendors data
+    vendors_data = []
+    for equipment in equipment_data:
+        for vendor in equipment.vendor:
+            print(vendor)
+    return render_template('vencodrs.html')
+
 
 @ login_manager.user_loader
 def load_user(user_id):

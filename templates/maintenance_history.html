@@ -26,7 +26,7 @@
 <body>
     <br>
     <br>
-    <h1 class="equipment-title" style="text-align:center">Equipments Page!</h1>
+    <h1 class="equipment-title" style="text-align:center">{{ equipment.type }}'s Maintenance History</h1>
     <br>
     <div class="row">
         <div class="col-search">
@@ -43,34 +43,29 @@
     </div>
     <br>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-align:right">
-        Add Equipment!
+        Add Maintenance History: 
     </button>
-    <a href="/vendors/" class="btn btn-primary">List of Vendors</a>
-
-
     <br>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add an Equipment</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Maintenance Issue</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="content">
                         <div class="content">
                             <form action="" method="POST">
-                                <br> <label for="equipment_type">Equipment Type:</label><br>
-                                <input type="text" name="equipment_type" id="equipment_type" size="50"><br><br>
-                                <label for="description">Description:</label><br>
-                                <input type="text" name="description" id="description" size="50"><br><br>
-                                <label for="department">Department:</label><br>
-                                <input type="text" name="department" id="department" size="50"><br><br>
-                                <label for="is_owned">Is Owned:</label>
-                                <input type="checkbox" id="is_owned" name="is_owned" value="on"><br><br>
-                                <label for="is_leased">Is Leased:</label>
-                                <input type="checkbox" id="is_leased" name="is_leased" value="on"><br>
+                                <br> <label for="equipment_type">Type of Maintenance Problem: </label><br>
+                                <input type="text" name="type_of_problem" id="type_of_problem" size="50"><br><br>
+                                <label for="description">Description of Problem: </label><br>
+                                <input type="text" name="description_of_problem" id="description_of_problem" size="50"><br><br>
+                                <label for="is_owned">Resolved?: </label>
+                                <input type="checkbox" id="is_resolved" name="is_resolved" value="on"><br><br>
+                                <label for="is_leased">Resolution for Problem:</label>
+                                <input type="text" id="description_of_resoltion" name="description_of_resoltion" value=""><br>
                                 <br/>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -84,41 +79,36 @@
             </div>
         </div>
     </div>
-    <div div class="mt-5">
+    < < <div div class="mt-5">
         <table class="table center" id="equipment-table">
             <thead>
                 <tr>
-                    <th>Equipment ID</th>
-                    <th>Equipment Type</th>
-                    <th>Equipment Description</th>
-                    <th>Department of Equipment</th>
-                    <th>Owned/Leased</th>
-                    <th>Maintenance History</th>
+                    <th>Maintenance ID: </th>
+                    <th>Type of Problem: </th>
+                    <th>Description of Problem: </th>
+                    <th>Resolved?</th>
+                    <th>Resolution for Problem: </th>
                 </tr>
             </thead>
             <tbody>
-                {% for equipment in equipments %}
+                {% for maintenance_history in maintenance_histories %}
                 <tr>
-                    <td>{{ equipment.id }}</td>
-                    <td>{{ equipment.type }}</td>
-                    <td>{{ equipment.description }}</td>
-                    <td>{{ equipment.department }}</td>
-                    {% if equipment.is_owned%}
-                    <td> <a href="/owned/{{ equipment.id }}" class="btn btn-primary">Owned</a></td> {% else %}
-                    <td><a href="/leased/{{ equipment.id }}" class="btn btn-primary">Leased</a></td>
+                    <td>{{ maintenance_history.id }}</td>
+                    <td>{{ maintenance_history.type_of_problem }}</td>
+                    <td>{{ maintenance_history.description_of_problem }}</td>
+                    {% if maintenance_history.is_resolved%}
+                    <td>Resovled</td>
+                    {% else %}
+                    <td> Not Resolved</td>
                     {% endif%}
-                    <td>
-                        <!-- Button href to /maintenance_history/<id> -->
-                        <a href="/maintenance_history/{{ equipment.id }}" class="btn btn-primary">Maintenance History</a>
-
-                    </td>
+                    <td>{{ maintenance_history.description_of_resoltion}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
+        </div>
 
-    <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
 </body>
 
 </html>

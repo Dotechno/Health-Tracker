@@ -38,9 +38,10 @@ class Equipment(db.Model):
 
 class Vendors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(200), nullable=False)
-    date_purchased = db.Column(db.DateTime, nullable=False)
-    warranty_information = db.Column(db.String(200), nullable=False)
+    type_of_equipment_provided = db.Column(db.String(200), nullable=False)
+    is_preferred_vendor = db.Column(db.Boolean, nullable=False)
     equipment_id = db.Column(db.Integer, db.ForeignKey(
         'equipment.id'), nullable=False)
 
