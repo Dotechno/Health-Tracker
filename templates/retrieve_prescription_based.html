@@ -2,7 +2,7 @@
 <html>
     {% block head %}
    
-    <title>Prescription details</title>
+    <title>Prescription detailssss</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link href="../static/css/createprescription.css" rel="stylesheet">
@@ -27,12 +27,19 @@
             //alert("Please Fill In ID or patient name and medication name");
             return true;
           }
-          else if(((a ==null || a == "")) && ((b != null || b != "") && (c != null || c != "")))
+          else if(((a ==null || a == "")) && ((b != null || b != "") && (c == null || c == "")))
           {
-            return True;
+            alert("Please fill medication name")
+            return False;
           }
-          else {
-            alert("Please Fill In ID or patient name and medication name");
+          else if(((a ==null || a == "")) && ((b == null || b == "") && (c != null || c != "")))
+          {
+            alert("Please fill patient name")
+            return False;
+          }
+          else if(((a ==null || a == "")) && ((b == null || b == "") && (c == null || c == "")))
+          {
+            alert("Please fill the details")
             return False;
           }
         }
@@ -56,7 +63,11 @@
         <br>
          Enter Patient Name <input type="text" name="patient_name" id="patient_name">
          Enter Prescribed Medication <input type="text" name="prescribed_medication" id="prescribed_medication">
+         <br>
+         <br>
            <button type="submit" href="/" onclick="myFunction()">Submit</button>
+           <button type="reset" href="/" onclick="">Clear</button>
+
 
         </form>
 
@@ -78,6 +89,8 @@
                 <th>Frequency</th>
                 <th>Filled By</th>
                 <th>Date Created</th>
+                <th>Pharmacist Name</th>
+
             </tr>
         </thead>
             {% for task in tasks %}
@@ -91,6 +104,7 @@
                 <td>{{ task.frequency }}</td>
                 <td>{{ task.filled_by }}</td>
                 <td>{{ task.date_filled }}</td>
+                <td>{{task.pharmacist_name}}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -98,7 +112,7 @@
         {% endif %}
         </div>
 {% endblock %}
-<a href="retrieve_prescription">Click here to generate report   </a>
+<a href="generate_report">Click here to generate report   </a>
 
 </div>
 

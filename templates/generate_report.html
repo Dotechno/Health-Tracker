@@ -3,45 +3,40 @@
     {% block head %}
    
     <title>Prescription details</title>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
+  
+     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"> </script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
-    
+
+
+    <link rel="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="https://cdn.datatables.net/searchbuilder/1.4.2/css/searchBuilder.dataTables.min.css">
+    <link rel="https://cdn.datatables.net/datetime/1.4.0/css/dataTables.dateTime.min.css"> 
+
+    <!--for condition-->
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--for buttons-->
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.4.2/css/searchBuilder.dataTables.min.css">
 
-    <script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
-    <link href="https://cdn.datatables.net/datetime/1.4.0/css/dataTables.dateTime.min.css">
+    <link rel="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
 
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-    <link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" rel="stylesheet">
-
-    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/searchbuilder/1.4.2/css/searchBuilder.dataTables.min.css">
-    <link href="https://cdn.datatables.net/datetime/1.4.0/css/dataTables.dateTime.min.css">
-
-<!-- 
-    <script>
-        $(document).ready(function() {
-    $('#example').DataTable( {
-        dom: 'QlfBrtip',buttons: [
-            'pdfHtml5'
-        ]
-    });
-     });
-    </script> -->
+    <!--for date-->
 
 
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+
+
+
+
+   <script>
 
     var minDate, maxDate;
      
@@ -50,7 +45,7 @@
          function( settings, data, dataIndex ) {
              var min = minDate.val();
              var max = maxDate.val();
-             var date = new Date( data[7] );
+             var date = new Date( data[7] ,"YYYY-MM-DD");
       
              if (
                  ( min === null && max === null ) ||
@@ -76,48 +71,43 @@
          // DataTables initialisation
          var table = $('#example').DataTable(
             {
-                dom:'QlfBrtip' ,buttons: [
-                                    'pdfHtml5'
-            ]
+             dom:'Qlfrtip' ,buttons: [
+                'pdfHtml5'
+           ]
             
             }
          );
       
          // Refilter the table
-         $('#min, #max').on('change', function () {
-             table.draw();
-         });
+        //  $('#min, #max').on('change', function () {
+        //      table.draw();
+        //  });
      });
            
         </script>
+       
+       Minimum date:
+       <input type="date" id="min" name="min">
+   
+   Maximum date:
+       <input type="date" id="max" name="max">
     {% endblock %}
 
 
     {% block body %}
+   
     <div class="container">
 
         <h1 style="text-align: center"> Prescription Details</h1>
-        
-        
+        </div>
+        </html>
         {% if tasks|length < 1 %}
         
         <h4 style="text-align: center">There are no tasks. Create one below!</h4>
         
         {% else %}
-        <table>
-            <thead>
-        <tr>
-            <td>Start date:</td>
-            <td><input type="text" id="min" name="min"></td>
-            <td>End date:</td>
-            <td><input type="text" id="max" name="max"></td>
-        </tr>
-    </thead>
-        </table>
-        <!-- <table  class="display nowrap" style="width:100%">
-            <tbody>
+        <div id ="table=container">
         
-        </tbody></table>  -->
         <table id="example" class="display nowrap" style="width:100%">
             
             <thead>

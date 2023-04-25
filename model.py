@@ -157,9 +157,11 @@ class Prescription(db.Model):  # Shweta
     physician_name = db.Column(db.String(200), nullable=False)
     medication = db.Column(db.String(200), nullable=False)
     dosage = db.Column(db.Text, nullable=True)
-    frequency = db.Column(db.String(200), nullable=True)
-    filled_by = db.Column(db.String(200), nullable=True)
+    frequency = db.Column(db.String(200), nullable=False)
+    filled_by = db.Column(db.String(200), nullable=False)
     date_filled = db.Column(Date, default=date.today)
+    pharmacist_name = db.Column(db.String(200), nullable=False)
+
     #medical_encounter_id = db.Column(
      #   db.Integer, db.ForeignKey(MedicalEncounter.id))
 
