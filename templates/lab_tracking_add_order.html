@@ -14,20 +14,48 @@
     <form action= '/lab_tracking_add_order/' method="POST"> 
         <h1>Add Order</h1>
         
-        <label for="ptname" id="ptnameLabel">Patient name:</label>
+        <label for="ptname" id="ptnameLabel">Patient Name:</label>
         <input type="text" name="ptname" id="ptname"><br>
+        <label for="lab-test-select">Lab Test</label>
+        <select class="form-control" id="lab-test-select" name="lab_test">
+        {% if lab_test %}
+            {% for test in lab_test %}
+                <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
+            {% endfor %}
+        {% else %}
+            <option>No lab tests found.</option>
+        {% endif %}
+        </select>
+        <!--<label for="testname" id="testnameLabel">Lab Test Type:</label>
+        <input type="text" name="testname" id="testname">--><br>
         <label for="phname" id="phnameLabel">Physician Name:</label>
         <input type="text" name="phname" id="phname"><br>
         <label for="lbtech" id="lbtechLabel">Lab test Technician:</label>
         <input type="text" name="lbtech" id="lbtech"><br>
         <label for="lbresult" id="lbresultLabel">Lab test result:</label>
         <input type="text" name="lbresult" id="lbresult"><br>
+        <label for="lbodate" id="lbodateLabel">Lab order date:</label>
+        <input type="date" name="lbodate" id="lbodate">
+        <label for="lbotime" id="lbotimeLabel">Lab order time:</label>
+        <input type="time" step="1" name="lbotime" id="lbotime"><br>
         <label for="lbdate" id="lbdateLabel">Lab test date:</label>
         <input type="date" name="lbdate" id="lbdate">
         <label for="lbtime" id="lbtimeLabel">Lab test time:</label>
         <input type="time" step="1" name="lbtime" id="lbtime"><br>
+
         <input type="submit" value="Add Lab Order Data">
     </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    
 </div>
 
 

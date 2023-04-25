@@ -44,7 +44,9 @@ class LabOrder(db.Model):
     lab_test_date = db.Column(db.DateTime, nullable=False)
     lab_test_technician = db.Column(db.String(200), nullable=False)
     lab_test_result = db.Column(db.String(200), nullable=False)
-    #test_id = db.Column(db.Integer, db.ForeignKey('lab_test.id'))
+    test_name = db.Column(db.String(200), nullable=False)
+    lab_order_date = db.Column(db.DateTime, nullable=False)
+    #test = db.Column(db.Integer, db.ForeignKey('lab_test.id'))
 
     def __repr__(self):
         return '<LabOrder %r>' % self.id
