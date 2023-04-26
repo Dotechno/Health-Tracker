@@ -199,8 +199,8 @@ def lab_tracking():
         # elif sort == 'physician_name':
         #     orders = LabOrder.query.order_by(
         #         func.lower(LabOrder.physician_name)).all()
-        # else:
-        #orders = LabOrder.query.order_by(LabOrder.id).all()
+    else:
+        orders = LabOrder.query.order_by(LabOrder.id).all()
     #lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
     return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
