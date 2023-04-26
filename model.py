@@ -117,16 +117,15 @@ class Physician(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
-class Insurance(db.Model):
+class ServiceProvidedByClinic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    status = db.Column(db.String(200), nullable=False)
+    service_description = db.Column(db.String(200), nullable=False)
+    cost_for_service = db.Column(db.Float, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    invoice = db.relationship('Invoice', backref='insurance')
-
-    def __repr__(self):
-        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
+    due_date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    invoice_line_item = db.relationship(
+        'InvoiceLineItem', backref='service_provided_by_clinic')
 
 
 class Invoice(db.Model):
@@ -138,6 +137,37 @@ class Invoice(db.Model):
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow())
     status = db.Column(db.String(20), nullable=False, default='unpaid')
 
+
+class InvoiceLineItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_id = db.Column(db.Integer, db.ForeignKey(
+        'invoice.id'), nullable=False)
+    service_id = db.Column(db.Integer, db.ForeignKey(
+        'service_provided_by_clinic.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(30), nullable=False)
+    due_date = db.Column(db.Date, nullable=False)
+    number_date = db.Column(db.Integer, nullable=False)
+    date_paid = db.Column(db.String(30), nullable=False)
+
+
+class InsuranceStatus(Enum):
+    on_time = 'Pays on time'
+    late = 'Late in payments'
+    diffcult = 'Difficult to get payments'
+
+
+class Insurance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    invoice = db.relationship('Invoice', backref='insurance')
+
+    def __repr__(self):
+        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
 
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
