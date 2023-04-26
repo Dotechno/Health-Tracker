@@ -63,12 +63,34 @@ def register():
             flash('Username already exists!', 'danger')
             return redirect(url_for('register'))
 
-        # create physician class if user is physician
-        if user.roles == 'physician':
-            user
-            physician = Physician(physician_name=username)
-            db.session.add(physician)
-            db.session.commit()
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account created for {username}!', 'success')
+        return redirect(url_for('login'))
+
+
+@app.route('/register_physician', methods=['GET', 'POST'])
+def register_physician():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'GET':
+        form = RegistrationForm()
+        return render_template('register_physician.html', title='Register', form=form)
+
+    # if post request
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        roles = request.form.get('roles')
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
+        user = User(username=username, password=hashed_password, roles=roles)
+
+        # check for duplicate username
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists!', 'danger')
+            return redirect(url_for('register_physician'))
 
         db.session.add(user)
         db.session.commit()
