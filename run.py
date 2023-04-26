@@ -447,6 +447,19 @@ def physician_scheduler():
         this_week = appointment.helper.get_subarray(
             two_month_appointments, current_week_index, 7)
         return render_template("appointments_scheduler.html", data=this_week)
+    
+@app.route("/physician-appointments", methods=["GET", "POST"])
+def physician_appointments():
+    global two_month_appointments, current_physician_id
+    # get physican id from current_user.username
+    physician_id = request.form.get('physician_id')
+    physician_selected = find_physician_by_id(physician_id)
+    physician_appointments = find_appointments_by_physician_id(physician_id)
+    two_month_appointments = appointment.set_up(physician_selected.work_time_start,
+            physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+    this_week = appointment.helper.get_subarray(
+        two_month_appointments, current_week_index, 7)
+    return render_template("appointments_scheduler.html", data=this_week)
 
 
 @app.route("/slot_clicked", methods=["POST"])
@@ -486,16 +499,15 @@ def select_all():
 @app.route("/select_week", methods=["POST"])
 def select_week():
     global current_week_index
-    this_week = appointment.helper.get_subarray(
-        two_month_appointments, current_week_index, 7)
+    print(f"current_week_index: {current_week_index}")
+    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
     appointment.helper.select_all_week(this_week)
     return refresh_scheduler_page(current_week_index)
 
 
 def refresh_scheduler_page(current_week_index):
     global appointment_type_selected
-    this_week = appointment.helper.get_subarray(
-        two_month_appointments, current_week_index, 7)
+    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
     return render_template("appointments_scheduler.html", data=this_week, appointment_type=appointment_type_selected)
 
 

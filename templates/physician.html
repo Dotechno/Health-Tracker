@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "dashboard.html" %}
+{% block main_content %}
+<div class="project-boxes jsGridView">
 	<title>Physicians</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
@@ -21,8 +21,8 @@
 
 	<style>
 		.dataTables_wrapper {
-		margin-left: 50px;
-		margin-right: 50px;
+			margin-left: 10px;
+			margin-right: 10px;
 		}
 
 		#add-new {
@@ -31,33 +31,30 @@
 		}
 
 		.custom-modal-width {
-		max-width: 650px; /* Set the maximum width of the modal */
-		width: 100%; /* Make sure the modal fills its parent container */
+			max-width: 650px; /* Set the maximum width of the modal */
+			width: 100%; /* Make sure the modal fills its parent container */
 		}
 
 		#work_days {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 
 		.day-checkbox {
-		display: inline-block;
-		margin-right: 5px;
-		margin-bottom: 5px;
+			display: inline-block;
+			margin-right: 5px;
+			margin-bottom: 5px;
 		}
 	</style>
-</head>
-
-<body>
 
 	<div div class="mt-5">
 		<div class="row">
 			<div class="col-10">
 			</div>
 			<div class="col-2 text-end">
-			  <button id="add-new" class="btn btn-primary mr-3" onclick="openNewPatientModal()">＋ New Physician</button>
-			</div>
+				<button id="add-new" class="btn btn-primary" onclick="openNewPatientModal()" style="width: 100px; font-size: 14px; white-space: nowrap; text-align: center;">＋Physician</button>
+			</div>							
 		</div>
 		  
 		  
@@ -84,7 +81,7 @@
 					<td>{{ datetime.strptime(physician.work_time_start, '%H:%M:%S').strftime('%I:%M %p') }}</td>
 					<td>{{ datetime.strptime(physician.work_time_end, '%H:%M:%S').strftime('%I:%M %p') }}</td>
 					<td>
-						<form action="/physician-scheduler" method="POST">
+						<form action="/physician-appointments" method="POST">
 							<input type="hidden" name="physician_id" value="{{ physician.id  }}">
 							<button type="submit" class="btn btn-primary">Schedule</button>
 						</form>		
@@ -329,8 +326,8 @@
 	
 		// Check if there is at least one day of the week selected
 		if (!values.daysOfWeek || values.daysOfWeek.length === 0) {
-		values['daysOfWeek'] = 'Error: please select at least one day of the week';
-		return false;
+			values['daysOfWeek'] = 'Error: please select at least one day of the week';
+			return false;
 		}
 
 		return true;
@@ -404,10 +401,9 @@
 			contentType: "application/json",
 			data: JSON.stringify(getFormValues()),
 			success: function(response) {
-			closeNewPatientModal();
-			console.log(response);
-			//window.location.href = "/physician";
-			window.location.href = "/";
+				closeNewPatientModal();
+				console.log(response);
+				window.location.href = "/physician";
 			}
 		});
 		}
@@ -430,23 +426,20 @@
 		const workTimeEnd = workTimeEndSelect.value;
 		const workDays = [];
 		workDaysCheckboxes.forEach(checkbox => {
-		if (checkbox.checked) {
-			workDays.push(checkbox.value);
-		}
+			if (checkbox.checked) {
+				workDays.push(checkbox.value);
+			}
 		});
 		
 		// Return values as an object
 		return {
-		physicianName: physicianName,
-		cellPhoneNumber: cellPhoneNumber,
-		workTimeStart: workTimeStart,
-		workTimeEnd: workTimeEnd,
-		workDays: workDays
+			physicianName: physicianName,
+			cellPhoneNumber: cellPhoneNumber,
+			workTimeStart: workTimeStart,
+			workTimeEnd: workTimeEnd,
+			workDays: workDays
 		};
 	}
-
-  
 	</script>
-</body>
-
-</html>
+	</div>
+{% endblock %}

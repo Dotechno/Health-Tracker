@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "dashboard.html" %}
+{% block main_content %}
+<div class="project-boxes jsGridView">
 	<title>Appointment Scheduler</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	
@@ -12,7 +12,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding-top: 100px;
 	}
 
 	.toast {
@@ -24,8 +23,6 @@
 		margin-top: 10px;
 	}
 	</style>
-</head>
-<body>
 
 	<div id="appointment-table" class="table-container">
 		<div class="container mt-4 mb-4">
@@ -262,6 +259,5 @@
 		}
 
 	</script>
-</body>
-
-</html>
+</div>
+{% endblock %}
