@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Patient Information</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+	<link rel="stylesheet" href="../static/css/patient.css">
+	
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+	<script src="../static/javascript/patient.js"></script>
+</head>
+
+<body>
+
+	<div div class="mt-5">
+		<table class="table center" id="patient-table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Telephone Number</th>
+					<th>Address</th>
+					<th>Insurance</th>
+					<th>Date of Birth</th>
+					<th>Gender</th>
+					<th>Primary Care Physician</th>
+					<th>Current Medications</th>
+					<th>Scheduled Appointments</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for patients in patients %}
+    			<tr>
+        			<td>{{ patients.id }}</td>
+        			<td>{{ patients.name }}</td>
+        			<td>{{ patients.telephone }}</td>
+        			<td>{{ patients.address }}</td>
+        			<td>{{ patients.insurance }}</td>
+        			<td>{{ patients.date_of_birth }}</td>
+        			<td>{{ patients.gender }}</td>
+        			<td>{{ patients.primary_physician }}</td>
+        			<td>{{ patients.current_medication }}</td>
+        			<td>{{ patients.current_appointments }}</td>
+        			<td>
+            			<button type="button" class="btn btn-primary" onclick="openConfirmModal()">{{patients.maintenance}}</button>
+        			</td>
+    			</tr>
+				{% endfor %}
+				
+			</tbody>
+		</table>
+	</div>
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+				<div div class="mt-5">
+					<table class="table center" id="patient-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+					            <th>Name</th>
+					            <th>Telephone Number</th>
+					            <th>Address</th>
+					            <th>Insurance</th>
+					            <th>Date of Birth</th>
+					            <th>Gender</th>
+                                <th>Primary Care Physician</th>
+                                <th>Current Medications</th>
+                                <th>Scheduled Appointments</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for patients in patients %}
+    						<tr>
+        						<td>{{ patients.id }}</td>
+        						<td>{{ patients.name }}</td>
+        						<td>{{ patients.telephone }}</td>
+        						<td>{{ patients.address }}</td>
+        						<td>{{ patients.insurance }}</td>
+        						<td>{{ patients.date_of_birth }}</td>
+        						<td>{{ patients.gender }}</td>
+        						<td>{{ patients.primary_physician }}</td>
+        						<td>{{ patients.current_medication }}</td>
+        						<td>{{ patients.current_appointments }}</td>
+        						<td>
+            						<button type="button" class="btn btn-primary" onclick="openConfirmModal()">{{patients.maintenance}}</button>
+        						</td>
+    						</tr>
+							{% endfor %}
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			  <button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+
+</body>
+
+</html>

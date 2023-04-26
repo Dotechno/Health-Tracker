@@ -7,9 +7,8 @@ from sqlalchemy import func
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from forms import RegistrationForm, LoginForm
-from datetime import datetime, timedelta
-
+from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
+from datetime import datetime
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
@@ -29,7 +28,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, LabOrder, LabTest, Prescription, Medication
+    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance
 
 
 # Routes
@@ -37,7 +36,6 @@ if not 'models' in sys.modules:
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    # if logged in
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     return render_template('index.html')
@@ -118,6 +116,75 @@ def admin():
         return redirect(url_for('index'))
     users = User.query.order_by(User.username).all()
     return render_template('admin.html', users=users)
+
+#################### Jordan Start Here ####################
+
+
+@app.route('/create_patient', methods=['GET', 'POST'])
+def create_patient():
+    form = PatientForm()
+    if request.method == 'POST':
+        name = form.name.data
+        telephone = form.telephone.data
+        address = form.address.data
+        date_of_birth = form.date_of_birth.data
+        gender = form.gender.data
+        # push to db without validation
+        patient = Patient(name=name, telephone=telephone,
+                          address=address, date_of_birth=date_of_birth, gender=gender)
+        db.session.add(patient)
+        db.session.commit()
+
+        return redirect(url_for('patient'))
+
+    return render_template('patient_create_patient.html', form=form)
+
+
+@app.route('/patient', methods=['GET', 'POST'])
+def patient():
+
+    patients = Patient.query.order_by(Patient.id).all()
+    return render_template('patient.html', patients=patients)
+
+
+@app.route('/create_medical_encounter', methods=['GET', 'POST'])
+def create_medical_encounter():
+    form = MedicalEncounterForm()
+    form.patient_id.choices = [(patient.id, patient.name)
+                               for patient in Patient.query.all()]
+    # form choices for practicioner_id and name
+    print(form.patient_id.choices)
+    if request.method == 'POST':
+        encounter_date = form.encounter_date.data
+        practitioner_type = form.practitioner_type.data
+        complaint = form.complaint.data
+        diagnosis = form.diagnosis.data
+        treatment = form.treatment.data
+        referral = form.referral.data
+        recommended_followup = form.recommended_followup.data
+        notes = form.notes.data
+        submission_date = form.submission_date.data
+        patient_id = form.patient_id.data
+        patient = Patient.query.get(patient_id)
+        patient_name = patient.name
+
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
+                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+        db.session.add(medical_encounter)
+        db.session.commit()
+
+        return redirect(url_for('medical_encounter'))
+
+    return render_template('patient_create_medical_encounter.html', form=form)
+
+
+@app.route('/medical_encounter', methods=['GET', 'POST'])
+def medical_encounter():
+    medical_encounters = MedicalEncounter.query.order_by(
+        MedicalEncounter.encounter_date).all()
+    return render_template('patient_medical_encounter.html', mes=medical_encounters)
+
+#################### Jordan End Here ####################
 
 
 ################ Shane Start Here #########################

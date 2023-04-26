@@ -1,66 +1,12 @@
-# from __main__ import app
-# from datetime import datetime
-
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_bcrypt import Bcrypt
-# from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
-# db = SQLAlchemy(app)
-
-
-# class User(db.Model, UserMixin):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(200), nullable=False)
-#     password = db.Column(db.String(200), nullable=False)
-#     roles = db.Column(db.String(200), nullable=False)
-
-#     def __repr__(self):
-#         return '<User %r>' % self.id
-
-#     def is_active(self):
-#         return True
-
-#  # Model for  creating prescription of Pharmacy Order Tracking Module
-# class Prescription(db.Model):
-#     __bind_key__ ='prescription'
-#     id = db.Column(db.Integer, primary_key=True)
-#     physician_name = db.Column(db.String(200), nullable=False)
-#     medication = db.Column(db.String(200), nullable=False)
-#     dosage=db.Column(db.Text, nullable=True)
-#     frequency=db.Column(db.String(200), nullable=True)
-#     filled_by=db.Column(db.String(200),nullable=True)
-#     date_filled=db.Column(db.DateTime, default=datetime.utcnow)
-
-#     def __repr__(self):
-#         return '<User %r>' % self.id
-
-#     def is_active(self):
-#         return True
-# # Model for Adding Medication  Details
-# class Medication(db.Model):
-#     __bind_key__ ='medication'
-#     id = db.Column(db.Integer, primary_key=True)
-#     medication = db.Column(db.String(200), nullable=False)
-#     description=db.Column(db.String(500),nullable=False)
-#     dosage=db.Column(db.Text, nullable=True)
-#     frequency=db.Column(db.String(200), nullable=True)
-#     side_effects=db.Column(db.String(200),nullable=True)
-#     interactions=db.Column(db.String(200),nullable=True)
-
-#     def __repr__(self):
-#         return '<User %r>' % self.id
-
-#     def is_active(self):
-#         return True
-
 from __main__ import app
+
 from datetime import date
 from sqlalchemy import Column, Date
-
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from enum import Enum
 
 # import enum
 from enum import Enum
@@ -88,9 +34,9 @@ class Patient(db.Model):
     __bind_key__ = 'patient'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    telephone_num = db.Column(db.String(200), nullable=False)
+    telephone = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(200), nullable=False)
-    date_of_birth = db.Column(db.String(200), nullable=False)
+    date_of_birth = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(200), nullable=False)
 
 
@@ -106,29 +52,19 @@ class Prescription(db.Model):  # Shweta
     filled_by = db.Column(db.String(200), nullable=False)
     date_filled = db.Column(Date, default=date.today)
     pharmacist_name = db.Column(db.String(200), nullable=False)
+    medical_encounter = db.relationship('MedicalEncounter', backref='patient')
+    primary_physician = db.relationship('Physician', backref='patient')
+    insurance = db.relationship('Insurance', backref='patient')
+    current_medication = db.relationship('Medication', backref='patient')
+    current_appointments = db.relationship('Appointment', backref='patient')
 
-    def __repr__(self):
-        return '<User %r>' % self.id
 
-    def is_active(self):
-        return True
-
-
-class Medication(db.Model):  # Shweta
-    __bind_key__ = 'medication'
+class Prescription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    medication = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.String(500), nullable=False)
-    dosage = db.Column(db.Text, nullable=True)
-    frequency = db.Column(db.String(200), nullable=True)
-    side_effects = db.Column(db.String(200), nullable=True)
-    interactions = db.Column(db.String(200), nullable=True)
-
-    def __repr__(self):
-        return '<User %r>' % self.id
-
-    def is_active(self):
-        return True
+    name = db.Column(db.String(200), nullable=False)
+    medical_encounter_id = db.Column(
+        db.Integer, db.ForeignKey('medical_encounter.id'))
+    date = db.Column(db.Date, nullable=False)
 
 
 class LabTest(db.Model):
@@ -155,3 +91,76 @@ class LabOrder(db.Model):
 
     def __repr__(self):
         return '<LabOrder %r>' % self.id
+
+
+class MedicalEncounter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    encounter_date = db.Column(db.Date, nullable=False)
+    # practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
+    practitioner_type = db.Column(db.String(200), nullable=False)
+    complaint = db.Column(db.String(200), nullable=False)
+    diagnosis = db.Column(db.String(200), nullable=False)
+    treatment = db.Column(db.String(200), nullable=False)
+    referral = db.Column(db.String(200), nullable=False)
+    recommended_followup = db.Column(db.String(200), nullable=False)
+    notes = db.Column(db.String(200), nullable=False)
+    submission_date = db.Column(db.Date, nullable=False)
+    lab_order = db.relationship('LabOrder', backref='medical_encounter')
+    vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
+    prescription = db.relationship('Prescription', backref='medical_encounter')
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+class Physician(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    appointment = db.relationship('Appointment', backref='appointment')
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+class Insurance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    invoice = db.relationship('Invoice', backref='insurance')
+
+    def __repr__(self):
+        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
+
+
+class Invoice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_name = db.Column(db.String(120), nullable=False)
+    insurance_carrier_id = db.Column(
+        db.Integer, db.ForeignKey('insurance.id'), nullable=False)
+    total_cost = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=datetime.utcnow())
+    status = db.Column(db.String(20), nullable=False, default='unpaid')
+
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+class VitalSign(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body_temperature = db.Column(db.String(200), nullable=False)
+    pulse_rate = db.Column(db.String(200), nullable=False)
+    respiratory_rate = db.Column(db.String(200), nullable=False)
+    blood_pressure = db.Column(db.String(200), nullable=False)
+    encounter_id = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+
+
+class Medication(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    dosage = db.Column(db.String(200), nullable=False)
+    frequency = db.Column(db.String(200), nullable=False)
+    duration = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
