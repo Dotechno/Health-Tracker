@@ -337,17 +337,33 @@
             <tr>
                 <td>{{ order.patient_name }}</td>
                 <td>{{ order.test_name }}</td>
-                <td>{{ order.lab_test_result }}</td>
+                {% set normal_range_defined = false %} <!--Bool for if it doesn't work-->
+                {% for test in lab_test %} <!-- looks through all labTests to match name-->
+                    <!-- {% print(lab_test.lab_test_name) %} -->
+                    {% if order.test_name == test.lab_test_name %}
+                        {% set normal_range_defined = true %}  <!-- this means it worked -->
+                        {% set low_normal = test.low_normal_results %}
+                        {% set high_normal = test.high_normal_results %}
+                        {% if (order.lab_test_result < low_normal or order.lab_test_result > high_normal) and low_normal.isdigit() %} <!-- if  lab type is integer-->
+                            <td style="color:red;">{{ order.lab_test_result }}</td>
+                        {% elif (high_normal == "" )and (order.lab_test_result != low_normal) %} <!-- if lab type is pos/neg-->
+                            <td style="color:red;">{{ order.lab_test_result }}</td>
+                        {% else %} <!-- idk what would cause this but maybe delete later-->
+                            <td>{{ order.lab_test_result }}</td>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if not normal_range_defined %} <!-- if doesn't work -->
+                    <!-- <td>{{ order.lab_test_result }}</td> -->
+                {% endif %}
                 <td>{{ order.lab_order_date.strftime("%Y-%m-%d") }}</td>
                 <td>{{ order.lab_test_date.strftime("%Y-%m-%d") }}</td>
-                <!-- <td>{{ order.lab_test_date }}</td> -->
                 <td>{{ order.physician_name }}</td>
-                <!--<td>{{ order.lab_test_technician }}</td>-->
-                <!-- <td> -->
-                <!-- <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a> -->
-                <!-- </td> -->
             </tr>
-            {% endfor %}
+        {% endfor %}
+        
+        
+        
         </tbody>
     </table>
 
