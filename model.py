@@ -52,6 +52,9 @@ class InvoiceLineItem(db.Model):
     date = db.Column(db.Date, nullable=False)
     cost = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(30), nullable=False)
+    due_date = db.Column(db.Date, nullable=False)
+    number_date = db.Column(db.Integer, nullable=False)
+    date_paid = db.Column(db.String(30), nullable=False)
 
 
 class InsuranceStatus(Enum):

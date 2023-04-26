@@ -229,7 +229,10 @@
                 <h2>Status</h2>
               </td>
               <td class="Days left">
-                <h2>Days Left</h2>
+                <h2>Amount of Days</h2>
+              </td>
+              <td class="date paid">
+                <h2>Date Paid</h2>
               </td>
 
             </tr>
@@ -239,10 +242,10 @@
                 <p class="itemtext">{{ item.service_provided_by_clinic.service_description }}</p>
               </td>
               <td class="tableitem">
-                <p class="itemtext">{{ item.date }}</p>
+                <p class="itemtext">{{ item.date}}</p>
               </td>
               <td class="tableitem">
-                <p class="itemtext">{{ item.date + delta30days }}</p>
+                <p class="itemtext">{{ item.due_date}}</p>
               </td>
               <td class="tableitem">
                 <p class="itemtext">{{ item.cost }}</p>
@@ -252,13 +255,19 @@
               </td>
 
               <td class="tableitem">
-                <p class="itemtext">{{ issued_date }}</p>
+                <p class="itemtext">{{ item.number_date }}</p>
+              </td>
+              <td class="tableitem">
+                <p class="itemtext">{{ item.date_paid }}</p>
               </td>
             </tr>
             {% endfor %}
 
 
             <tr class="tabletitle">
+              <td></td>
+              <td></td>
+              <td></td>
               <td></td>
               <td></td>
               <td class="Rate">
@@ -289,36 +298,6 @@
       </div><!--End InvoiceBot-->
     </div><!--End Invoice-->
   </div><!-- End Invoice Holder-->
-  <h1>Invoice {{ invoice.id }}</h1>
-  <p>Patient: {{ invoice.patient_name }}</p>
-  <p>Insurance Carrier: {{ invoice.insurance.name }}</p>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Cost</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.date }}</td>
-        <td>{{ item.service_provided_by_clinic.service_description }}</td>
-        <td>{{ item.cost }}</td>
-        <td>{{ item.status }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="2">Total</td>
-        <td>{{ invoice.total_cost }}</td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
 </body>
 
 </html>

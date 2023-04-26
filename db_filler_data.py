@@ -95,13 +95,12 @@ with app.app_context():
     medical_encounter = MedicalEncounter(
         encounter='Fever', patient_id=1, date=datetime.now())
     lab_order = LabOrder(
-        name='Blood Test', medical_encounter_id=1, date=datetime.now())
+        name='Blood Test', medical_encounter_id=1, date=datetime.now() - timedelta(days=30))
     prescription = Prescription(
         name='Tylenol', medical_encounter_id=1, date=datetime.now())
     physician = Physician(name='Dr. Smith', patient_id=1)
     appointment = Appointment(name='Dr. Smith', physician_id=1)
-    service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date=datetime.now(
-    ), due_date=datetime.now() + timedelta(days=30), patient_id=1)
+    service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date= lab_order.date, due_date=lab_order.date - timedelta(days=30), patient_id=1)
     service1 = ServiceProvidedByClinic(service_description='X-Rays', cost_for_service=200.00, date=datetime.now(), due_date=datetime.now(
     ) + timedelta(days=30), patient_id=1)
     
@@ -113,8 +112,12 @@ with app.app_context():
     db.session.add(prescription)
     db.session.add(physician)
     db.session.add(appointment)
+    db.session.add(carrier)
+
+
+
     db.session.add(service)
     db.session.add(service1)
-    db.session.add(carrier)
+
 
     db.session.commit()
