@@ -81,71 +81,72 @@ def login():
             return render_template('login.html', form=form, title='Login', login_error=True)
 
 
-@app.route('/create_patient', methods=['GET','POST'])
+@app.route('/create_patient', methods=['GET', 'POST'])
 def create_patient():
     form = PatientForm()
     if request.method == 'POST':
-        name=form.name.data
-        telephone=form.telephone.data
-        address=form.address.data
-        date_of_birth=form.date_of_birth.data
-        gender=form.gender.data
+        name = form.name.data
+        telephone = form.telephone.data
+        address = form.address.data
+        date_of_birth = form.date_of_birth.data
+        gender = form.gender.data
         # push to db without validation
-        patient = Patient(name=name, telephone=telephone, address=address, date_of_birth=date_of_birth, gender=gender)
+        patient = Patient(name=name, telephone=telephone,
+                          address=address, date_of_birth=date_of_birth, gender=gender)
         db.session.add(patient)
         db.session.commit()
-        
-        return "Patient Added"
+
+        return redirect(url_for('patient'))
 
     return render_template('create_patient.html', form=form)
 
 
-
-
-@app.route('/patient', methods=['GET','POST'])
-
+@app.route('/patient', methods=['GET', 'POST'])
 def patient():
     patients = Patient.query.order_by(Patient.id).all()
     return render_template('patient.html', patients=patients)
 
-  
-@app.route('/create_medical_encounter', methods=['GET','POST'])
+
+@app.route('/create_medical_encounter', methods=['GET', 'POST'])
 def create_medical_encounter():
     form = MedicalEncounterForm()
-    form.patient_id.choices = [(patient.id, patient.name) for patient in Patient.query.all()]
+    form.patient_id.choices = [(patient.id, patient.name)
+                               for patient in Patient.query.all()]
     # form choices for practicioner_id and name
 
-    print (form.patient_id.choices)
+    print(form.patient_id.choices)
     if request.method == 'POST':
-        encounter_date=form.encounter_date.data
-        practitioner_type=form.practitioner_type.data
-        complaint=form.complaint.data
-        diagnosis=form.diagnosis.data
-        treatment=form.treatment.data
-        referral=form.referral.data
-        recommended_followup=form.recommended_followup.data
-        notes=form.notes.data
-        submission_date=form.submission_date.data
+        encounter_date = form.encounter_date.data
+        practitioner_type = form.practitioner_type.data
+        complaint = form.complaint.data
+        diagnosis = form.diagnosis.data
+        treatment = form.treatment.data
+        referral = form.referral.data
+        recommended_followup = form.recommended_followup.data
+        notes = form.notes.data
+        submission_date = form.submission_date.data
         patient_id = form.patient_id.data
         patient = Patient.query.get(patient_id)
         patient_name = patient.name
-        
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
+                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
-        
+
         return "Medical Encounter Added"
 
     return render_template('create_medical_encounter.html', form=form)
 
-@app.route('/medical_encounter', methods=['GET','POST'])
+
+@app.route('/medical_encounter', methods=['GET', 'POST'])
 def medical_encounter():
-    medical_encounters = MedicalEncounter.query.order_by(MedicalEncounter.encounter_date).all()
+    medical_encounters = MedicalEncounter.query.order_by(
+        MedicalEncounter.encounter_date).all()
     return render_template('medical_encounter.html', mes=medical_encounters)
 
 
-
-#Create a form similar to login and fill that in
+# Create a form similar to login and fill that in
 
 @app.route('/admin')
 def admin():
