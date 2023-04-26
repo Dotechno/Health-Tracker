@@ -19,7 +19,6 @@ if not 'models' in sys.modules:
 
 
 with app.app_context():
-
     bob = Physician(name='Bob')
     db.session.add(bob)
     med_mob = Insurance(name='MedMob', address='123 Red Rd',
