@@ -25,64 +25,12 @@
 
 <body>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="dataTables_filter">
-                <label>Search:
-                    <input type="search" class="form-control form-control-sm" placeholder=""
-                        aria-controls="physcian-table">
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Add Equipment!
-    </button>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="content">
-                        <div class="content">
-                            <form action="" method="POST">
-                                <h1>Add Equipment</h1>
-
-                                <label for="ptname" id="ptnameLabel">Equipment:</label>
-                                <input type="text" name="ptname" id="ptname"><br>
-                                <label for="phname" id="phnameLabel">Physician Name:</label>
-                                <input type="text" name="phname" id="phname"><br>
-                                <label for="lbtech" id="lbtechLabel">Lab test Technician:</label>
-                                <input type="text" name="lbtech" id="lbtech"><br>
-                                <label for="lbresult" id="lbresultLabel">Lab test result:</label>
-                                <input type="text" name="lbresult" id="lbresult"><br>
-                                <label for="lbdate" id="lbdateLabel">Lab test date:</label>
-                                <input type="date" name="lbdate" id="lbdate">
-                                <label for="lbtime" id="lbtimeLabel">Lab test time:</label>
-                                <input type="time" step="1" name="lbtime" id="lbtime"><br>
-                                <input type="submit" value="Add Lab Order Data">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
     <div div class="mt-5">
         <table class="table center" id="physcian-table">
             <thead>
                 <tr>
                     <th>Encounter Date</th>
-                    <th>Practitioner ID</th>
                     <th>Patient ID</th>
                     <th>Encounter's Submission Date</th>
                     <th>Type of Practitioner</th>
@@ -99,7 +47,6 @@
                 {% for me in mes %}
                 <tr>
                     <td>{{ me.encounter_date}}</td>
-                    <td>{{ me.practitioner_id}}</td>
                     <td>{{ me.patient_id}}</td>
                     <td>{{ me.submission_date }}</td>
                     <td>{{ me.practitioner_type }}</td>
@@ -115,8 +62,6 @@
                 </tr>
                 {% endfor %}
 
-                <button type="button" class="btn btn-primary">Confirm</button>
-                </tr>
             </tbody>
         </table>
     </div>

@@ -43,6 +43,7 @@ class MedicalEncounterForm(FlaskForm):
     submission_date = DateField('Submission Date', format='%Y-%m-%d', validators=[InputRequired()])
     patient_name = StringField('Patient Name', validators=[DataRequired()])
     patient_id = SelectField('Patient ID', coerce=int)
+    practitioner_id = SelectField('Practitioner ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
 # Copy one of these form into CHat GPT
 

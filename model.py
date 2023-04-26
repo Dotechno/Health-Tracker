@@ -92,7 +92,7 @@ class Patient(db.Model):
 class MedicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
-    practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
+    #practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
     practitioner_type = db.Column(db.String(200), nullable=False)
     complaint = db.Column(db.String(200), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)

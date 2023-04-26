@@ -7,7 +7,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime
-
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -20,7 +19,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Physician
+    from model import db, User, Patient, MedicalEncounter, Physician, Insurance
 
 
 # Routes
@@ -115,7 +114,6 @@ def create_medical_encounter():
     form = MedicalEncounterForm()
     form.patient_id.choices = [(patient.id, patient.name) for patient in Patient.query.all()]
     # form choices for practicioner_id and name
-    form.practitioner_id.choices = [(practitioner.id, practitioner.name) for practitioner in Physician.query.all()]
 
     print (form.patient_id.choices)
     if request.method == 'POST':
@@ -131,6 +129,7 @@ def create_medical_encounter():
         patient_id = form.patient_id.data
         patient = Patient.query.get(patient_id)
         patient_name = patient.name
+        
         medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
