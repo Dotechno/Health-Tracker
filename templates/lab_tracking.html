@@ -17,8 +17,188 @@
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
+<div class="modal fade" id="create-lab-test" tabindex="-1" aria-labelledby="create-lab-test-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-lab-test-label">Lab Test</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="mb-3">
+                <label for="result_type" class="form-label">Type of Result</label>
+                <select class="form-control" id="result_type" name="result_type" required>
+                    <option value="int_range">Integer Range</option>
+                    <option value="pos_neg">Positive/Negative</option>
+                </select>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="physician_name" class="form-label">Physician Name</label>
+                        <input type="text" class="form-control" id="physician_name" required>
+                        <small class="form-text text-muted">First + Last Name</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
+                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
+                            required>
+                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_start" class="form-label">Work Time Start</label>
+                        <select class="form-select" id="work_time_start" required>
+                            <option value="" disabled selected>Select Start Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_end" class="form-label">Work Time End</label>
+                        <select class="form-select" id="work_time_end" required>
+                            <option value="" disabled selected>Select End Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="work_days" class="form-label">Work Days</label>
+                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
+                                    value="Monday">
+                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
+                                    value="Tuesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
+                                    value="Wednesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
+                                    value="Thursday">
+                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
+                            </div>
+                            <div style="clear:both;"></div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
+                                    value="Friday">
+                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
+                                    value="Saturday">
+                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
+                                    value="Sunday">
+                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
+                            </div>
+                        </div>
+                        <div id="error-message" style="display:none; color:red;">
+                            Please select at least one day of the week.
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create-lab-order" tabindex="-1" aria-labelledby="create-lab-order-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-lab-order-label">Lab Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action='/lab_tracking_add_order/' method="POST">m>
+                    <div class="mb-3">
+                        <label for="ptname" class="form-label">Patient Name</label>
+                        <input type="text" name="ptname" class="form-control" id="ptname" required>
+                        <small class="form-text text-muted">Full name for patient</small>
+                    </div>
+                    <label for="lab-test-select">Lab Test</label>
+                    <select class="form-control" id="lab-test-select" name="lab_test">
+                        {% if lab_test %}
+                        {% for test in lab_test %}
+                        <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
+                        {% endfor %}
+                        {% else %}
+                        <option>No lab tests found.</option>
+                        {% endif %}
+                    </select>
+                    <br>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="content">
     <div class="projects-section-header">
@@ -32,8 +212,8 @@
         <p class="time"></p>
     </div>
 
-    <form action="/lab_tracking/" method="POST">
-        <div class="projects-section-line">
+    <div class="projects-section-line">
+        <form action="/lab_tracking/" method="POST">
             <div class="projects-status">
                 <div class="item-status">
                     <label for="start-date">Start Date:</label>
@@ -55,39 +235,41 @@
                     <button class="btn btn-light buttons-pdf buttons-html5" type="submit">Filter by Date</button><br>
                 </div>
             </div>
+        </form>
 
-            <!-- Modal buttons -->
-            <div class="view-actions">
-                <button class="view-btn list-view" onclick="openAddOrder()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 32 32"
-                        fill="currentColor" stroke="currentColor" stroke-width=".75" stroke-linecap="round"
-                        stroke-linejoin="round" class="feather feather-home">
-                        <path
-                            d="M19.332 19.041c0 0-1.664 2.125-3.79 0-2.062-2-3.562 0-3.562 0l-4.967 9.79c-0.144 0.533 0.173 1.081 0.706 1.224h16.497c0.533-0.143 0.85-0.69 0.707-1.224l-5.591-9.79zM26.939 28.33l-7.979-13.428v-0.025l-0.014-7.869h0.551c0.826 0 1.498-0.671 1.498-1.499 0-0.827-0.672-1.498-1.498-1.498h-7.995c-0.827 0-1.498 0.671-1.498 1.498 0 0.828 0.671 1.499 1.498 1.499h0.482l-0.016 7.871-6.908 13.451c-0.428 1.599 0.521 3.242 2.119 3.67h17.641c1.6-0.428 2.549-2.071 2.119-3.67zM24.553 30.998l-17.108-0.019c-1.065-0.286-1.697-1.382-1.412-2.446l6.947-13.616 0.021-8.908h-1.498c-0.275 0-0.499-0.224-0.499-0.5s0.224-0.499 0.499-0.499h7.995c0.275 0 0.498 0.224 0.498 0.499 0 0.276-0.223 0.5-0.498 0.5h-1.498l0.025 8.875 7.939 13.666c0.286 1.067-0.347 2.163-1.411 2.448zM16.48 2.512c0 0.552 0.448 1 1 1s1-0.448 1-1-0.447-1-1-1-1 0.447-1 1zM17.48 0.012c0.828 0 1.5-0.671 1.5-1.5s-0.672-1.5-1.5-1.5-1.5 0.671-1.5 1.5 0.672 1.5 1.5 1.5zM13.48 2.512c0.553 0 1-0.448 1-1s-0.447-1-1-1-1 0.448-1 1 0.447 1 1 1z">
-                        </path>
-                    </svg>
-                </button>
-                <button class="btn status-type btn-outline" onclick="openAddOrder()">Add Order</button>
+        <!-- Modal buttons -->
+        <div class="view-actions">
+            <button class="view-btn list-view" data-toggle="modal" data-target="#create-lab-order">
+                <svg xmlns=" http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 32 32" fill="currentColor"
+                    stroke="currentColor" stroke-width=".75" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-home">
+                    <path
+                        d="M19.332 19.041c0 0-1.664 2.125-3.79 0-2.062-2-3.562 0-3.562 0l-4.967 9.79c-0.144 0.533 0.173 1.081 0.706 1.224h16.497c0.533-0.143 0.85-0.69 0.707-1.224l-5.591-9.79zM26.939 28.33l-7.979-13.428v-0.025l-0.014-7.869h0.551c0.826 0 1.498-0.671 1.498-1.499 0-0.827-0.672-1.498-1.498-1.498h-7.995c-0.827 0-1.498 0.671-1.498 1.498 0 0.828 0.671 1.499 1.498 1.499h0.482l-0.016 7.871-6.908 13.451c-0.428 1.599 0.521 3.242 2.119 3.67h17.641c1.6-0.428 2.549-2.071 2.119-3.67zM24.553 30.998l-17.108-0.019c-1.065-0.286-1.697-1.382-1.412-2.446l6.947-13.616 0.021-8.908h-1.498c-0.275 0-0.499-0.224-0.499-0.5s0.224-0.499 0.499-0.499h7.995c0.275 0 0.498 0.224 0.498 0.499 0 0.276-0.223 0.5-0.498 0.5h-1.498l0.025 8.875 7.939 13.666c0.286 1.067-0.347 2.163-1.411 2.448zM16.48 2.512c0 0.552 0.448 1 1 1s1-0.448 1-1-0.447-1-1-1-1 0.447-1 1zM17.48 0.012c0.828 0 1.5-0.671 1.5-1.5s-0.672-1.5-1.5-1.5-1.5 0.671-1.5 1.5 0.672 1.5 1.5 1.5zM13.48 2.512c0.553 0 1-0.448 1-1s-0.447-1-1-1-1 0.448-1 1 0.447 1 1 1z">
+                    </path>
+                </svg>
+            </button>
+            <button class="btn status-type btn-outline" data-toggle="modal" data-target="#create-lab-order">Add
+                Order</button>
 
-                <button class="view-btn list-view" onclick="openAddTest()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="transparent" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round" class="feather feather-home">
-                        <path class="cls-1" d="M21.07,6.75,17.25,2.93,10.59,9.59a6.68,6.68,0,1,0,3.82,3.82Z" />
-                        <line class="cls-1" x1="15.82" y1="1.5" x2="22.5" y2="8.18" />
-                        <line class="cls-1" x1="1.5" y1="14.86" x2="14.86" y2="14.86" />
-                        <line class="cls-1" x1="5.32" y1="18.68" x2="7.23" y2="18.68" />
-                        <line class="cls-1" x1="10.09" y1="17.73" x2="12" y2="17.73" />
-                    </svg>
-                </button>
-                <button class="btn status-type btn-outline" onclick="openAddTest()">Add Test</button>
-                <div style="width: 12px;"></div>
-                <div class="yohere item-status">
-                </div>
+            <button class="view-btn list-view" data-toggle="modal" data-target="#create-lab-test">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="transparent"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-home">
+                    <path class="cls-1" d="M21.07,6.75,17.25,2.93,10.59,9.59a6.68,6.68,0,1,0,3.82,3.82Z" />
+                    <line class="cls-1" x1="15.82" y1="1.5" x2="22.5" y2="8.18" />
+                    <line class="cls-1" x1="1.5" y1="14.86" x2="14.86" y2="14.86" />
+                    <line class="cls-1" x1="5.32" y1="18.68" x2="7.23" y2="18.68" />
+                    <line class="cls-1" x1="10.09" y1="17.73" x2="12" y2="17.73" />
+                </svg>
+            </button>
+            <button class="btn status-type btn-outline" data-toggle="modal"
+                data-target="#create-lab-test">AddTest</button>
+            <div style="width: 12px;"></div>
+            <div class="yohere item-status">
             </div>
-            <!-- / Modal buttons End -->
         </div>
-    </form>
+        <!-- / Modal buttons End -->
+    </div>
 
     <style>
         @import "compass/css3";
@@ -230,7 +412,6 @@
             </tr>
             {% endfor %}
         </tbody>
-
     </table>
 
 </div>
@@ -254,295 +435,27 @@
 
     });</script>
 
-<div class="modal fade" show id="create_lab_test" tabindex="-1" aria-labelledby="new-physcian-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="new-physcian-label">Add Physician</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="physician_name" class="form-label">Physician Name</label>
-                        <input type="text" class="form-control" id="physician_name" required>
-                        <small class="form-text text-muted">First + Last Name</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
-                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
-                            required>
-                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_start" class="form-label">Work Time Start</label>
-                        <select class="form-select" id="work_time_start" required>
-                            <option value="" disabled selected>Select Start Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_end" class="form-label">Work Time End</label>
-                        <select class="form-select" id="work_time_end" required>
-                            <option value="" disabled selected>Select End Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="work_days" class="form-label">Work Days</label>
-                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
-                                    value="Monday">
-                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
-                                    value="Tuesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
-                                    value="Wednesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
-                                    value="Thursday">
-                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
-                            </div>
-                            <div style="clear:both;"></div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
-                                    value="Friday">
-                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
-                                    value="Saturday">
-                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
-                                    value="Sunday">
-                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
-                            </div>
-                        </div>
-                        <div id="error-message" style="display:none; color:red;">
-                            Please select at least one day of the week.
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="create_lab_order" tabindex="-1" aria-labelledby="new-physcian-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="new-physcian-label">Add Physician</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="physician_name" class="form-label">Physician Name</label>
-                        <input type="text" class="form-control" id="physician_name" required>
-                        <small class="form-text text-muted">First + Last Name</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
-                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
-                            required>
-                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_start" class="form-label">Work Time Start</label>
-                        <select class="form-select" id="work_time_start" required>
-                            <option value="" disabled selected>Select Start Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_end" class="form-label">Work Time End</label>
-                        <select class="form-select" id="work_time_end" required>
-                            <option value="" disabled selected>Select End Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="work_days" class="form-label">Work Days</label>
-                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
-                                    value="Monday">
-                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
-                                    value="Tuesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
-                                    value="Wednesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
-                                    value="Thursday">
-                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
-                            </div>
-                            <div style="clear:both;"></div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
-                                    value="Friday">
-                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
-                                    value="Saturday">
-                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
-                                    value="Sunday">
-                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
-                            </div>
-                        </div>
-                        <div id="error-message" style="display:none; color:red;">
-                            Please select at least one day of the week.
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Script -->
 <script>
     function openAddTest() {
-        $('#create_lab_test').modal('show');
+        // $('#create-lab-test').modal('show');
+
+        // show modal alternative:
+        Document.getElementById("create-lab-test").style.display = "block";
     }
 
     function closeAddTest() {
-        $('#create_lab_test').modal('hide');
+        // $('#create-lab-test').modal('hide');
 
     }
     function openAddOrder() {
-        $('#create_lab_order').modal('show');
+        // $('#create-lab-order').modal('show');
     }
 
     function openAddOrder() {
-        $('#create_lab_order').modal('hide');
-
+        // $('#create-lab-order').modal('hide');
     }
 
 </script>
