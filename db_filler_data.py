@@ -113,9 +113,9 @@ if not 'models' in sys.modules:
 with app.app_context():
     # create user
     user = User(username='admin', password='password', roles='admin')
-    patient = Patient(name='John Doe', telephone='123-456-7890', address='123 Main St', date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender = "male", primary_physician=1)
+    patient = Patient(name='John Doe', telephone='123-456-7890', address='123 Main St', date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender = "male", primary_physician=1, insurance_id = 1)
     carrier = Insurance(name='Blue Cross Blue Shield',
-                        address='123 Main St', status="on time", patient_id=1)
+                        address='123 Main St', status="on time")
     bob_me = MedicalEncounter(
         encounter_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), practitioner_type='Physician', complaint='Headache',
         diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',

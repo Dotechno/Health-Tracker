@@ -555,5 +555,20 @@ def invoice(invoice_id):
         return render_template('billing_invoice.html', invoice=invoice, items=items, physician=physician,
                          total_cost=invoice.total_cost, patient = all_patient)
 
+
+@app.route('/Create_insurance', methods=['GET', 'POST'])
+def Create_insurance():
+    if request.method == "POST":
+        name = request.form['insurance_name']
+        address = request.form['insurance_address']
+        status = request.form['insurance_status']
+        
+        insurance = Insurance(name=name, address=address, status=status)
+        db.session.add(insurance)
+        db.session.commit()
+        return redirect(url_for('patient'))
+    else:
+        return render_template('billing_create_insurance.html')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002, host='0.0.0.0')

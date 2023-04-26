@@ -39,7 +39,7 @@ class Patient(db.Model):  # 01
         'physician.id'), nullable=False)
     medical_encounter = db.relationship(
         'MedicalEncounter', backref='patient')
-    insurance = db.relationship('Insurance', backref='patient')
+    insurance_id = db.Column(db.Integer, db.ForeignKey('insurance.id'))
     appointment = db.relationship('Appointment', backref='patient')
     medication = db.relationship('Medication', backref='patient')
 
@@ -159,7 +159,7 @@ class Insurance(db.Model):
     name = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(200), nullable=False)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    patient = db.relationship('Patient', backref='insurance')
     invoice = db.relationship('Invoice', backref='insurance')
 
     def __repr__(self):
