@@ -292,7 +292,7 @@ def lab_tracking_add_order():
         db.session.commit()
         print('successfully committed')
         flash('Lab order added successfully')
-        return redirect('/lab_tracking_add_order/')
+        return redirect('/lab_tracking/')
 
     else:
         lab_test = LabTest.query.order_by(LabTest.lab_test_name).all()
@@ -341,7 +341,7 @@ def lab_tracking_add_test():
 
         # db.session.commit()
         print('successfully committed')
-        return redirect('/lab_tracking_add_test/')
+        return redirect('/lab_tracking/')
 
     else:
         lab_test = LabTest.query.order_by(LabTest.lab_test_name).all()
