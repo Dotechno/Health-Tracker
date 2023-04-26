@@ -14,13 +14,13 @@
         <input type="text" name="ptname" id="ptname"><br>
         <label for="lab-test-select">Lab Test</label>
         <select class="form-control" id="lab-test-select" name="lab_test">
-            {% if lab_test %}
+        {% if lab_test %}
             {% for test in lab_test %}
             <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
             {% endfor %}
-            {% else %}
+        {% else %}
             <option>No lab tests found.</option>
-            {% endif %}
+        {% endif %}
         </select>
         <!--<label for="testname" id="testnameLabel">Lab Test Type:</label>
         <input type="text" name="testname" id="testname">--><br>
