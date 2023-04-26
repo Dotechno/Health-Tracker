@@ -139,7 +139,6 @@ class Appointment(db.Model):
     appointment_date = db.Column(db.String(200), nullable=False)
     appointment_type = db.Column(db.String(200), nullable=False)
     appointment_time = db.Column(db.String(200), nullable=False)
-    physician_id = db.Column(db.Integer, nullable=False)
     physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
