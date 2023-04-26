@@ -3,16 +3,12 @@ from __main__ import app
 from datetime import date
 from sqlalchemy import Column, Date
 
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from enum import Enum
 
-# import enum
-from enum import Enum
-
-# import datetime
-from datetime import datetime
 
 db = SQLAlchemy(app)
 

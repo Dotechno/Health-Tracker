@@ -55,3 +55,4 @@ class MedicalEncounterForm(FlaskForm):
     patient_id = SelectField('Patient ID', coerce=int)
     practitioner_id = SelectField('Practitioner ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
+
