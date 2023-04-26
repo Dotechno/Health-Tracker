@@ -37,21 +37,20 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for patients in patients %}
+			{% for patient in patients %}
 			<tr>
-				<td>{{ patients.id }}</td>
-				<td>{{ patients.name }}</td>
-				<td>{{ patients.telephone }}</td>
-				<td>{{ patients.address }}</td>
-				<td>{{ patients.insurance }}</td>
-				<td>{{ patients.date_of_birth }}</td>
-				<td>{{ patients.gender }}</td>
-				<td>{{ patients.primary_physician }}</td>
-				<td>{{ patients.current_medication }}</td>
-				<td>{{ patients.current_appointments }}</td>
-				<td>
-					<button type="button" class="btn btn-primary"
-						onclick="openConfirmModal()">{{patients.maintenance}}</button>
+				<td>{{ patient.id }}</td>
+				<td>{{ patient.name }}</td>
+				<td>{{ patient.telephone }}</td>
+				<td>{{ patient.address }}</td>
+				<td>{{ patient.insurance }}</td>
+				<td>{{ patient.date_of_birth }}</td>
+				<td>{{ patient.gender }}</td>
+				<td>{{ patient.primary_physician[0].physician_name}}</td>
+				<td><a href="/patient/{{patient.id}}/medication" class="btn btn-primary">View Medication</a>
+
+				</td>
+				<td><a href="/patient/{{patient.id}}/appointment" class="btn btn-primary">View appointment</a>
 				</td>
 			</tr>
 			{% endfor %}
@@ -71,6 +70,7 @@
 			</div>
 			<div class="modal-body">
 				<div div class="mt-5">
+					
 					<table class="table center" id="patient-table">
 						<thead>
 							<tr>
@@ -97,11 +97,14 @@
 								<td>{{ patients.date_of_birth }}</td>
 								<td>{{ patients.gender }}</td>
 								<td>{{ patients.primary_physician }}</td>
-								<td>{{ patients.current_medication }}</td>
-								<td>{{ patients.current_appointments }}</td>
 								<td>
-									<button type="button" class="btn btn-primary"
-										onclick="openConfirmModal()">{{patients.maintenance}}</button>
+									<a href= f"/patient/{{patients.id}}/medication" class="btn btn-primary">View Medication</a>
+
+
+								</td>
+								<td>
+									<a href="/patient/{{patients.id}}/appointment" class="btn btn-primary">View appointment</a>
+
 								</td>
 							</tr>
 							{% endfor %}

@@ -9,6 +9,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime
+
+
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
@@ -27,7 +29,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance
+    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment
 
 
 # Routes
@@ -163,6 +165,7 @@ def create_patient():
         address = form.address.data
         date_of_birth = form.date_of_birth.data
         gender = form.gender.data
+        
         # push to db without validation
         patient = Patient(name=name, telephone=telephone,
                           address=address, date_of_birth=date_of_birth, gender=gender)
@@ -179,6 +182,19 @@ def patient():
 
     patients = Patient.query.order_by(Patient.id).all()
     return render_template('patient.html', patients=patients)
+
+@app.route('/patient/<int:patient_id>/medication', methods=['GET', 'POST'])
+def medication(patient_id):
+    all_medication = Medication.query.filter_by(patient_id=patient_id).all()
+    patient = Patient.query.get(patient_id)
+    return render_template('medication.html', all_medication=all_medication, patient=patient)
+
+
+@app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
+def appointment(patient_id):
+    all_appointment = Appointment.query.filter_by(patient_id=patient_id).all()
+    patient = Patient.query.get(patient_id)
+    return render_template('appointment.html', all_appointment=all_appointment, patient=patient)
 
 
 @app.route('/create_medical_encounter', methods=['GET', 'POST'])
@@ -212,10 +228,12 @@ def create_medical_encounter():
     return render_template('patient_create_medical_encounter.html', form=form)
 
 
+
 @app.route('/medical_encounter', methods=['GET', 'POST'])
 def medical_encounter():
     medical_encounters = MedicalEncounter.query.order_by(
         MedicalEncounter.encounter_date).all()
+
     return render_template('patient_medical_encounter.html', mes=medical_encounters)
 
 #################### Jordan End Here ####################

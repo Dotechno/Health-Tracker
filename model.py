@@ -39,8 +39,7 @@ class Patient(db.Model):  # 01
     address = db.Column(db.String(200), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(200), nullable=False)
-    primary_physician = db.Column(db.Integer, db.ForeignKey(
-        'physician.id'), nullable=False)
+    primary_physician = db.relationship('Physician', backref='patient')
     medical_encounter = db.relationship(
         'MedicalEncounter', backref='patient')
     insurance = db.relationship('Insurance', backref='patient')
@@ -119,7 +118,7 @@ class Physician(db.Model):
 
 class Insurance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(200), nullable=False, default = 'Self')
     address = db.Column(db.String(200), nullable=False)
     status = db.Column(db.String(200), nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
