@@ -1,7 +1,7 @@
 import sys
 
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, abort, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_bcrypt import Bcrypt
@@ -13,6 +13,7 @@ import json
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime, timedelta
+
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
@@ -33,7 +34,11 @@ if True:
 
 # Work around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment, Equipment, Vendors, EquipmentMaintenance, EquipmentLeased, EquipmentOwned
+    from model import (db, User, LabOrder, LabTest, Prescription, Medication, Patient,
+                       MedicalEncounter, Physician, Insurance, Appointment, Equipment,
+                       Vendors, EquipmentMaintenance, EquipmentLeased, EquipmentOwned,
+                       ServiceProvidedByClinic, Invoice, InvoiceLineItem
+                       )
 
 # Routes
 
@@ -163,7 +168,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-#################### Jordan Start Here ####################
+#################### Charzezard Start Here ####################
 
 
 @app.route('/create_patient', methods=['GET', 'POST'])
@@ -175,22 +180,56 @@ def create_patient():
         address = form.address.data
         date_of_birth = form.date_of_birth.data
         gender = form.gender.data
+        insurance = form.insurance.data
+        insurance_address = form.insurance_address.data
+        insurance_status = form.insurance_status.data
+        physician_name = form.physician_name.data
+
+        specific_p = Physician.query.filter_by(
+            physician_name=physician_name).first()
+
         # push to db without validation
         patient = Patient(name=name, telephone=telephone,
-                          address=address, date_of_birth=date_of_birth, gender=gender)
+                          address=address, date_of_birth=date_of_birth, gender=gender, physician_id=specific_p.id)
         db.session.add(patient)
+
+        all_insurance = Insurance.query.all()
+
+        if not all_insurance:
+            print('a')
+        else:
+            if insurance not in all_insurance:
+                insurance = Insurance(
+                    name=insurance, address=insurance_address, status=insurance_status, patient_id=patient.id)
+                db.session.add(insurance)
         db.session.commit()
 
         return redirect(url_for('patient'))
+    else:
 
-    return render_template('patient_create_patient.html', form=form)
+        return render_template('patient_create_patient.html', form=form)
 
 
 @app.route('/patient', methods=['GET', 'POST'])
 def patient():
 
     patients = Patient.query.order_by(Patient.id).all()
+
     return render_template('patient.html', patients=patients)
+
+
+@app.route('/patient/<int:patient_id>/medication', methods=['GET', 'POST'])
+def medication(patient_id):
+    all_medication = Medication.query.filter_by(patient_id=patient_id).all()
+    patient = Patient.query.get(patient_id)
+    return render_template('medication.html', all_medication=all_medication, patient=patient)
+
+
+@app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
+def appointment(patient_id):
+    all_appointment = Appointment.query.filter_by(patient_id=patient_id).all()
+    patient = Patient.query.get(patient_id)
+    return render_template('appointment.html', all_appointment=all_appointment, patient=patient)
 
 
 @app.route('/create_medical_encounter', methods=['GET', 'POST'])
@@ -224,13 +263,122 @@ def create_medical_encounter():
     return render_template('patient_create_medical_encounter.html', form=form)
 
 
+@app.route('/medical_encounter/<int:me_id>/doctor_notes')
+def doctor_notes(me_id):
+    # if request.method == 'GET':
+    Note = MedicalEncounter.query.filter_by(id=me_id).first()
+    return render_template('me_doctor_note.html', Note=Note)
+
+
 @app.route('/medical_encounter', methods=['GET', 'POST'])
 def medical_encounter():
     medical_encounters = MedicalEncounter.query.order_by(
         MedicalEncounter.encounter_date).all()
+
     return render_template('patient_medical_encounter.html', mes=medical_encounters)
 
-#################### Jordan End Here ####################
+
+@app.route('/create_invoice', methods=['GET', 'POST'])
+def create_invoice():
+    if request.method == 'POST':
+        patient_name = request.form['patient_name']
+        insurance_carrier_id = request.form['insurance_carrier_id']
+        service_ids = request.form.getlist('service_ids')
+        patient = Patient.query.filter_by(name=patient_name).first()
+
+        invoice = Invoice(patient_name=patient_name,
+                          insurance_carrier_id=insurance_carrier_id, total_cost=0.0)
+        db.session.add(invoice)
+        db.session.commit()
+
+        for service_id in service_ids:
+            service = ServiceProvidedByClinic.query.get(service_id)
+            status = 'unpaid'
+            days = (service.due_date - service.date).days
+            if (service.due_date - service.date).days < 0:
+                status = 'overdue'
+                days = (service.date - service.due_date).days
+            line_item = InvoiceLineItem(invoice_id=invoice.id, service_id=service_id, date=service.date,
+                                        cost=service.cost_for_service, status=status, due_date=service.due_date, number_date=days, date_paid="  ")
+            db.session.add(line_item)
+            invoice.total_cost += service.cost_for_service
+        db.session.commit()
+        return redirect(url_for('invoice', invoice_id=invoice.id))
+    else:
+        insurance_carriers = Insurance.query.all()
+        services = ServiceProvidedByClinic.query.all()
+
+        return render_template('billing_create_invoice.html', insurance_carriers=insurance_carriers, services=services)
+
+
+@app.route('/invoice/<int:invoice_id>', methods=['POST', 'GET'])
+def invoice(invoice_id):
+
+    if request.method == 'POST':
+        items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        for item in items:
+            item.status = 'paid'
+            item.number_date = 0
+            item.date_paid = f'{(datetime.now()).date()}'
+        db.session.commit()
+        return render_template('billing_success.html')
+
+        # invoice = Invoice.query.get(
+        # invoice_id)
+
+        # all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
+
+        # all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        # physician = Physician.query.filter_by(patient_id=all_patient.id).first()
+        # insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
+
+        # if not invoice:
+        #     abort(404)
+        # items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        # payment_due_date = datetime.now() + timedelta(days=30)
+        # due_date = f"{(payment_due_date - datetime.today()).days}"
+        # return render_template('invoice.html', invoice=invoice, items=items, physician=physician, issued_date=due_date,
+        #                     payment_due_date=payment_due_date, delta30days=timedelta(days=30), total_cost=invoice.total_cost)
+    else:
+        invoice = Invoice.query.get(
+            invoice_id)
+
+        all_patient = Patient.query.filter_by(
+            name=invoice.patient_name).first()
+
+        all_me = MedicalEncounter.query.order_by(
+            MedicalEncounter.encounter_date.asc()).all()
+        physician = Physician.query.filter_by(
+            patient_id=all_patient.id).first()
+        insurance = Insurance.query.filter_by(
+            patient_id=all_patient.id).first()
+
+        if not invoice:
+            abort(404)
+
+        items = InvoiceLineItem.query.filter_by(invoice_id=invoice_id).all()
+        # order it by date
+        items.sort(key=lambda x: x.date, reverse=True)
+
+        return render_template('billing_invoice.html', invoice=invoice, items=items, physician=physician,
+                               total_cost=invoice.total_cost, patient=all_patient)
+
+
+@app.route('/create_insurance', methods=['GET', 'POST'])
+def create_insurance():
+    if request.method == "POST":
+        name = request.form['insurance_name']
+        address = request.form['insurance_address']
+        status = request.form['insurance_status']
+
+        insurance = Insurance(name=name, address=address, status=status)
+        db.session.add(insurance)
+        db.session.commit()
+        return redirect(url_for('patient'))
+    else:
+        return render_template('billing_create_insurance.html')
+
+#################### Charlie End Here ####################
 
 
 ################ Shane Start Here #########################

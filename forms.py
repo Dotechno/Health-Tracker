@@ -34,6 +34,10 @@ class PatientForm(FlaskForm):
     gender = SelectField('Gender', choices=[('male', 'Male'), ('female', 'Female')], validators=[
                          InputRequired(message='Gender is required')])
     submit = SubmitField('Create Patient')
+    insurance = StringField('Insurance')
+    insurance_address = StringField('Insurance Address')
+    insurance_status = SelectField('Insurance Status', choices=[('pay on time', 'Pay on Time'), ('late in payment', 'Late in payment'), ('difficult to get payment', 'Diffcult to get payment')])
+    physician_name = StringField('Physician Name')
 
 
 class MedicalEncounterForm(FlaskForm):
@@ -55,3 +59,4 @@ class MedicalEncounterForm(FlaskForm):
     patient_id = SelectField('Patient ID', coerce=int)
     practitioner_id = SelectField('Practitioner ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
+

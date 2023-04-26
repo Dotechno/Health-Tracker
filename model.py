@@ -3,16 +3,12 @@ from __main__ import app
 from datetime import date
 from sqlalchemy import Column, Date
 
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from enum import Enum
 
-# import enum
-from enum import Enum
-
-# import datetime
-from datetime import datetime
 
 db = SQLAlchemy(app)
 
@@ -39,11 +35,12 @@ class Patient(db.Model):  # 01
     address = db.Column(db.String(200), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(200), nullable=False)
-    primary_physician = db.Column(db.Integer, db.ForeignKey(
+    insurance = db.relationship('Insurance', backref='patient')
+    physician_id = db.Column(db.Integer, db.ForeignKey(
         'physician.id'), nullable=False)
     medical_encounter = db.relationship(
         'MedicalEncounter', backref='patient')
-    insurance = db.relationship('Insurance', backref='patient')
+
     appointment = db.relationship('Appointment', backref='patient')
     medication = db.relationship('Medication', backref='patient')
 
@@ -151,16 +148,15 @@ class Appointment(db.Model):
             appointment_time={self.appointment_time}, physician_id={self.physician_id})"
 
 
-class Insurance(db.Model):
+class ServiceProvidedByClinic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    status = db.Column(db.String(200), nullable=False)
+    service_description = db.Column(db.String(200), nullable=False)
+    cost_for_service = db.Column(db.Float, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    invoice = db.relationship('Invoice', backref='insurance')
-
-    def __repr__(self):
-        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
+    due_date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    invoice_line_item = db.relationship(
+        'InvoiceLineItem', backref='service_provided_by_clinic')
 
 
 class Invoice(db.Model):
@@ -173,11 +169,30 @@ class Invoice(db.Model):
     status = db.Column(db.String(20), nullable=False, default='unpaid')
 
 
-# class Appointment(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
-#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+class InvoiceLineItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_id = db.Column(db.Integer, db.ForeignKey(
+        'invoice.id'), nullable=False)
+    service_id = db.Column(db.Integer, db.ForeignKey(
+        'service_provided_by_clinic.id'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(30), nullable=False)
+    due_date = db.Column(db.Date, nullable=False)
+    number_date = db.Column(db.Integer, nullable=False)
+    date_paid = db.Column(db.String(30), nullable=False)
+
+
+class Insurance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False, default='Add Insurance')
+    address = db.Column(db.String(200), nullable=False, default='Add Address')
+    status = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    invoice = db.relationship('Invoice', backref='insurance')
+
+    def __repr__(self):
+        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
 
 
 class VitalSign(db.Model):
@@ -206,6 +221,8 @@ class Medication(db.Model): #Shweta
     interactions = db.Column(db.String(200), nullable=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
+##### Equipment Start #####
+
 
 class Equipment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -231,9 +248,6 @@ class Vendors(db.Model):
     is_preferred_vendor = db.Column(db.Boolean, nullable=False)
     equipment_id = db.Column(db.Integer, db.ForeignKey(
         'equipment.id'), nullable=False)
-
-
-##### Equipment Owned #####
 
 
 class EquipmentMaintenance(db.Model):
@@ -263,4 +277,4 @@ class EquipmentOwned(db.Model):
         'equipment.id'), nullable=False)
 
 
-##### Equipment Owned End #####
+##### Equipment End #####
