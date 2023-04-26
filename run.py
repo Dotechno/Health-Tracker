@@ -35,7 +35,6 @@ if True:
 if not 'models' in sys.modules:
     from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment
 
-
 # Routes
 
 
@@ -75,6 +74,35 @@ def register():
         return redirect(url_for('login'))
 
 
+@app.route('/register_physician', methods=['GET', 'POST'])
+def register_physician():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'GET':
+        form = RegistrationForm()
+        return render_template('register_physician.html', title='Register', form=form)
+
+    # if post request
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        roles = request.form.get('roles')
+        hashed_password = bcrypt.generate_password_hash(
+            password).decode('utf-8')
+        user = User(username=username, password=hashed_password, roles=roles)
+
+        # check for duplicate username
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists!', 'danger')
+            return redirect(url_for('register_physician'))
+
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account created for {username}!', 'success')
+        return redirect(url_for('login'))
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -105,9 +133,7 @@ def login():
 @login_required
 def dashboard():
     if request.method == 'GET':
-        current_user_name = current_user.username
-        # check for capitalizations for first letters
-        current_user_name = current_user_name.title()
+        current_user_name = current_user.username.title()
         print(current_user_name)
         return render_template('dashboard.html', loggedin_user=current_user_name)
 
@@ -202,6 +228,7 @@ def medical_encounter():
 
 
 @app.route('/lab_tracking/', methods=['POST', 'GET'])
+@login_required
 def lab_tracking():
 
     start_date_obj = datetime.min
@@ -230,7 +257,8 @@ def lab_tracking():
     else:
         orders = LabOrder.query.order_by(LabOrder.id).all()
     # lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
-    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
+    current_user_name = current_user.username.title()
+    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test, loggedin_user=current_user_name)
 
 
 @app.route('/lab_tracking/delete_lab_order/<int:id>')
@@ -420,7 +448,6 @@ def retrieve_medication():
     physician_name = request.form.get('physician_name')
     physician_prescriptions = db.session.query(
         Prescription.physician_name,
-
         db.func.count(Prescription.medication).label('count')
     ).filter(func.strftime('%m', Prescription.date_filled) == month,
              Prescription.physician_name == physician_name).all()

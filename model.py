@@ -60,7 +60,7 @@ class MedicalEncounter(db.Model):  # 02
     recommended_followup = db.Column(db.String(200), nullable=False)
     notes = db.Column(db.String(200), nullable=False)
     submission_date = db.Column(db.Date, nullable=False)
-    lab_order = db.relationship('LabOrder', backref='medical_encounter')
+    # lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
     prescription = db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
@@ -103,8 +103,7 @@ class LabOrder(db.Model):  # 05
     lab_test_result = db.Column(db.String(200), nullable=False)
     test_name = db.Column(db.String(200), nullable=False)
     lab_order_date = db.Column(db.DateTime, nullable=False)
-    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
-        'medical_encounter.id'), nullable=False)
+    # medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'), nullable=False)
 
     def __repr__(self):
         return '<LabOrder %r>' % self.id
@@ -135,11 +134,8 @@ class Physician(db.Model):
 class Appointment(db.Model):
     #__bind_key__ = 'Appointment'
     id = db.Column(db.Integer, primary_key=True)
-    appointment_date_time = db.Column(db.String(200), nullable=False)
-    appointment_date = db.Column(db.String(200), nullable=False)
-    appointment_type = db.Column(db.String(200), nullable=False)
-    appointment_time = db.Column(db.String(200), nullable=False)
-    physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
+    physician_name = db.Column(db.String(200), nullable=False)
+    appointment = db.relationship('Appointment', backref='appointment')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
     # service_type = db.relationship("ServiceProvidedByClinic")
