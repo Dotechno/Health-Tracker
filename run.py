@@ -177,7 +177,6 @@ def lab_tracking():
             orders = [order for order in orders if start_date_obj <=
                       order.lab_order_date <= end_date_obj]
 
-        return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
     else:
         sort = request.args.get('sort', 'id')
@@ -197,7 +196,8 @@ def lab_tracking():
                 func.lower(LabOrder.physician_name)).all()
         else:
             orders = LabOrder.query.order_by(LabOrder.id).all()
-        return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
+    #lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
+    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
 
 @app.route('/lab_tracking/delete_lab_order/<int:id>')
@@ -218,10 +218,10 @@ def lab_tracking_add_order():
         ordr_lbresult = request.form['lbresult']
         # ordr_lbtestname = request.form['testname']
         ordr_timetemp = (request.form.get('lbdate') +
-                         ' ' + request.form.get('lbtime'))
+                         ' ' + "00:00:00")
         ordr_lbdate = datetime.strptime(ordr_timetemp, '%Y-%m-%d %H:%M:%S')
         ordr_timetemp = (request.form.get('lbodate') +
-                         ' ' + request.form.get('lbotime'))
+                         ' ' + "00:00:00")
         ordr_lbodate = datetime.strptime(ordr_timetemp, '%Y-%m-%d %H:%M:%S')
 
         lab_test_id = int(request.form.get('lab_test'))

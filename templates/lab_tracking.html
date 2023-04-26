@@ -3,7 +3,23 @@
 
 {% block head %}
 <title>Lab Tracking</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap5.min.css">
+	
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -12,27 +28,31 @@
     <h1>Lab Tracker</h1>
     
     <form action="/lab_tracking/" method="POST">
-        <select class="form-control" id="search-select" name="search_type">
-            <option value="patient">Search by Patient</option>
-            <option value="physician">Search by Physician</option>
-            <option value="test">Search by Lab Type</option>
-            <option value="labphy">Search by Lab Type Ordered by Physician</option>
-        </select>
-        <select class="form-control" id="lab-test-select" name="lab_tester" disabled>
-            {% if lab_test %}
-                {% for test in lab_test %}
-                    <option value="{{ test.id }}">{{ test.lab_test_name }}</option>
-                {% endfor %}
-            {% else %}
-                <option>No lab tests found.</option>
-            {% endif %}
-
-        </select>
-        <input type="text" name="search_query" id="search_query" placeholder="Type Here">
+        <!-- <label for="search-select">Search Type:</label> -->
+        <!-- <select class="form-control" id="search-select" name="search_type" ><br> -->
+            <!-- <option value="patient">Search by Patient</option> -->
+            <!-- <option value="physician">Search by Physician</option> -->
+            <!-- <option value="test">Search by Lab Type</option> -->
+            <!-- <option value="labphy">Search by Lab Type Ordered by Physician</option> -->
+        <!-- </select> -->
+        <!-- <label for="lab-test-select">Lab Type:</label> -->
+        <!-- <select class="form-control" id="lab-test-select" name="lab_tester" disabled> -->
+            <!-- {% if lab_test %} -->
+                <!-- {% for test in lab_test %} -->
+                    <!-- <option value="{{ test.id }}">{{ test.lab_test_name }}</option> -->
+                <!-- {% endfor %} -->
+            <!-- {% else %} -->
+                <!-- <option>No lab tests found.</option> -->
+            <!-- {% endif %} -->
+<!--  -->
+        <!-- </select> -->
+        <!-- <br> -->
+        <!-- <label for="search_query">Name Search:</label> -->
+        <!-- <input type="text" name="search_query" id="search_query" placeholder="Type Here">< -->
         
         
 
-        <script>
+     <!--   <script>
             document.getElementById("search-select").addEventListener("change", function() {
                 if (this.value == "labphy") {
                     document.getElementById("lab-test-select").removeAttribute("disabled");
@@ -55,47 +75,67 @@
                     document.getElementById("search_query").setAttribute("disabled", "");
                 }
             });
-        </script>
-        
+        </script>-->
+        <h2>Filter by Date</h2>
         <label for="start-date">Start Date:</label>
         <input type="date" id="start-date" name="start-date" value="{{ start_date }}">
         <label for="end-date">End Date:</label>
         <input type="date" id="end-date" name="end-date" value="{{ end_date }}">
 
-        <button type="submit">Search</button>
+        <button type="submit">Filter</button><br>
       </form>
 
 
-    <table> <!-- Main Table -->
+    <table id="big_lab_table"> <!-- Main Table -->
+        <thead>
         <tr>
-            <th><a href="{{ url_for('lab_tracking', sort='patient_name') }}">Patient</a></th>
+            <th>Patient</a></th>
             <th>Lab Test Type</th>
             <th>Result</th>
-            <th><a href="{{ url_for('lab_tracking', sort='lab_order_date') }}">Date Ordered</a></th>
-            <th><a href="{{ url_for('lab_tracking', sort='lab_test_date') }}">Date Tested</a></th>
-            <th><a href="{{ url_for('lab_tracking', sort='physician_name') }}">Physician</a></th>
-            <th>Delete Lab Order</th>
+            <th>Date Ordered</a></th>
+            <th>Date Tested</a></th>
+            <th>Physician</a></th>
+            <!-- <th>Delete Lab Order</th> -->
 
         </tr>
+        </thead>
+        <tbody>
         {% for order in orders %}
             <tr>
                 <td>{{ order.patient_name }}</td>
                 <td>{{ order.test_name }}</td>
                 <td>{{ order.lab_test_result }}</td>
-                <td>{{ order.lab_order_date }}</td>
-                <td>{{ order.lab_test_date }}</td>
+                <td>{{ order.lab_order_date.strftime("%Y-%m-%d") }}</td>
+                <td>{{ order.lab_test_date.strftime("%Y-%m-%d") }}</td>
+                <!-- <td>{{ order.lab_test_date }}</td> -->
                 <td>{{ order.physician_name }}</td>
                 <!--<td>{{ order.lab_test_technician }}</td>-->
-                <td>
-                    <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a>
-                </td>
+                <!-- <td> -->
+                    <!-- <a href="/lab_tracking/delete_lab_order/{{order.id}}">Delete</a> -->
+                <!-- </td> -->
             </tr>
         {% endfor %}
+    </tbody>
+
     </table>
 
 </div>
 
 
-    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>$(document).ready(function() {
+    var table = $('#big_lab_table').DataTable( {
+        lengthChange: false,
+        buttons: [
+            {
+                extend: 'pdf',
+                split: [ 'csv', 'excel', 'print'],
+            }
+        ]
+    } );
+ 
+    table.buttons().container()
+        .appendTo( '#big_lab_table_wrapper .col-md-6:eq(0)' );
+} );</script>
 {% endblock %}
 
