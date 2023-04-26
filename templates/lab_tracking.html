@@ -84,7 +84,22 @@
 
         </div>
         <div class="projects-section-line">
-            <span class="status-type">Filter by Date</span>
+            <div class="projects-status">
+                <div class="item-status">
+                    <label for="start-date">Start Date:</label>
+                    <div>
+                        <input class="form-control form-control-sm" type="date" id="start-date" name="start-date"
+                            value="{{ start_date }}">
+                    </div>
+                </div>
+                <div class="item-status">
+                    <label for="end-date">End Date:</label>
+                    <div>
+                        <input class="form-control form-control-sm" type="date" id="end-date" name="end-date"
+                            value="{{ end_date }}">
+                    </div>
+                </div>
+            </div>
             <div class="view-actions">
                 <a class="view-btn list-view" href="/lab_tracking_add_order/">
                     <svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 32 32"
@@ -112,29 +127,14 @@
 
             </div>
         </div>
-        <div class="columns">
-        </div>
-        <div class="projects-section-line">
+        <div class="projects-status">
             <div class="item-status">
-                <label for="start-date">Start Date:</label>
-                <div>
-                    <input class="form-control form-control-sm" type="date" id="start-date" name="start-date"
-                        value="{{ start_date }}">
-                </div>
+                <button class="btn btn-light buttons-pdf buttons-html5" type="submit">Filter by Date</button><br>
             </div>
-            <div class="item-status">
-                <label for="end-date">End Date:</label>
-                <div>
-                    <input class="form-control form-control-sm" type="date" id="end-date" name="end-date"
-                        value="{{ end_date }}">
-                </div>
+            <div class="yohere item-status">
             </div>
-            <div class="item-status">
-            </div>
-
         </div>
 
-        <button type="submit">Filter</button><br>
     </form>
 
     <style>
@@ -293,7 +293,9 @@
             ]
         });
 
-        table.buttons().container()
-            .appendTo('#big_lab_table_wrapper .col-md-6:eq(0)');
+        // table.buttons().container()
+        //     .appendTo('#big_lab_table_wrapper .col-md-6:eq(0)');
+        table.buttons().container().appendTo('.yohere');
+
     });</script>
 {% endblock %}
