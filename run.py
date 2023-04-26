@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Initialize app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # db = SQLAlchemy(app)
@@ -27,39 +27,7 @@ if not 'models' in sys.modules:
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-    else:
-        return redirect(url_for('admin'))
-
-
-@app.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'There was a problem deleting that task'
-
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
-
-    if request.method == 'POST':
-        task.title = request.form['title']
-        task.content = request.form['content']
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an issue updating your task'
-    else:
-        return render_template('upda\watchte.html', task=task)
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -104,11 +72,18 @@ def login():
             # Valid credentials, log user in and redirect to homepage
             flash(f'Logged in as {username}!', 'success')
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('admin'))
+            return redirect(url_for('dashboard'))
         else:
             # Invalid credentials, show error message
             flash('Login Unsuccessful. Please check username and password', 'danger')
             return render_template('login.html', form=form, title='Login', login_error=True)
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    if request.method == 'GET':
+        return render_template('dashboard.html')
 
 
 @app.route('/admin')
@@ -123,7 +98,41 @@ def logout():
     return redirect(url_for('index'))
 
 
-@ login_manager.user_loader
+@ app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+
+# @app.route('/members/<string:username>')
+@app.route('/members/')
+def members(username=None):
+    if username == None:
+        return render_template(template_name_or_list='members.html')
+
+    user = User.query.filter_by(username=username).first()
+    return render_template('members.html', user=user)
+
+
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
+
+# handles 401
+@app.errorhandler(401)
+def to401(e):
+    # redirect to login page
+    return redirect(url_for('login'))
+
+# handles 404
+
+
+@app.errorhandler(404)
+def to404(e):
+    return render_template('404.html')
+
+
+@login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
