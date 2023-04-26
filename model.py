@@ -135,7 +135,11 @@ class Appointment(db.Model):
     #__bind_key__ = 'Appointment'
     id = db.Column(db.Integer, primary_key=True)
     physician_name = db.Column(db.String(200), nullable=False)
-    appointment = db.relationship('Appointment', backref='appointment')
+    appointment_date_time = db.Column(db.String(200), nullable=False)
+    appointment_date = db.Column(db.String(200), nullable=False)
+    appointment_type = db.Column(db.String(200), nullable=False)
+    appointment_time = db.Column(db.String(200), nullable=False)
+    physician_id = db.Column(db.Integer, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
     # service_type = db.relationship("ServiceProvidedByClinic")
