@@ -28,19 +28,7 @@
     <br>
     <h1 class="equipment-title" style="text-align:center">{{ equipment.type }}'s Maintenance History</h1>
     <br>
-    <div class="row">
-        <div class="col-search">
-            <div class="dataTables_filter">
-                <form action="/search_equipment/" method="POST">
-                    <label for="equipment_type">Equipment Type:</label>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                    <input type="text" name="search_item" id="search_item"><br>
-                    <!-- submit -->
 
-                </form>
-            </div>
-        </div>
-    </div>
     <br>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-align:right">
         Add Maintenance History: 
@@ -58,20 +46,25 @@
                     <div class="content">
                         <div class="content">
                             <form action="" method="POST">
-                                <br> <label for="equipment_type">Type of Maintenance Problem: </label><br>
-                                <input type="text" name="type_of_problem" id="type_of_problem" size="50"><br><br>
-                                <label for="description">Description of Problem: </label><br>
-                                <input type="text" name="description_of_problem" id="description_of_problem" size="50"><br><br>
-                                <label for="is_owned">Resolved?: </label>
-                                <input type="checkbox" id="is_resolved" name="is_resolved" value="on"><br><br>
-                                <label for="is_leased">Resolution for Problem:</label>
-                                <input type="text" id="description_of_resoltion" name="description_of_resoltion" value=""><br>
-                                <br/>
+                                <br>
+                                <label for=" type_of_problem">Type of Maintenance Problem: </label><br>
+                                <input type="text" name="type_of_problem" id="type_of_problem" size="50" value=""><br><br>
+
+                                <label for="description_of_problem">Description of Problem: </label><br>
+                                <input type="text" name="description_of_problem" id="description_of_problem" value="" size="50"><br><br>
+
+                                <label for="is_resolved">Resolved?: </label>
+                                <input type="checkbox" id="is_resolved" name="is_resolved" value="True"><br><br>
+
+                                <label for="description_of_resolution">Resolution for Problem:</label>
+                                <input type="text" id="description_of_resolution" name="description_of_resolution" value=""><br><br>
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">Add Equipment</button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -79,8 +72,8 @@
             </div>
         </div>
     </div>
-    < < <div div class="mt-5">
-        <table class="table center" id="equipment-table">
+    <div div class="mt-5 ">
+        <table class="table center " id="equipment-table ">
             <thead>
                 <tr>
                     <th>Maintenance ID: </th>
@@ -106,9 +99,9 @@
                 {% endfor %}
             </tbody>
         </table>
-        </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
 </body>
 
 </html>

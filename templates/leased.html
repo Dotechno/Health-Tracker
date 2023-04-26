@@ -28,61 +28,9 @@
     <br>
     <h1 class="equipment-title" style="text-align:center">{{ equipment.type }}'s Leased Information</h1>
     <br>
-    <div class="row">
-        <div class="col-search">
-            <div class="dataTables_filter">
-                <form action="/search_equipment/" method="POST">
-                    <label for="equipment_type">Equipment Type:</label>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                    <input type="text" name="search_item" id="search_item"><br>
-                    <!-- submit -->
 
-                </form>
-            </div>
-        </div>
-    </div>
-    <br>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-align:right">
-        Add Equipment!
-    </button>
-    <br>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add an Equipment</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="content">
-                        <div class="content">
-                            <form action="" method="POST">
-                                <br> <label for="equipment_type">Equipment Type:</label><br>
-                                <input type="text" name="equipment_type" id="equipment_type" size="50"><br><br>
-                                <label for="description">Description:</label><br>
-                                <input type="text" name="description" id="description" size="50"><br><br>
-                                <label for="department">Department:</label><br>
-                                <input type="text" name="department" id="department" size="50"><br><br>
-                                <label for="is_owned">Is Owned:</label>
-                                <input type="checkbox" id="is_owned" name="is_owned" value="on"><br><br>
-                                <label for="is_leased">Is Leased:</label>
-                                <input type="checkbox" id="is_leased" name="is_leased" value="on"><br>
-                                <br/>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Add Equipment</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    < < <div div class="mt-5">
-        <table class="table center" id="physcian-table">
+    <div div class="mt-5">
+        <table class="table center" id="leased-table">
             <thead>
                 <tr>
                     <th>Leased ID: </th>
@@ -92,19 +40,19 @@
                 </tr>
             </thead>
             <tbody>
-                {% for leased in leased_information %}
+                {% for leased in leased_information%}
                 <tr>
                     <td>{{ leased.id }}</td>
                     <td>{{ leased.start_date }}</td>
-                    <td>{{ leased.end_date }}</td>
-                    <td>{{ leased.leasing_company}}</td>
+                    <<td>{{ leased.end_date }}</td>
+                        <td>{{ leased.leasing_company}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
 </body>
 
 </html>

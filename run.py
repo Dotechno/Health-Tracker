@@ -138,34 +138,62 @@ def equipment():
     return render_template('equipment.html', equipments=equipments)
 
 
-@app.route('/maintenance_history/<int:equipment_id>')
+@app.route('/maintenance_history/<int:equipment_id>',methods=['GET', 'POST'])
 def maintenance_history(equipment_id):
-    maintenance_history = EquipmentMaintenance.query.filter_by(equipment_id=equipment_id).all()
-    equipment = Equipment.query.get(equipment_id)
-    return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+    if request.method == 'POST':
+        # id
+        # type_of_problem
+        # description_of_problem
+        # is_resolved
+        # description_of_resoltion
+        # equipment_id
+        type_of_problem = request.form.get('type_of_problem')
+        description_of_problem = request.form.get('description_of_problem')
+        is_resolved = request.form.get('is_resolved')
+        description_of_problem = request.form.get('description_of_problem')
+        if is_resolved == True:
+            is_resolved = True
+        else:
+            is_resolved = False
+
+        
+        history = EquipmentMaintenance(type_of_problem=type_of_problem, description_of_problem=description_of_problem, is_resolved=is_resolved, description_of_resoltion=description_of_problem, equipment_id=equipment_id)
+        db.session.add(history)
+        db.session.commit()
+        return redirect(url_for('maintenance_history', equipment_id=equipment_id))
+    else:
+        maintenance_history = EquipmentMaintenance.query.filter_by(equipment_id=equipment_id).all()
+        equipment = Equipment.query.get(equipment_id)
+        return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+
+
 
 @app.route('/owned/<int:equipment_id>')
 def equipment_owned(equipment_id):
     owned_information = EquipmentOwned.query.filter_by(equipment_id=equipment_id).all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('owned.html', owned = owned_information, equipment=equipment)
+    return render_template('owned.html', owned_information= owned_information, equipment=equipment)
 
 
 @app.route('/leased/<int:equipment_id>')
 def equipment_leased(equipment_id):
-    leased_information = EquipmentLeased.query.filter_by(equipment_id=equipment_id).all()
+    leased_information = EquipmentLeased.query.all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('leased.html', leased=leased_information, equipment=equipment)
+    return render_template('leased.html', leased_information=leased_information, equipment=equipment)
 
-@app.route('/vendors')
+@app.route('/vendors', methods=['POST', 'GET'])
 def vendors():
-    equipment_data = Equipment.query.all()
-    # Iterating over the equipment objects and getting the vendors data
-    vendors_data = []
-    for equipment in equipment_data:
-        for vendor in equipment.vendor:
-            print(vendor)
-    return render_template('vencodrs.html')
+    if "GET" == request.method:
+        vendor_data = Vendors.query.all()
+        return render_template('vendors.html', equipment_data=vendor_data)
+    if "POST" == request.method:
+        search_item = request.form.get('search_item')
+        if search_item:
+            vendor_data = Vendors.query.filter(Vendors.name.like('%'+search_item+'%')).all()
+            return render_template('vendors.html', equipment_data=vendor_data)
+
+        
+        return redirect(url_for('vendors'))
 
 
 @ login_manager.user_loader
