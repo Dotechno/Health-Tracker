@@ -6,7 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import random, string
+import random
+import string
 import appointment
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
@@ -21,23 +22,15 @@ app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 
 # db = SQLAlchemy(app)
-
-
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-# populate slots
-two_month_appointments = ""
-MIN_WEEK = 0
-MAX_WEEK = 7
-current_week_index = 0
-appointment_type_selected = ""
-current_physician_id = 0
-get_user_selected_appointments = ""
-appointment_type = ""
+# Work around autopep8 E402
+if True:
+    from CONSTANT import *
 
 
-# Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
+# Work around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
     from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment
 
@@ -74,12 +67,6 @@ def register():
         if User.query.filter_by(username=username).first():
             flash('Username already exists!', 'danger')
             return redirect(url_for('register'))
-
-        # create physician class if user is physician
-        if user.roles == 'physician':
-            physician = Physician(physician_name=username)
-            db.session.add(physician)
-            db.session.commit()
 
         db.session.add(user)
         db.session.commit()
@@ -447,13 +434,17 @@ def retrieve_medication():
 def physician_scheduler():
     global two_month_appointments, current_physician_id
     # get physican id from current_user.username
-    current_physician_id = Physician.query.filter_by(physician_name=current_user.username).first().id
+    current_physician_id = Physician.query.filter_by(
+        physician_name=current_user.username).first().id
     physician_selected = find_physician_by_id(current_physician_id)
-    physician_appointments = find_appointments_by_physician_id(current_physician_id)
-    two_month_appointments = appointment.set_up(physician_selected.work_time_start, 
-        physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
-    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
+    physician_appointments = find_appointments_by_physician_id(
+        current_physician_id)
+    two_month_appointments = appointment.set_up(physician_selected.work_time_start,
+                                                physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+    this_week = appointment.helper.get_subarray(
+        two_month_appointments, current_week_index, 7)
     return render_template("appointments_scheduler.html", data=this_week)
+
 
 @app.route("/slot_clicked", methods=["POST"])
 def slot_clicked():
@@ -462,45 +453,56 @@ def slot_clicked():
     appointment.helper.update_slot(two_month_appointments, slot_id)
     return ('', 204)
 
+
 @app.route("/week_selected", methods=["POST"])
 def week_selected():
     global current_week_index
     direction = request.form.get('direction')
-    
+
     if direction == 'left' and current_week_index > MIN_WEEK:
         current_week_index -= 1
     elif direction == 'right' and current_week_index < MAX_WEEK:
         current_week_index += 1
     else:
         return ('', 204)
-        
+
     return refresh_scheduler_page(current_week_index)
+
 
 @app.route("/select_all", methods=["POST"])
 def select_all():
     global current_week_index
-    switch_status = True if request.form.get('switchStatus') == 'true' else False
+    switch_status = True if request.form.get(
+        'switchStatus') == 'true' else False
     day_date = request.form.get('dayDate')
-    appointment.helper.select_all_day(data=two_month_appointments, date=day_date, status=switch_status)
+    appointment.helper.select_all_day(
+        data=two_month_appointments, date=day_date, status=switch_status)
     return refresh_scheduler_page(current_week_index)
+
 
 @app.route("/select_week", methods=["POST"])
 def select_week():
     global current_week_index
-    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
+    this_week = appointment.helper.get_subarray(
+        two_month_appointments, current_week_index, 7)
     appointment.helper.select_all_week(this_week)
     return refresh_scheduler_page(current_week_index)
 
+
 def refresh_scheduler_page(current_week_index):
     global appointment_type_selected
-    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
+    this_week = appointment.helper.get_subarray(
+        two_month_appointments, current_week_index, 7)
     return render_template("appointments_scheduler.html", data=this_week, appointment_type=appointment_type_selected)
+
 
 @app.route('/confirm_appointment', methods=['POST'])
 def confirm_appointment():
     global get_user_selected_appointments
-    get_user_selected_appointments = appointment.helper.get_selected_appointments(two_month_appointments)
+    get_user_selected_appointments = appointment.helper.get_selected_appointments(
+        two_month_appointments)
     return ("", 204)
+
 
 @app.route('/physician_redirect', methods=["POST"])
 def physician_redirect():
@@ -508,43 +510,52 @@ def physician_redirect():
     appointment_type = request.form['appointment_type']
     return {'redirect': url_for("physician_home_redirect")}
 
+
 @app.route('/physician_home_redirect')
 def physician_home_redirect():
     global current_physician_id, get_user_selected_appointments, appointment_type
     current_physician = find_physician_by_id(current_physician_id)
     for appointment in get_user_selected_appointments:
         date, hour = appointment.split(" ")
-        add_appointment(date_time=appointment, date=date, type=appointment_type, time=hour, physician_id=current_physician.id)
+        add_appointment(date_time=appointment, date=date, type=appointment_type,
+                        time=hour, physician_id=current_physician.id)
     return ("", 204)
-    #return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+    # return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
 
 @app.route('/physician')
 def physician_home():
-  return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+    return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
 
 def find_physician_by_id(physician_id):
     return Physician.query.filter_by(id=physician_id).first()
+
 
 def get_all_physicians():
     physicians = Physician.query.all()
     return physicians
 
+
 def find_appointments_by_physician_id(physician_id):
     return Appointment.query.filter_by(physician_id=physician_id).all()
+
 
 def get_all_appointments():
     appointments = Appointment.query.all()
     return appointments
 
+
 def add_appointment(date_time, date, type, time, physician_id):
     new_appointment = Appointment(appointment_date_time=date_time,
-        appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
-    
-    #service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
-    #db.session.add(service)
+                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
+
+    # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
+    # db.session.add(service)
     db.session.add(new_appointment)
     db.session.commit()
-    
+
+
 @app.route('/add_physcian', methods=['POST'])
 def add_physcian():
     data = request.get_json()
@@ -556,16 +567,17 @@ def add_physcian():
     start_time = start_time_obj.strftime('%H:%M:%S')
     end_time_obj = datetime.strptime(end_time, '%H:%M')
     end_time = end_time_obj.strftime('%H:%M:%S')
-    
+
     days_working = ' '.join([str(elem) for elem in data['workDays']])
-    new_physcian = Physician(physician_name=name, cell_phone_number=phone_number, 
-                    work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+    new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                             work_time_start=start_time, work_time_end=end_time, work_days=days_working)
     db.session.add(new_physcian)
     db.session.commit()
-    
+
     create_dummy_physicians()
-    
+
     return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
 
 def create_dummy_physicians():
     for i in range(10):
@@ -587,13 +599,14 @@ def create_dummy_physicians():
         days_working = ' '.join(working_days)
 
         # Create new physician object and add to database
-        new_physician = Physician(physician_name=name, cell_phone_number=phone_number, 
+        new_physician = Physician(physician_name=name, cell_phone_number=phone_number,
                                   work_time_start=start_time, work_time_end=end_time, work_days=days_working)
         db.session.add(new_physician)
 
     db.session.commit()
-    
+
 ############################# Amar End Here #####################################
+
 
 @ app.route('/pricing')
 def pricing():
