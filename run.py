@@ -433,17 +433,20 @@ def retrieve_medication():
 @app.route("/physician-scheduler", methods=["GET", "POST"])
 def physician_scheduler():
     global two_month_appointments, current_physician_id
-    # get physican id from current_user.username
-    current_physician_id = Physician.query.filter_by(
-        physician_name=current_user.username).first().id
-    physician_selected = find_physician_by_id(current_physician_id)
-    physician_appointments = find_appointments_by_physician_id(
-        current_physician_id)
-    two_month_appointments = appointment.set_up(physician_selected.work_time_start,
-                                                physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
-    this_week = appointment.helper.get_subarray(
-        two_month_appointments, current_week_index, 7)
-    return render_template("appointments_scheduler.html", data=this_week)
+    if current_user.roles == "admin":
+        return physician_home()
+    else:
+        # get physican id from current_user.username
+        current_physician_id = Physician.query.filter_by(\
+            physician_name=current_user.username).first().id
+        physician_selected = find_physician_by_id(current_physician_id)
+        physician_appointments = find_appointments_by_physician_id(
+            current_physician_id)
+        two_month_appointments = appointment.set_up(physician_selected.work_time_start,
+                                                    physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+        this_week = appointment.helper.get_subarray(
+            two_month_appointments, current_week_index, 7)
+        return render_template("appointments_scheduler.html", data=this_week)
 
 
 @app.route("/slot_clicked", methods=["POST"])

@@ -149,76 +149,76 @@
 
 	<script>
 		$(document).ready(function() {
-		$('input[id^="selectAllSwitch-"]').on('click', function() {
-			var switchStatus = $(this).prop('checked');
-			var dayDate = $(this).data('date');
+			$('input[id^="selectAllSwitch-"]').on('click', function() {
+				var switchStatus = $(this).prop('checked');
+				var dayDate = $(this).data('date');
 
-			$.ajax({
-			url: '/select_all',
-			method: 'POST',
-			data: {
-				switchStatus: switchStatus,
-				dayDate: dayDate
-			},
-			success: function(response) {
-				$('body').html(response);
-			}
+				$.ajax({
+				url: '/select_all',
+				method: 'POST',
+				data: {
+					switchStatus: switchStatus,
+					dayDate: dayDate
+				},
+				success: function(response) {
+					$('body').html(response);
+				}
+				});
 			});
 		});
+
+		$(document).ready(function() {
+			$('#patientSelect').select2();
+			});
+
+			$(document).on('click', '#dropdownMenuButton1, .dropdown-item', function() {
+			var dropdownMenu = document.getElementById('dropdownMenuButton1');
+			dropdownMenu.classList.toggle('show');
+			console.log("open");
 		});
 
 		$(document).ready(function() {
-		$('#patientSelect').select2();
-		});
+			const confirmButton = document.querySelector('#confirm_appointment_type');
 
-		$(document).on('click', '#dropdownMenuButton1, .dropdown-item', function() {
-		var dropdownMenu = document.getElementById('dropdownMenuButton1');
-		dropdownMenu.classList.toggle('show');
-		console.log("open");
-		});
-
-		$(document).ready(function() {
-		const confirmButton = document.querySelector('#confirm_appointment_type');
-
-		confirmButton.addEventListener('click', function() {
-			const dropdown = document.getElementById("appointmentTypeDropdown");
-			const selectedOption = dropdown.options[dropdown.selectedIndex];
-			const selectedOptionText = selectedOption.text;
-			console.log(selectedOptionText);
-			confirm(selectedOptionText);
-		});
+			confirmButton.addEventListener('click', function() {
+				const dropdown = document.getElementById("appointmentTypeDropdown");
+				const selectedOption = dropdown.options[dropdown.selectedIndex];
+				const selectedOptionText = selectedOption.text;
+				console.log(selectedOptionText);
+				confirm(selectedOptionText);
+			});
 		});
 
 		function selectWeek() {
-		$.ajax({
-			url: '/select_week',
-			method: 'POST',
-			success: function(response) {
-			$('body').html(response);
-			}
-		});
+			$.ajax({
+				url: '/select_week',
+				method: 'POST',
+				success: function(response) {
+				$('body').html(response);
+				}
+			});
 		}
 
 		function changeWeek(direction) {
-		$.ajax({
-			url: '/week_selected',
-			method: 'POST',
-			data: { direction: direction },
-			success: function(response) {
-			$('body').html(response);
-			}
-		});
+			$.ajax({
+				url: '/week_selected',
+				method: 'POST',
+				data: { direction: direction },
+				success: function(response) {
+				$('body').html(response);
+				}
+			});
 		}
 
 		function changeButtonColor(buttonId) {
-		var button = document.getElementById(buttonId);
-		if (button.classList.contains('btn-primary')) {
-			button.classList.remove('btn-primary');
-			button.classList.add('btn-secondary');
-		} else {
-			button.classList.remove('btn-secondary');
-			button.classList.add('btn-primary');
-		}
+			var button = document.getElementById(buttonId);
+			if (button.classList.contains('btn-primary')) {
+				button.classList.remove('btn-primary');
+				button.classList.add('btn-secondary');
+			} else {
+				button.classList.remove('btn-secondary');
+				button.classList.add('btn-primary');
+			}
 		}
 
 		function confirm_appointments(){
@@ -233,26 +233,26 @@
 		}
 
 		function getAppointments(appointments){
-		console.log("getAppointments")
-		console.log(appointments);
-		if(appointments.length == 0){
-			showToast("Fix to Proceed", "No Appointments Selected...");
-		}
-		else{
-			$('#confirmModal').modal('show');
-		}
+			console.log("getAppointments")
+			console.log(appointments);
+			if(appointments.length == 0){
+				showToast("Fix to Proceed", "No Appointments Selected...");
+			}
+			else{
+				$('#confirmModal').modal('show');
+			}
 		}
 
 		function confirm(appointment_type){
-		$.ajax({
-			type: 'POST',
-			url: "/physician_redirect",
-			data: {appointment_type: appointment_type },
-			success: function(response) {
-				showToast("Success", "Appointments Confirmed!");
-				//window.location.href = response.redirect;
-			},
-		});
+			$.ajax({
+				type: 'POST',
+				url: "/physician_redirect",
+				data: {appointment_type: appointment_type },
+				success: function(response) {
+					showToast("Success", "Appointments Confirmed!");
+					//window.location.href = response.redirect;
+				},
+			});
 		}
 
 		function showToast(title, body) {
