@@ -33,57 +33,6 @@
     </div>
 
     <form action="/lab_tracking/" method="POST">
-        <div>
-            <!-- <label for="search-select">Search Type:</label> -->
-            <!-- <select class="form-control" id="search-select" name="search_type" ><br> -->
-            <!-- <option value="patient">Search by Patient</option> -->
-            <!-- <option value="physician">Search by Physician</option> -->
-            <!-- <option value="test">Search by Lab Type</option> -->
-            <!-- <option value="labphy">Search by Lab Type Ordered by Physician</option> -->
-            <!-- </select> -->
-            <!-- <label for="lab-test-select">Lab Type:</label> -->
-            <!-- <select class="form-control" id="lab-test-select" name="lab_tester" disabled> -->
-            <!-- {% if lab_test %} -->
-            <!-- {% for test in lab_test %} -->
-            <!-- <option value="{{ test.id }}">{{ test.lab_test_name }}</option> -->
-            <!-- {% endfor %} -->
-            <!-- {% else %} -->
-            <!-- <option>No lab tests found.</option> -->
-            <!-- {% endif %} -->
-            <!--  -->
-            <!-- </select> -->
-            <!-- <br> -->
-            <!-- <label for="search_query">Name Search:</label> -->
-            <!-- <input type="text" name="search_query" id="search_query" placeholder="Type Here">< -->
-
-
-
-            <!--   <script>
-            document.getElementById("search-select").addEventListener("change", function() {
-                if (this.value == "labphy") {
-                    document.getElementById("lab-test-select").removeAttribute("disabled");
-                    document.getElementById("search_query").removeAttribute("disabled");
-                }
-                else if (this.value == "test") {
-                    document.getElementById("lab-test-select").removeAttribute("disabled");
-                    document.getElementById("search_query").setAttribute("disabled", "");
-                }
-                else if (this.value == "physician") {
-                    document.getElementById("lab-test-select").setAttribute("disabled", "");
-                    document.getElementById("search_query").removeAttribute("disabled");
-                }
-                else if (this.value == "patient") {
-                    document.getElementById("lab-test-select").setAttribute("disabled", "");
-                    document.getElementById("search_query").removeAttribute("disabled");
-                }
-                else {
-                    document.getElementById("lab-test-select").setAttribute("disabled", "");
-                    document.getElementById("search_query").setAttribute("disabled", "");
-                }
-            });
-        </script>-->
-
-        </div>
         <div class="projects-section-line">
             <div class="projects-status">
                 <div class="item-status">
@@ -246,6 +195,7 @@
             color: rgb(220, 220, 194);
         }
     </style>
+
     <script href="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <table id="big_lab_table" class="rwd-table"> <!-- Main Table -->
         <thead>

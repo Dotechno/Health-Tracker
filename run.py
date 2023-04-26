@@ -29,7 +29,6 @@ login_manager = LoginManager(app)
 if not 'models' in sys.modules:
     from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance
 
-
 # Routes
 
 
@@ -128,9 +127,7 @@ def login():
 @login_required
 def dashboard():
     if request.method == 'GET':
-        current_user_name = current_user.username
-        # check for capitalizations for first letters
-        current_user_name = current_user_name.title()
+        current_user_name = current_user.username.title()
         print(current_user_name)
         return render_template('dashboard.html', loggedin_user=current_user_name)
 
@@ -225,6 +222,7 @@ def medical_encounter():
 
 
 @app.route('/lab_tracking/', methods=['POST', 'GET'])
+@login_required
 def lab_tracking():
 
     start_date_obj = datetime.min
@@ -253,7 +251,8 @@ def lab_tracking():
     else:
         orders = LabOrder.query.order_by(LabOrder.id).all()
     # lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
-    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
+    current_user_name = current_user.username.title()
+    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test, loggedin_user=current_user_name)
 
 
 @app.route('/lab_tracking/delete_lab_order/<int:id>')
