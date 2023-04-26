@@ -37,6 +37,9 @@ if not 'models' in sys.modules:
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    # if logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 
@@ -137,7 +140,7 @@ def lab_tracking():
             start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
             end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
             end_date_obj += timedelta(days=1)
-        #orders = LabOrder.query.order_by
+        # orders = LabOrder.query.order_by
         orders = LabOrder.query.order_by(LabOrder.id).all()
 
         print(start_date_obj)
@@ -182,8 +185,8 @@ def lab_tracking():
         #     orders = [order for order in orders if start_date_obj <=
         #               order.lab_order_date <= end_date_obj]
 
-        
-        orders = [order for order in orders if start_date_obj <= order.lab_test_date <= end_date_obj]
+        orders = [order for order in orders if start_date_obj <=
+                  order.lab_test_date <= end_date_obj]
         sort = request.args.get('sort', 'id')
         # if sort == 'patient_name':
         #     orders = LabOrder.query.order_by(LabOrder.id).all()
@@ -201,7 +204,7 @@ def lab_tracking():
         #         func.lower(LabOrder.physician_name)).all()
     else:
         orders = LabOrder.query.order_by(LabOrder.id).all()
-    #lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
+    # lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
     return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
 
@@ -304,7 +307,7 @@ def lab_tracking_add_test():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 ############################# Shweta Starts Here #####################################
 
