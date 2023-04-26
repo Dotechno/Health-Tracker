@@ -105,6 +105,7 @@ def create_patient():
 
 @app.route('/patient', methods=['GET', 'POST'])
 def patient():
+
     patients = Patient.query.order_by(Patient.id).all()
     return render_template('patient.html', patients=patients)
 
