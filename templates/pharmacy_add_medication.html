@@ -1,75 +1,74 @@
-<!DOCTYPE html>
-<html>
-    {% block head %}
+{% extends "dashboard.html" %}
 
-    <title>Family Medicine Practice</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link href="../static/css/createprescription.css" rel="stylesheet">
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+{% block main_content %}
 
 
-    {% endblock %}
-     <script>
-      function myFunction() {
-        alert("Medication Successfully Added !");
-      }
-      </script> 
-
-    {% block body %}
-    
-    <div class="testbox">
-        <BR>
-
-          
-        <form action="" method="POST" id="medication_form">
-          
-        <br/>
-        <fieldset>
-
-          <legend>Prescription Information</legend>
-          
-          <div class="item">
-            <label >Medication Name<span>*</span></label>
-            <input type="text" name="Medication" id="Medication" required/>
-          </div>
-          <div class="item">
-            <label > Description<span>*</span></label>
-            <input type="text"  name="desc" id="desc" required/>
-          </div>
-          <div class="item">
-            <label > Dosage<span>*</span></label>
-            <input type="text"  name="dosage" id="dosage" required/>
-          </div>
-          
-          <div class="item">
-            <label for="bdate"> Frequency of Medication <span>*</span></label>
-            <input  type="text" name="frequency" id="frequency"required/>
-          </div>
+<title>Family Medicine Practice</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+  integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link href="../static/css/createprescription.css" rel="stylesheet">
+<link href="../static/css/bootstrap.min.css" rel="stylesheet">
 
 
-          <div class="item">
-            <label > Side Effects<span>*</span></label>
-            <input type="text"   name="side_effects" id="side_effects" required/>
-          </div>
+<script>
+  function myFunction() {
+    alert("Medication Successfully Added !");
+  }
+</script>
 
-      
-          <div class="item">
-            <label> Interactions <span>*</span></label>
-            <input id="interactions" type="text" name="interactions" required/>
-          </div>
-        
-          
-        </fieldset> 
-        <div class="btn-block">
-          <button type="submit" href="/" onclick="myFunction()">Submit</button>
-          <button type="reset" href="/" onclick="myFunction()">Clear</button>
 
-        </div>
-        <a href="retrieve_medication">Click here to generate report for medication</a>
+<div class="testbox">
+  <BR>
 
-      </form>
+
+  <form action="" method="POST" id="medication_form">
+
+    <br />
+    <fieldset>
+
+      <legend>Prescription Information</legend>
+
+      <div class="item">
+        <label>Medication Name<span>*</span></label>
+        <input type="text" name="Medication" id="Medication" required />
+      </div>
+      <div class="item">
+        <label> Description<span>*</span></label>
+        <input type="text" name="desc" id="desc" required />
+      </div>
+      <div class="item">
+        <label> Dosage<span>*</span></label>
+        <input type="text" name="dosage" id="dosage" required />
+      </div>
+
+      <div class="item">
+        <label for="bdate"> Frequency of Medication <span>*</span></label>
+        <input type="text" name="frequency" id="frequency" required />
+      </div>
+
+
+      <div class="item">
+        <label> Side Effects<span>*</span></label>
+        <input type="text" name="side_effects" id="side_effects" required />
+      </div>
+
+
+      <div class="item">
+        <label> Interactions <span>*</span></label>
+        <input id="interactions" type="text" name="interactions" required />
+      </div>
+
+
+    </fieldset>
+    <div class="btn-block">
+      <button type="submit" href="/" onclick="myFunction()">Submit</button>
+      <button type="reset" href="/" onclick="myFunction()">Clear</button>
+
     </div>
+    <a href="retrieve_medication">Click here to generate report for medication</a>
 
-    {% endblock %} 
-    </html>
+  </form>
+</div>
+
+{% endblock %}

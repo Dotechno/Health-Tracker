@@ -1,19 +1,16 @@
-{% extends 'base.html' %}
+{% extends "dashboard.html" %}
+{% block main_content %}
 
-
-{% block head %}
 <title>Add Lab Test Type</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-{% endblock %}
 
-{% block body %}
-<div class = "content">
+<div class="content">
     <a href="/lab_tracking/">Return to Lab Tracker</a>
 
 
-    <form action= '/lab_tracking_add_test/' method="POST"> 
+    <form action='/lab_tracking_add_test/' method="POST">
         <h1>Add Test Type</h1>
-        
+
         <label for="testname">Test name:</label>
         <input type="text" name="testname" id="testname"><br>
         <label for="result_type">Type of Result:</label>
@@ -22,9 +19,9 @@
             <option value="pos_neg">Positive/Negative</option>
         </select>
         <br><label for="lowrange">Low End of Healthy Range of Results:</label>
-        <input type="text" name="lowrange" id="lowrange" ><br>
+        <input type="text" name="lowrange" id="lowrange"><br>
         <label for="highrange">High End of Healthy Range of Results:</label>
-        <input type="text" name="highrange" id="highrange" ><br>
+        <input type="text" name="highrange" id="highrange"><br>
         <label for="posi_negi">Healthy Result:</label>
         <select class="form-control" id="posi_negi" name="posi_negi" disabled>
             <option value="Positive">Positive</option>
@@ -32,7 +29,7 @@
         </select><br>
 
         <script>
-            document.getElementById("result_type").addEventListener("change", function() {
+            document.getElementById("result_type").addEventListener("change", function () {
                 if (this.value == "int_range") {
                     document.getElementById("highrange").removeAttribute("disabled");
                     document.getElementById("lowrange").removeAttribute("disabled");
@@ -44,7 +41,7 @@
                     document.getElementById("highrange").setAttribute("disabled", "");
                     document.getElementById("lowrange").setAttribute("disabled", "");
                 }
-                else{
+                else {
                     document.getElementById("highrange").removeAttribute("disabled");
                     document.getElementById("lowrange").removeAttribute("disabled");
                     document.getElementById("posi_negi").setAttribute("disabled", "");
@@ -56,18 +53,17 @@
     </form>
 
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="flashes">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     {% endwith %}
 
 </div>
 
 
-    
-{% endblock %}
 
+{% endblock %}
