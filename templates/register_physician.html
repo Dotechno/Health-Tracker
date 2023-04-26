@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register</title>
+
+    <link rel="stylesheet" href="../static/css/login.css">
+    <script>function show_hide_password(target) {
+            var input = document.getElementById('password-input');
+            if (input.getAttribute('type') == 'password') {
+                target.classList.add('view');
+                input.setAttribute('type', 'text');
+            } else {
+                target.classList.remove('view');
+                input.setAttribute('type', 'password');
+            }
+            return false;
+        }</script>
+
+    <script>
+        function showPhysicianFields(select) {
+            var physicianFields = document.getElementById("physician-fields");
+            if (select.value == "physician") {
+                physicianFields.style.display = "block";
+            } else {
+                physicianFields.style.display = "none";
+            }
+        }
+        // on change update
+        document.getElementById("roles").onchange = function () {
+            showPhysicianFields(this);
+        };
+    </script>
+
+</head>
+
+<body>
+    <section>
+        <div class="box">
+            <div class="square" style="--i:0;"></div>
+            <div class="square" style="--i:1;"></div>
+            <div class="square" style="--i:2;"></div>
+            <div class="square" style="--i:3;"></div>
+            <div class="square" style="--i:4;"></div>
+            <div class="square" style="--i:5;"></div>
+
+            <div class="container">
+                <div class="form">
+                    <h2>Register</h2>
+                    <form action="" method="POST">
+                        <div class="inputBx">
+                            <input name="username" type="text" required="required">
+                            <span>User Name</span>
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="inputBx password">
+                            <input id="password-input" id="password" type="password" name="password"
+                                required="required">
+                            <span>Password</span>
+                            <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <!--  Auth key so that when creating admin account  -->
+
+                        <!-- Create a dropdown with the following roles : ['Practitioner', 'Admin', 'Lab Technition'] -->
+                        <select type='dropdown' class="inputBx" id="roles" name="roles" style="  
+                        outline: none;
+                        border: none;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        background: rgba(255, 255, 255, 0.2);
+                        padding: 7px 10px;
+                        padding-left: 34px;
+                        border-radius: 15px;
+                        color: #fff;
+                        font-size: 16px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);">
+                            <option class="inputBx" selected value="physician">Physician</option>
+                        </select>
+
+                        <div id="physician-fields" class="extra">
+                            <div class="inputBx">
+                                <span for="physician_name" class="form-label">Physician Name</span>
+                                <input type="text" class="form-control" id="physician_name" required>
+
+                            </div>
+                            <div class="inputBx">
+                                <label for="cell_phone_number" class="inputBx">Cell Phone Number</label>
+                                <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}"
+                                    maxlength="10" required>
+
+                            </div>
+                            <div class="mb-3">
+                                <span for="work_time_start" class="form-label">Work Time Start</span>
+                                <select class="form-select" id="work_time_start" style="  
+                                outline: none;
+                                border: none;
+                                border: 1px solid rgba(255, 255, 255, 0.2);
+                                background: rgba(255, 255, 255, 0.2);
+                                padding: 7px 10px;
+                                padding-left: 34px;
+                                border-radius: 15px;
+                                color: #fff;
+                                font-size: 16px;
+                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);" required>
+                                    <option value="" disabled selected>Select Start Time</option>
+                                    <option value="00:00">12:00 AM</option>
+                                    <option value="01:00">1:00 AM</option>
+                                    <option value="02:00">2:00 AM</option>
+                                    <option value="03:00">3:00 AM</option>
+                                    <option value="04:00">4:00 AM</option>
+                                    <option value="05:00">5:00 AM</option>
+                                    <option value="06:00">6:00 AM</option>
+                                    <option value="07:00">7:00 AM</option>
+                                    <option value="08:00">8:00 AM</option>
+                                    <option value="09:00">9:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="13:00">1:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="15:00">3:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                    <option value="17:00">5:00 PM</option>
+                                    <option value="18:00">6:00 PM</option>
+                                    <option value="19:00">7:00 PM</option>
+                                    <option value="20:00">8:00 PM</option>
+                                    <option value="21:00">9:00 PM</option>
+                                    <option value="22:00">10:00 PM</option>
+                                    <option value="23:00">11:00 PM</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="work_time_end" class="form-label">Work Time End</label>
+                                <select class="form-select" id="work_time_end" required>
+                                    <option value="" disabled selected>Select End Time</option>
+                                    <option value="00:00">12:00 AM</option>
+                                    <option value="01:00">1:00 AM</option>
+                                    <option value="02:00">2:00 AM</option>
+                                    <option value="03:00">3:00 AM</option>
+                                    <option value="04:00">4:00 AM</option>
+                                    <option value="05:00">5:00 AM</option>
+                                    <option value="06:00">6:00 AM</option>
+                                    <option value="07:00">7:00 AM</option>
+                                    <option value="08:00">8:00 AM</option>
+                                    <option value="09:00">9:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="13:00">1:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="15:00">3:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                    <option value="17:00">5:00 PM</option>
+                                    <option value="18:00">6:00 PM</option>
+                                    <option value="19:00">7:00 PM</option>
+                                    <option value="20:00">8:00 PM</option>
+                                    <option value="21:00">9:00 PM</option>
+                                    <option value="22:00">10:00 PM</option>
+                                    <option value="23:00">11:00 PM</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="work_days" class="form-label">Work Days</label>
+                                <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
+                                            value="Monday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
+                                            value="Tuesday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
+                                            value="Wednesday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
+                                            value="Thursday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
+                                            value="Friday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
+                                            value="Saturday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
+                                            value="Sunday">
+                                        <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
+                                    </div>
+                                </div>
+                                <div id="error-message" style="display:none; color:red;">
+                                    Please select at least one day of the week.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inputBx">
+                            <input type="submit" value="Register">
+                        </div>
+
+                    </form>
+                    <p>Forgot password? <a href="#">Click Here</a></p>
+                    <p>Do have an account? <a href="login">Login</a></p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>
