@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends "dashboard.html" %}
+{% block main_content %}
 <html>
 
 <head>
@@ -25,48 +26,88 @@
 
 <body>
     <a href="../create_medical_encounter" class="btn btn-primary">Create Medical Encounter</a>
-   
-    <div div class="mt-5">
-        <table class="table center" id="physcian-table">
-            <thead>
-                <tr>
-                    <th>Encounter Date</th>
-                    <th>Patient ID</th>
-                    <th>Encounter's Submission Date</th>
-                    <th>Type of Practitioner</th>
-                    <th>Patient Complaints</th>
-                    <th>Diagnosis</th>
-                    <th>Treatment Plan</th>
-                    <th>Referral to Specialist</th>
-                    <th>Recommended Followup</th>
-                    <th>Doctor's Notes</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                {% for me in mes %}
-                <tr>
-                    <td>{{ me.encounter_date}}</td>
-                    <td>{{ me.patient_id}}</td>
-                    <td>{{ me.submission_date }}</td>
-                    <td>{{ me.practitioner_type }}</td>
-                    <td>{{ me.complaint }}</td>
-                    <td>{{ me.diagnosis }}</td>
-                    <td>{{ me.treatment }}</td>
-                    <td>{{ me.referral }}</td>
-                    <td>{{ me.recommended_followup }}</td>
-                    
-                    <td>
-                        <a href="/medical_encounter/{{me.id}}/doctor_notes" class="btn btn-primary">View Note</a>
-                    </td>
-                </tr>
-                {% endfor %}
+        {%for me in mes %}
+        <div class="project-boxes jsGridView">
+            <div class="project-box-wrapper">
+                <div class="project-box" style="background-color: #fee4cb;">
+                    <div class="project-box-header">
+                        <span>{{me.encounter_date}}</span>
+                        <div class="more-wrapper">
+                            {{me.patient_id}}
+                        </div>
+                    </div>
+                    <div class="project-box-content-header">
+                        <p class="box-content-header">{{me.diagnosis}}</p>
+                        <p class="box-content-subheader">{{me.treatment}}</p>
+                    </div>
+                    <div class="box-progress-wrapper">
+                        <p class="box-progress-header">Recommended Follow Up</p>
+                        <p class="box-content-subheader" style="text-align: center">{{me.recommended_followup}}</p>
+                    </div>
+                    <div class="project-box-footer">
+                        <div class="participants">
+                            <span>{{me.practitioner_type}}</span>
+                            <button class="add-participant" style="color: #ff942e;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-plus">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                            </button>
+                        </div>
+                        <button class="days-left" style="color: #ff942e; border:none" id =  "open-modal" >
+                            View More
+                        </button>
+                        <div id="modal" class="modal">
+                            <div class="modal-content">
+                                <span id="close-modal" class="close">&times;</span>
+                                <h2>Medical Encounter Detail</h2>
+                                <span>Referral to Specialist: {{me.referral}}</span>
+                                <span>Submission Date: {{me.submission_date}}</span>
+                                <span>Complaint: {{me.complaint}}</span>
+                                <span>Doctor's Notes: {{me.notes}}</span>
+                                <span>treatment: {{me.treatment}}</span>
+                                
+                            </div>
+                            <script>
+                                // Get the modal element
+                                var modal = document.getElementById("modal");
+                
+                                // Get the button that opens the modal
+                                var btn = document.getElementById("open-modal");
+                
+                                // Get the <span> element that closes the modal
+                                var span = document.getElementById("close-modal");
+                
+                                // When the user clicks the button, open the modal
+                                btn.onclick = function () {
+                                    modal.style.display = "block";
+                                }
+                
+                                // When the user clicks on <span> (x), close the modal
+                                span.onclick = function () {
+                                    modal.style.display = "none";
+                                }
+                
+                                // When the user clicks anywhere outside of the modal, close it
+                                window.onclick = function (event) {
+                                    if (event.target == modal) {
+                                        modal.style.display = "none";
+                                    }
+                                }
+                            </script>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
 
-            </tbody>
-        </table>
-    </div>
+        
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+{% endblock %}
