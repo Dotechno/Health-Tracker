@@ -1,6 +1,5 @@
 import sys
 
-
 from flask import Flask, abort, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
@@ -226,7 +225,7 @@ def medication(patient_id):
 
 
 @app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
-def appointment(patient_id):
+def patient_appointment(patient_id):
     all_appointment = Appointment.query.filter_by(patient_id=patient_id).all()
     patient = Patient.query.get(patient_id)
     return render_template('appointment.html', all_appointment=all_appointment, patient=patient)
@@ -731,7 +730,9 @@ def physician_scheduler():
         physician_appointments = find_appointments_by_physician_id(
             current_physician_id)
         two_month_appointments = appointment.set_up(physician_selected.work_time_start,
-                                                    physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+                                                    physician_selected.work_time_end,
+                                                    physician_selected.work_days,
+                                                    physician_appointments)
         this_week = appointment.helper.get_subarray(
             two_month_appointments, current_week_index, 7)
         return render_template("appointments_scheduler.html", data=this_week)
@@ -826,7 +827,7 @@ def physician_home_redirect():
     current_physician = find_physician_by_id(current_physician_id)
     for appointment in get_user_selected_appointments:
         date, hour = appointment.split(" ")
-        add_appointment(date_time=appointment, date=date, type=appointment_type,
+        add_appointment(physician_name=current_physician.physician_name, date_time=appointment, date=date, type=appointment_type,
                         time=hour, physician_id=current_physician.id)
     return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
 
@@ -854,8 +855,9 @@ def get_all_appointments():
     return appointments
 
 
-def add_appointment(date_time, date, type, time, physician_id):
-    new_appointment = Appointment(appointment_date_time=date_time,
+def add_appointment(physician_name, date_time, date, type, time, physician_id):
+    physcian = find_physician_by_id(physician_id)
+    new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
                                   appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
 
     # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
