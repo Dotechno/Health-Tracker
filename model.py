@@ -106,14 +106,7 @@ class LabOrder(db.Model):  # 05
         return '<LabOrder %r>' % self.id
 
 
-# class Physician(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     appointment = db.relationship('Appointment', backref='appointment')
-#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-
 class Physician(db.Model):
-    # __bind_key__ = 'physician'
     id = db.Column(db.Integer, primary_key=True)
     # employee_id = db.Column(db.Integer, nullable=False)
     physician_name = db.Column(db.String(200), nullable=False)
