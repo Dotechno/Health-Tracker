@@ -21,6 +21,16 @@
 		background-color: lightsteelblue;
 		margin-right: 5px;
 		margin-top: 10px;
+		z-index: 100;
+	}
+
+	.toast-header {
+		padding: 10px;
+		font-size: 14px;
+	}
+
+	.toast-body {
+		padding: 10px;
 	}
 	</style>
 
@@ -247,7 +257,7 @@
 				data: {appointment_type: appointment_type },
 				success: function(response) {
 					showToast("Success", "Appointments Confirmed!");
-					//window.location.href = response.redirect;
+					window.location.href = response.redirect;
 				},
 			});
 		}

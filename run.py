@@ -9,6 +9,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import random
 import string
 import appointment
+import json
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime
@@ -455,6 +456,7 @@ def physician_appointments():
     physician_id = request.form.get('physician_id')
     physician_selected = find_physician_by_id(physician_id)
     physician_appointments = find_appointments_by_physician_id(physician_id)
+    current_physician_id = physician_id
     two_month_appointments = appointment.set_up(physician_selected.work_time_start,
             physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
     this_week = appointment.helper.get_subarray(
@@ -513,10 +515,11 @@ def refresh_scheduler_page(current_week_index):
 
 @app.route('/confirm_appointment', methods=['POST'])
 def confirm_appointment():
+    print("confirm_appointment")
     global get_user_selected_appointments
-    get_user_selected_appointments = appointment.helper.get_selected_appointments(
-        two_month_appointments)
-    return ("", 204)
+    get_user_selected_appointments = appointment.helper.get_selected_appointments(two_month_appointments)
+    print(f"get_user_selected_appointments: {get_user_selected_appointments}")
+    return json.dumps({'appointments': get_user_selected_appointments})
 
 
 @app.route('/physician_redirect', methods=["POST"])
@@ -532,10 +535,9 @@ def physician_home_redirect():
     current_physician = find_physician_by_id(current_physician_id)
     for appointment in get_user_selected_appointments:
         date, hour = appointment.split(" ")
-        add_appointment(date_time=appointment, date=date, type=appointment_type,
-                        time=hour, physician_id=current_physician.id)
-    return ("", 204)
-    # return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+        add_appointment(date_time=appointment, date=date, type=appointment_type, 
+            time=hour, physician_id=current_physician.id)
+    return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
 
 
 @app.route('/physician')
@@ -589,7 +591,7 @@ def add_physcian():
     db.session.add(new_physcian)
     db.session.commit()
 
-    create_dummy_physicians()
+    #create_dummy_physicians()
 
     return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
 
