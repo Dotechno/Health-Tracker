@@ -253,4 +253,299 @@
         table.buttons().container().appendTo('.yohere');
 
     });</script>
+
+<div class="modal fade" show id="create_lab_test" tabindex="-1" aria-labelledby="new-physcian-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="new-physcian-label">Add Physician</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="physician_name" class="form-label">Physician Name</label>
+                        <input type="text" class="form-control" id="physician_name" required>
+                        <small class="form-text text-muted">First + Last Name</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
+                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
+                            required>
+                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_start" class="form-label">Work Time Start</label>
+                        <select class="form-select" id="work_time_start" required>
+                            <option value="" disabled selected>Select Start Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_end" class="form-label">Work Time End</label>
+                        <select class="form-select" id="work_time_end" required>
+                            <option value="" disabled selected>Select End Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="work_days" class="form-label">Work Days</label>
+                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
+                                    value="Monday">
+                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
+                                    value="Tuesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
+                                    value="Wednesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
+                                    value="Thursday">
+                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
+                            </div>
+                            <div style="clear:both;"></div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
+                                    value="Friday">
+                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
+                                    value="Saturday">
+                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
+                                    value="Sunday">
+                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
+                            </div>
+                        </div>
+                        <div id="error-message" style="display:none; color:red;">
+                            Please select at least one day of the week.
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_lab_order" tabindex="-1" aria-labelledby="new-physcian-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="new-physcian-label">Add Physician</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="physician_name" class="form-label">Physician Name</label>
+                        <input type="text" class="form-control" id="physician_name" required>
+                        <small class="form-text text-muted">First + Last Name</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
+                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
+                            required>
+                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_start" class="form-label">Work Time Start</label>
+                        <select class="form-select" id="work_time_start" required>
+                            <option value="" disabled selected>Select Start Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_time_end" class="form-label">Work Time End</label>
+                        <select class="form-select" id="work_time_end" required>
+                            <option value="" disabled selected>Select End Time</option>
+                            <option value="00:00">12:00 AM</option>
+                            <option value="01:00">1:00 AM</option>
+                            <option value="02:00">2:00 AM</option>
+                            <option value="03:00">3:00 AM</option>
+                            <option value="04:00">4:00 AM</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="work_days" class="form-label">Work Days</label>
+                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
+                                    value="Monday">
+                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
+                                    value="Tuesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
+                                    value="Wednesday">
+                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
+                                    value="Thursday">
+                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
+                            </div>
+                            <div style="clear:both;"></div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
+                                    value="Friday">
+                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
+                                    value="Saturday">
+                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
+                            </div>
+                            <div class="day-checkbox">
+                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
+                                    value="Sunday">
+                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
+                            </div>
+                        </div>
+                        <div id="error-message" style="display:none; color:red;">
+                            Please select at least one day of the week.
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Script -->
+<script>
+    function openAddTest() {
+        $('#create_lab_test').modal('show');
+    }
+
+    function closeAddTest() {
+        $('#create_lab_test').modal('hide');
+
+    }
+    function openAddOrder() {
+        $('#create_lab_order').modal('show');
+    }
+
+    function openAddOrder() {
+        $('#create_lab_order').modal('hide');
+
+    }
+
+</script>
+
+
 {% endblock %}
