@@ -137,65 +137,70 @@ def lab_tracking():
             start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
             end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
             end_date_obj += timedelta(days=1)
+        #orders = LabOrder.query.order_by
+        orders = LabOrder.query.order_by(LabOrder.id).all()
 
-        if searcht == 'patient':
-            # get the search query from the form
-            search_query = request.form['search_query']
+        print(start_date_obj)
+        print(end_date_obj)
 
-            # search for lab orders by patient name
-            orders = LabOrder.query.filter(
-                LabOrder.patient_name.ilike(f'%{search_query}%')).all()
-            # render the template with the search results
-            orders = [order for order in orders if start_date_obj <=
-                      order.lab_test_date <= end_date_obj]
+        # if searcht == 'patient':
+        #     # get the search query from the form
+        #     search_query = request.form['search_query']
 
-        elif searcht == 'physician':
+        #     # search for lab orders by patient name
+        #     orders = LabOrder.query.filter(
+        #         LabOrder.patient_name.ilike(f'%{search_query}%')).all()
+        #     # render the template with the search results
+        #     orders = [order for order in orders if start_date_obj <=
+        #               order.lab_test_date <= end_date_obj]
 
-            search_query = request.form['search_query']
-            orders = LabOrder.query.filter(
-                LabOrder.physician_name.ilike(f'%{search_query}%')).all()
-            orders = [order for order in orders if start_date_obj <=
-                      order.lab_order_date <= end_date_obj]
+        # elif searcht == 'physician':
 
-        elif searcht == 'test':
-            labtest_id = int(request.form.get('lab_tester'))
-            test = LabTest.query.get(labtest_id)
-            search_query = test.lab_test_name
-            orders = LabOrder.query.filter(
-                LabOrder.test_name.ilike(f'%{search_query}%')).all()
-            orders = [order for order in orders if start_date_obj <=
-                      order.lab_order_date <= end_date_obj]
+        #     search_query = request.form['search_query']
+        #     orders = LabOrder.query.filter(
+        #         LabOrder.physician_name.ilike(f'%{search_query}%')).all()
+        #     orders = [order for order in orders if start_date_obj <=
+        #               order.lab_order_date <= end_date_obj]
 
-        elif searcht == 'labphy':
-            labtest_id = int(request.form.get('lab_tester'))
-            labrid = LabTest.query.get(labtest_id)
-            labtest_name = labrid.lab_test_name
+        # elif searcht == 'test':
+        #     labtest_id = int(request.form.get('lab_tester'))
+        #     test = LabTest.query.get(labtest_id)
+        #     search_query = test.lab_test_name
+        #     orders = LabOrder.query.filter(
+        #         LabOrder.test_name.ilike(f'%{search_query}%')).all()
+        #     orders = [order for order in orders if start_date_obj <=
+        #               order.lab_order_date <= end_date_obj]
 
-            physician_name = request.form.get('search_query')
-            orders = LabOrder.query.filter(LabOrder.physician_name.ilike(
-                f'%{physician_name}%'), LabOrder.test_name == labtest_name).all()
-            orders = [order for order in orders if start_date_obj <=
-                      order.lab_order_date <= end_date_obj]
+        # elif searcht == 'labphy':
+        #     labtest_id = int(request.form.get('lab_tester'))
+        #     labrid = LabTest.query.get(labtest_id)
+        #     labtest_name = labrid.lab_test_name
 
+        #     physician_name = request.form.get('search_query')
+        #     orders = LabOrder.query.filter(LabOrder.physician_name.ilike(
+        #         f'%{physician_name}%'), LabOrder.test_name == labtest_name).all()
+        #     orders = [order for order in orders if start_date_obj <=
+        #               order.lab_order_date <= end_date_obj]
 
-    else:
+        
+        orders = [order for order in orders if start_date_obj <= order.lab_test_date <= end_date_obj]
         sort = request.args.get('sort', 'id')
-        if sort == 'patient_name':
-            orders = LabOrder.query.order_by(
-                func.lower(LabOrder.patient_name)).all()
+        # if sort == 'patient_name':
+        #     orders = LabOrder.query.order_by(LabOrder.id).all()
+
         # elif sort == 'test_name':
         #    orders = LabOrder.query.order_by(func.lower(LabOrder.test_name)).all()
         # elif sort == 'lab_test_result':
         #    orders = LabOrder.query.order_by(LabOrder.lab_test_result).all()
-        elif sort == 'lab_order_date':
-            orders = LabOrder.query.order_by(LabOrder.lab_order_date).all()
-        elif sort == 'lab_test_date':
-            orders = LabOrder.query.order_by(LabOrder.lab_test_date).all()
-        elif sort == 'physician_name':
-            orders = LabOrder.query.order_by(
-                func.lower(LabOrder.physician_name)).all()
-        else:
-            orders = LabOrder.query.order_by(LabOrder.id).all()
+        # elif sort == 'lab_order_date':
+        #     orders = LabOrder.query.order_by(LabOrder.lab_order_date).all()
+        # elif sort == 'lab_test_date':
+        #     orders = LabOrder.query.order_by(LabOrder.lab_test_date).all()
+        # elif sort == 'physician_name':
+        #     orders = LabOrder.query.order_by(
+        #         func.lower(LabOrder.physician_name)).all()
+        # else:
+        #orders = LabOrder.query.order_by(LabOrder.id).all()
     #lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
     return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
