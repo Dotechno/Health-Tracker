@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="../static/css/physician.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+    <script src="../static/javascript/physcian.js"></script>
+</head>
+
+<body>
+    <br>
+    <br>
+    <h1 class="equipment-title" style="text-align:center">{{ equipment.type }}'s Leased Information</h1>
+    <br>
+
+    <div div class="mt-5">
+        <table class="table center" id="leased-table">
+            <thead>
+                <tr>
+                    <th>Leased ID: </th>
+                    <th>Start Date: </th>
+                    <th>End Date: </th>
+                    <th>Leasing Company: </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leased in leased_information%}
+                <tr>
+                    <td>{{ leased.id }}</td>
+                    <td>{{ leased.start_date }}</td>
+                    <<td>{{ leased.end_date }}</td>
+                        <td>{{ leased.leasing_company}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
+</body>
+
+</html>

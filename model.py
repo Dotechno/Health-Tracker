@@ -114,9 +114,9 @@ class LabOrder(db.Model):  # 05
 #     name = db.Column(db.String(200), nullable=False)
 #     appointment = db.relationship('Appointment', backref='appointment')
 #     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    
+
 class Physician(db.Model):
-    #__bind_key__ = 'physician'
+    # __bind_key__ = 'physician'
     id = db.Column(db.Integer, primary_key=True)
     # employee_id = db.Column(db.Integer, nullable=False)
     physician_name = db.Column(db.String(200), nullable=False)
@@ -124,15 +124,16 @@ class Physician(db.Model):
     work_time_start = db.Column(db.Integer, nullable=False)
     work_time_end = db.Column(db.Integer, nullable=False)
     work_days = db.Column(db.String(200), nullable=False)
-    #patients = db.relationship('Patient', backref='physician')
-    #appointments = db.relationship('Appointment', backref='physician')
-    
+    # patients = db.relationship('Patient', backref='physician')
+    # appointments = db.relationship('Appointment', backref='physician')
+
     def __str__(self):
         return f"Physician(id={self.id}, name='{self.physician_name}', phone='{self.cell_phone_number}',\
             work start={self.work_time_start}, work end={self.work_time_end}, work days='{self.work_days}')"
-    
+
+
 class Appointment(db.Model):
-    #__bind_key__ = 'Appointment'
+    # __bind_key__ = 'Appointment'
     id = db.Column(db.Integer, primary_key=True)
     physician_name = db.Column(db.String(200), nullable=False)
     appointment_date_time = db.Column(db.String(200), nullable=False)
@@ -143,7 +144,7 @@ class Appointment(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
     # service_type = db.relationship("ServiceProvidedByClinic")
-    
+
     def __str__(self):
         return f"Appointment(id={self.id}, appointment_date_time={self.appointment_date_time},\
             appointment_date={self.appointment_date}, appointment_type={self.appointment_type},\
@@ -196,3 +197,62 @@ class Medication(db.Model):
     frequency = db.Column(db.String(200), nullable=False)
     duration = db.Column(db.String(200), nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+class Equipment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    department = db.Column(db.String(200), nullable=False)
+    is_leased = db.Column(db.Boolean, nullable=False)
+    is_owned = db.Column(db.Boolean, nullable=False)
+    maintenance = db.relationship(
+        'EquipmentMaintenance', backref='equipment', lazy=True)
+    equipment_owned = db.relationship(
+        'EquipmentOwned', backref='equipment', lazy=True)
+    vendor = db.relationship('Vendors', backref='equipment', lazy=True)
+    equipment_leased = db.relationship(
+        'EquipmentLeased', backref='equipment', lazy=True)
+
+
+class Vendors(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    type_of_equipment_provided = db.Column(db.String(200), nullable=False)
+    is_preferred_vendor = db.Column(db.Boolean, nullable=False)
+    equipment_id = db.Column(db.Integer, db.ForeignKey(
+        'equipment.id'), nullable=False)
+
+
+##### Equipment Owned #####
+
+
+class EquipmentMaintenance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type_of_problem = db.Column(db.String(200), nullable=False)
+    description_of_problem = db.Column(db.String(200), nullable=False)
+    is_resolved = db.Column(db.Boolean, nullable=False)
+    description_of_resoltion = db.Column(db.String(200), nullable=False)
+    equipment_id = db.Column(db.Integer, db.ForeignKey(
+        'equipment.id'), nullable=False)
+
+
+class EquipmentLeased(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    leasing_company = db.Column(db.String(200), nullable=False)
+    equipment_id = db.Column(db.Integer, db.ForeignKey(
+        'equipment.id'), nullable=False)
+
+
+class EquipmentOwned(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_purchased = db.Column(db.DateTime, nullable=False)
+    warranty_information = db.Column(db.String(200), nullable=False)
+    equipment_id = db.Column(db.Integer, db.ForeignKey(
+        'equipment.id'), nullable=False)
+
+
+##### Equipment Owned End #####

@@ -33,8 +33,7 @@ if True:
 
 # Work around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment
-
+    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment, Equipment, Vendors, EquipmentMaintenance, EquipmentLeased, EquipmentOwned
 
 # Routes
 
@@ -156,6 +155,13 @@ def admin():
         return redirect(url_for('index'))
     users = User.query.order_by(User.username).all()
     return render_template('admin.html', users=users)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
 
 #################### Jordan Start Here ####################
 
@@ -358,10 +364,114 @@ def lab_tracking_add_test():
 
 ############################# Shane End Here #####################################
 
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
+
+############################# IAN Starts Here #####################################
+@app.route('/search_equipment/', methods=['GET', 'POST'])
+def search_equipment():
+    if request.method == 'POST':
+        search_item = request.form.get('search_item')
+        if search_item:
+            equipments = Equipment.query.filter(
+                Equipment.type.like('%'+search_item+'%')).all()
+            return render_template('equipment.html', equipments=equipments)
+        else:
+            equipments = Equipment.query.all()
+            return render_template('equipment.html', equipments=equipments)
+    equipments = Equipment.query.all()
+    return redirect(url_for('equipment'))
+
+
+@app.route("/equipment", methods=['GET', 'POST'])
+def equipment():
+    if request.method == 'POST':
+        # id
+        # type
+        # description
+        # department
+        # is_leased
+        # is_owned
+        equipment_id = request.form.get('equipment_id')
+        equipment_type = request.form.get('equipment_type')
+        description = request.form.get('description')
+        department = request.form.get('department')
+        is_owned = request.form.get('is_owned')
+        if is_owned == 'on':
+            is_owned = True
+            is_leased = False
+        else:
+            is_owned = False
+            is_leased = True
+        equipment = Equipment(id=equipment_id, type=equipment_type, description=description,
+                              department=department, is_leased=is_leased, is_owned=is_owned)
+        db.session.add(equipment)
+        db.session.commit()
+        flash(f'Equipment added!', 'success')
+        return redirect(url_for('equipment'))
+
+    equipments = Equipment.query.all()
+    return render_template('equipment.html', equipments=equipments)
+
+
+@app.route('/maintenance_history/<int:equipment_id>', methods=['GET', 'POST'])
+def maintenance_history(equipment_id):
+    if request.method == 'POST':
+        # id
+        # type_of_problem
+        # description_of_problem
+        # is_resolved
+        # description_of_resoltion
+        # equipment_id
+        type_of_problem = request.form.get('type_of_problem')
+        description_of_problem = request.form.get('description_of_problem')
+        is_resolved = request.form.get('is_resolved')
+        description_of_problem = request.form.get('description_of_problem')
+        if is_resolved == True:
+            is_resolved = True
+        else:
+            is_resolved = False
+
+        history = EquipmentMaintenance(type_of_problem=type_of_problem, description_of_problem=description_of_problem,
+                                       is_resolved=is_resolved, description_of_resoltion=description_of_problem, equipment_id=equipment_id)
+        db.session.add(history)
+        db.session.commit()
+        return redirect(url_for('maintenance_history', equipment_id=equipment_id))
+    else:
+        maintenance_history = EquipmentMaintenance.query.filter_by(
+            equipment_id=equipment_id).all()
+        equipment = Equipment.query.get(equipment_id)
+        return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+
+
+@app.route('/owned/<int:equipment_id>')
+def equipment_owned(equipment_id):
+    owned_information = EquipmentOwned.query.filter_by(
+        equipment_id=equipment_id).all()
+    equipment = Equipment.query.get(equipment_id)
+    return render_template('owned.html', owned_information=owned_information, equipment=equipment)
+
+
+@app.route('/leased/<int:equipment_id>')
+def equipment_leased(equipment_id):
+    leased_information = EquipmentLeased.query.all()
+    equipment = Equipment.query.get(equipment_id)
+    return render_template('leased.html', leased_information=leased_information, equipment=equipment)
+
+
+@app.route('/vendors', methods=['POST', 'GET'])
+def vendors():
+    if "GET" == request.method:
+        vendor_data = Vendors.query.all()
+        return render_template('vendors.html', equipment_data=vendor_data)
+    if "POST" == request.method:
+        search_item = request.form.get('search_item')
+        if search_item:
+            vendor_data = Vendors.query.filter(
+                Vendors.name.like('%'+search_item+'%')).all()
+            return render_template('vendors.html', equipment_data=vendor_data)
+
+        return redirect(url_for('vendors'))
+############################# IAN Ends Here #####################################
+
 
 ############################# Shweta Starts Here #####################################
 
