@@ -112,7 +112,7 @@ class LabOrder(db.Model):  # 05
 
 class Physician(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
+    physician_name = db.Column(db.String(200), nullable=False)
     appointment = db.relationship('Appointment', backref='appointment')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 

@@ -64,9 +64,9 @@ def register():
             return redirect(url_for('register'))
 
         # create physician class if user is physician
-        if user.roles == 'Physician':
+        if user.roles == 'physician':
             user
-            physician = Physician(name=username.title())
+            physician = Physician(physician_name=username)
             db.session.add(physician)
             db.session.commit()
 
