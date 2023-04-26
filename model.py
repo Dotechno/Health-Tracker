@@ -62,7 +62,7 @@ class MedicalEncounter(db.Model):  # 02
     submission_date = db.Column(db.Date, nullable=False)
     # lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
-    prescription = db.relationship('Prescription', backref='medical_encounter')
+   # prescription = db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
@@ -79,8 +79,8 @@ class Prescription(db.Model):  # 03 Shweta
     filled_by = db.Column(db.String(200), nullable=False)
     date_filled = db.Column(Date, default=date.today)
     pharmacist_name = db.Column(db.String(200), nullable=False)
-    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
-        'medical_encounter.id'), nullable=False)
+   # medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+    #    'medical_encounter.id'), nullable=True)
 
 
 class LabTest(db.Model):  # 04
@@ -190,12 +190,20 @@ class VitalSign(db.Model):
         'medical_encounter.id'), nullable=False)
 
 
-class Medication(db.Model):
+class Medication(db.Model): #Shweta
+    # id = db.Column(db.Integer, primary_key=True)
+    # name = db.Column(db.String(200), nullable=False)
+    # dosage = db.Column(db.String(200), nullable=False)
+    # frequency = db.Column(db.String(200), nullable=False)
+    # duration = db.Column(db.String(200), nullable=False)
+    # patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    dosage = db.Column(db.String(200), nullable=False)
-    frequency = db.Column(db.String(200), nullable=False)
-    duration = db.Column(db.String(200), nullable=False)
+    medication = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    dosage = db.Column(db.Text, nullable=True)
+    frequency = db.Column(db.String(200), nullable=True)
+    side_effects = db.Column(db.String(200), nullable=True)
+    interactions = db.Column(db.String(200), nullable=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
