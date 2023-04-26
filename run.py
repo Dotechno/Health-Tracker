@@ -7,7 +7,7 @@ from sqlalchemy import func
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from forms import RegistrationForm, LoginForm, SearchForm
+from forms import RegistrationForm, LoginForm
 from datetime import datetime, timedelta
 
 
@@ -469,82 +469,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.route('/insurance_billing', methods=['GET', 'POST'])
-def insurance_billing():
-    if request.method == 'POST':
-        find = request.form["PatientName"]
-        find = "John Doe"
-        # find the patient names
-
-        patient = Patient.query.filter_by(name=find).first()
-        if patient is None:
-            return render_template('insurance_billing.html', is_get=True)
-
-        all_me = MedicalEncounter.query.order_by(
-            MedicalEncounter.date.asc()).all()
-        physician = Physician.query.filter_by(patient_id=patient.id).first()
-        insurance = Insurance.query.filter_by(patient_id=patient.id).first()
-        # query all the prescriptions from db not only from the patient
-        # prescriptions = Prescription.query.filter_by(medical_encounter_id=me.id).all()
-        all_prescriptions = Prescription.query.all()
-        me_list = []
-        for me in all_me:
-            if me.patient_id == patient.id:
-                me.list = me_list.append(me)
-
-        # filters the prescriptions that belong to the patient
-        prescriptions = []
-        refill = []
-        for prescription in all_prescriptions:
-            if prescription.medical_encounter_id == me.id:
-                prescriptions.append(prescription)
-                refill.append(prescription.date)
-
-        all_lab_order = LabOrder.query.all()
-
-        lab_order_list = []
-        lab_order_list_dates = []
-        for labOrder in all_lab_order:
-            if labOrder.medical_encounter_id == me.id:
-                lab_order_list.append(labOrder)
-                lab_order_list_dates.append(labOrder.date)
-
-        # add a new service to the patient medical encounter and use a unique id
-
-        # @TODO: Add the following snippet to lab order med. encounter prescription form submission
-        # for prescription in prescriptions:
-        #     service = ServiceProvidedByClinic(date = prescription.date ,service_description= prescription.name, cost_for_service= cost['Prescription'], patient_id = patient.id )
-        #     db.session.add(service)
-        #     db.session.commit()
-
-        # for labOrder in lab_order_list:
-        #     service = ServiceProvidedByClinic(date = labOrder.date ,service_description= labOrder.name, cost_for_service= cost['Laborder'] , patient_id = patient.id )
-        #     db.session.add(service)
-        #     db.session.commit()
-
-        # for me in me_list:
-        #     service = ServiceProvidedByClinic(date = me.date ,service_description= me.encounter, cost_for_service= cost['Physician'] , patient_id = patient.id)
-        #     db.session.add(service)
-        #     db.session.commit()
-
-        all_service = ServiceProvidedByClinic.query.order_by(
-            ServiceProvidedByClinic.date.asc()).all()
-        services = []
-
-        for service in all_service:
-            if service.patient_id == patient.id:
-                services.append(service)
-
-        personInfo = {
-            'name': patient.name,
-            'ME': me.encounter,
-            'service': service.cost_for_service,
-            "Carrier_Name": insurance.name,
-            "Insurance_address": insurance.address,
-        }
-        return render_template('insurance_billing.html', PatientInfo=personInfo, services=services, is_get=False)
-    else:
-        return render_template('insurance_billing.html', is_get=True)
 
 
 @app.route('/create_invoice', methods=['GET', 'POST'])
@@ -577,7 +501,7 @@ def create_invoice():
         insurance_carriers = Insurance.query.all()
         services = ServiceProvidedByClinic.query.all()
 
-        return render_template('create_invoice.html', insurance_carriers=insurance_carriers, services=services)
+        return render_template('billing_create_invoice.html', insurance_carriers=insurance_carriers, services=services)
 
 
 @app.route('/invoice/<int:invoice_id>', methods = ['POST', 'GET'])
@@ -590,7 +514,7 @@ def invoice(invoice_id):
             item.number_date = 0
             item.date_paid = f'{(datetime.now()).date()}'
         db.session.commit()
-        return render_template('success.html')
+        return render_template('billing_success.html')
         
         
         # invoice = Invoice.query.get(
@@ -614,10 +538,12 @@ def invoice(invoice_id):
         invoice_id)
 
         all_patient = Patient.query.filter_by(name=invoice.patient_name).first()
+        
 
-        all_me = MedicalEncounter.query.order_by(MedicalEncounter.date.asc()).all()
+        all_me = MedicalEncounter.query.order_by(MedicalEncounter.encounter_date.asc()).all()
         physician = Physician.query.filter_by(patient_id=all_patient.id).first()
         insurance = Insurance.query.filter_by(patient_id=all_patient.id).first()
+
 
         if not invoice:
             abort(404)
@@ -626,8 +552,8 @@ def invoice(invoice_id):
         # order it by date
         items.sort(key=lambda x: x.date, reverse=True)
         
-        return render_template('invoice.html', invoice=invoice, items=items, physician=physician,
-                         total_cost=invoice.total_cost)
+        return render_template('billing_invoice.html', invoice=invoice, items=items, physician=physician,
+                         total_cost=invoice.total_cost, patient = all_patient)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002, host='0.0.0.0')

@@ -5,13 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-from forms import RegistrationForm, LoginForm, SearchForm
+from forms import RegistrationForm, LoginForm
 from datetime import datetime, timedelta
 
 
 # Initialize app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
@@ -41,11 +41,21 @@ if not 'models' in sys.modules:
 #     date = db.Column(db.Date, nullable=False)
 #     date_paid = db.Column(db.Date, nullable=False)
 
-# class Patient(db.Model):
+# class Patient(db.Model):  # 01
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(200), nullable=False)
-#     medical_encounter = db.relationship('MedicalEncounter', backref='patient')
-#     physician = db.relationship('Physician', backref='patient')
+#     telephone = db.Column(db.String(200), nullable=False)
+#     address = db.Column(db.String(200), nullable=False)
+#     date_of_birth = db.Column(db.Date, nullable=False)
+#     gender = db.Column(db.String(200), nullable=False)
+#     primary_physician = db.Column(db.Integer, db.ForeignKey(
+#         'physician.id'), nullable=False)
+#     medical_encounter = db.relationship(
+#         'MedicalEncounter', backref='patient')
+#     insurance = db.relationship('Insurance', backref='patient')
+#     appointment = db.relationship('Appointment', backref='patient')
+#     medication = db.relationship('Medication', backref='patient')
+
 
 # class MedicalEncounter(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -54,17 +64,31 @@ if not 'models' in sys.modules:
 #     LabOrder = db.relationship('LabOrder', backref='lab_order')
 #     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
-# class LabOrder(db.Model):
+# class LabOrder(db.Model):  # 05
 #     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     service_provided = db.relationship('ServiceProvidedByClinic', backref='laborder')
-#     medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
+#     patient_name = db.Column(db.String(200), nullable=False)
+#     physician_name = db.Column(db.String(200), nullable=False)
+#     lab_test_date = db.Column(db.DateTime, nullable=False)
+#     lab_test_technician = db.Column(db.String(200), nullable=False)
+#     lab_test_result = db.Column(db.String(200), nullable=False)
+#     test_name = db.Column(db.String(200), nullable=False)
+#     lab_order_date = db.Column(db.DateTime, nullable=False)
+#     medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+#         'medical_encounter.id'), nullable=False)
 
-# class Prescription(db.Model):
+
+#  class Prescription(db.Model):  # 03 Shweta
 #     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     service_provided = db.relationship('ServiceProvidedByClinic', backref='prescription')
-#     medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
+#     patient_name = db.Column(db.String(200), db.ForeignKey(Patient.name))
+#     physician_name = db.Column(db.String(200), nullable=False)
+#     medication = db.Column(db.String(200), nullable=False)
+#     dosage = db.Column(db.Text, nullable=True)
+#     frequency = db.Column(db.String(200), nullable=False)
+#     filled_by = db.Column(db.String(200), nullable=False)
+#     date_filled = db.Column(Date, default=date.today)
+#     pharmacist_name = db.Column(db.String(200), nullable=False)
+#     medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+#         'medical_encounter.id'), nullable=False)
 
 
 # class Physician(db.Model):
@@ -89,25 +113,26 @@ if not 'models' in sys.modules:
 with app.app_context():
     # create user
     user = User(username='admin', password='password', roles='admin')
-    patient = Patient(name='John Doe')
+    patient = Patient(name='John Doe', telephone='123-456-7890', address='123 Main St', date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender = "male", primary_physician=1)
     carrier = Insurance(name='Blue Cross Blue Shield',
                         address='123 Main St', status="on time", patient_id=1)
-    medical_encounter = MedicalEncounter(
-        encounter='Fever', patient_id=1, date=datetime.now())
-    lab_order = LabOrder(
-        name='Blood Test', medical_encounter_id=1, date=datetime.now() - timedelta(days=30))
-    prescription = Prescription(
-        name='Tylenol', medical_encounter_id=1, date=datetime.now())
+    bob_me = MedicalEncounter(
+        encounter_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), practitioner_type='Physician', complaint='Headache',
+        diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',
+        notes='None', submission_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), patient_id=1)
+    lab_order = LabOrder(patient_name='John Doe', physician_name='Dr. Smith', lab_test_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), lab_test_technician='Jane Doe', lab_test_result='Positive', test_name='Blood Test'
+                         , lab_order_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), medical_encounter_id=1)
+    prescription = Prescription(patient_name='John Doe', physician_name='Dr. Smith', medication='Tylenol', dosage='500mg', frequency='Once a day', filled_by='Jane Doe', pharmacist_name='Jane Doe', medical_encounter_id=1)
     physician = Physician(name='Dr. Smith', patient_id=1)
     appointment = Appointment(name='Dr. Smith', physician_id=1)
-    service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date= lab_order.date, due_date=lab_order.date - timedelta(days=30), patient_id=1)
+    service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date= lab_order.lab_test_date, due_date=lab_order.lab_test_date - timedelta(days=30), patient_id=1)
     service1 = ServiceProvidedByClinic(service_description='X-Rays', cost_for_service=200.00, date=datetime.now(), due_date=datetime.now(
     ) + timedelta(days=30), patient_id=1)
     
     # add to database
     db.session.add(user)
     db.session.add(patient)
-    db.session.add(medical_encounter)
+    db.session.add(bob_me)
     db.session.add(lab_order)
     db.session.add(prescription)
     db.session.add(physician)
