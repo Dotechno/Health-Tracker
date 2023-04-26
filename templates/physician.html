@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Physicians</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap5.min.css">
+	
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+
+	<style>
+		.dataTables_wrapper {
+		margin-left: 50px;
+		margin-right: 50px;
+		}
+
+		#add-new {
+		margin-right: 50px;
+		margin-bottom: 10px;
+		}
+
+		.custom-modal-width {
+		max-width: 650px; /* Set the maximum width of the modal */
+		width: 100%; /* Make sure the modal fills its parent container */
+		}
+
+		#work_days {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		}
+
+		.day-checkbox {
+		display: inline-block;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div div class="mt-5">
+		<div class="row">
+			<div class="col-10">
+			</div>
+			<div class="col-2 text-end">
+			  <button id="add-new" class="btn btn-primary mr-3" onclick="openNewPatientModal()">＋ New Physician</button>
+			</div>
+		</div>
+		  
+		  
+		<table class="table center" id="physician-table">
+			<thead>
+				<tr>
+					<th>Employee ID</th>
+					<th>Name</th>
+					<th>Pager/Cell Phone</th>
+					<th>Normal Work Days</th>
+					<th>Start Time</th>
+					<th>End Time</th>
+					<th>Appointments</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for physician in data %}
+				<tr>
+					<td>{{ physician.id }}</td>
+					<td>{{ physician.physician_name }}</td>
+					<td>{{ physician.cell_phone_number }}</td>
+					<td>{{ physician.work_days.replace(" ", ", ") }}</td>
+					<td>{{ datetime.strptime(physician.work_time_start, '%H:%M:%S').strftime('%I:%M %p') }}</td>
+					<td>{{ datetime.strptime(physician.work_time_end, '%H:%M:%S').strftime('%I:%M %p') }}</td>
+					<td>
+						<form action="/physician-scheduler" method="POST">
+							<input type="hidden" name="physician_id" value="{{ physician.id  }}">
+							<button type="submit" class="btn btn-primary">Schedule</button>
+						</form>		
+					</td>
+					<td>
+						<input type="hidden" name="physician_id" value="{{ physician.id  }}">
+						<button type="submit"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal{{ physician.id }}">View</button>
+					</td>
+
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+	</div>
+
+	{% for physician in data %}
+	<!-- View Modal -->
+	<div class="modal fade" id="viewModal{{ physician.id }}" tabindex="-1" aria-labelledby="viewModal{{ physician.id }}Label" aria-hidden="true" style="display:none;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="viewModal{{ physician.id }}Label">{{ physician.physician_name }} Appointments</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<table class="table" id="appointment-table">
+						<thead>
+							<tr>
+								<th>Appointment ID</th>
+								<th>Appointment Date</th>
+								<th>Appointment Type</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for appointment in appointments %}
+								{% if appointment.physician_id == physician.id %}
+									<tr>
+										<td>{{ appointment.id }}</td>
+										<td>{{ datetime.strptime(appointment.appointment_date_time, '%m/%d/%y %H:%M:%S').strftime('%m/%d/%y %I:%M %p') }}</td>
+										<td>{{ appointment.appointment_type }}</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+											
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	
+	
+	<div class="modal fade" id="physcian-appointments" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Appointments for ...</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+			
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="new-physcian" tabindex="-1" aria-labelledby="new-physcian-label" aria-hidden="true">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="new-physcian-label">Add Physician</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="mb-3">
+						<label for="physician_name" class="form-label">Physician Name</label>
+						<input type="text" class="form-control" id="physician_name" required>
+						<small class="form-text text-muted">First + Last Name</small>
+					</div>
+					<div class="mb-3">
+						<label for="cell_phone_number" class="form-label">Cell Phone Number</label>
+						<input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10" required>
+						<small class="form-text text-muted">Please enter phone number with 10 digits only</small>
+					  </div> 					  
+					<div class="mb-3">
+					  <label for="work_time_start" class="form-label">Work Time Start</label>
+					  <select class="form-select" id="work_time_start" required>
+						<option value="" disabled selected>Select Start Time</option>
+						<option value="00:00">12:00 AM</option>
+						<option value="01:00">1:00 AM</option>
+						<option value="02:00">2:00 AM</option>
+						<option value="03:00">3:00 AM</option>
+						<option value="04:00">4:00 AM</option>
+						<option value="05:00">5:00 AM</option>
+						<option value="06:00">6:00 AM</option>
+						<option value="07:00">7:00 AM</option>
+						<option value="08:00">8:00 AM</option>
+						<option value="09:00">9:00 AM</option>
+						<option value="10:00">10:00 AM</option>
+						<option value="11:00">11:00 AM</option>
+						<option value="12:00">12:00 PM</option>
+						<option value="13:00">1:00 PM</option>
+						<option value="14:00">2:00 PM</option>
+						<option value="15:00">3:00 PM</option>
+						<option value="16:00">4:00 PM</option>
+						<option value="17:00">5:00 PM</option>
+						<option value="18:00">6:00 PM</option>
+						<option value="19:00">7:00 PM</option>
+						<option value="20:00">8:00 PM</option>
+						<option value="21:00">9:00 PM</option>
+						<option value="22:00">10:00 PM</option>
+						<option value="23:00">11:00 PM</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="work_time_end" class="form-label">Work Time End</label>
+						<select class="form-select" id="work_time_end" required>
+						<option value="" disabled selected>Select End Time</option>
+						<option value="00:00">12:00 AM</option>
+						<option value="01:00">1:00 AM</option>
+						<option value="02:00">2:00 AM</option>
+						<option value="03:00">3:00 AM</option>
+						<option value="04:00">4:00 AM</option>
+						<option value="05:00">5:00 AM</option>
+						<option value="06:00">6:00 AM</option>
+						<option value="07:00">7:00 AM</option>
+						<option value="08:00">8:00 AM</option>
+						<option value="09:00">9:00 AM</option>
+						<option value="10:00">10:00 AM</option>
+						<option value="11:00">11:00 AM</option>
+						<option value="12:00">12:00 PM</option>
+						<option value="13:00">1:00 PM</option>
+						<option value="14:00">2:00 PM</option>
+						<option value="15:00">3:00 PM</option>
+						<option value="16:00">4:00 PM</option>
+						<option value="17:00">5:00 PM</option>
+						<option value="18:00">6:00 PM</option>
+						<option value="19:00">7:00 PM</option>
+						<option value="20:00">8:00 PM</option>
+						<option value="21:00">9:00 PM</option>
+						<option value="22:00">10:00 PM</option>
+						<option value="23:00">11:00 PM</option>
+						</select>
+					</div>
+
+					<div class="mb-3">
+						<label for="work_days" class="form-label">Work Days</label>
+						<div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off" value="Monday">
+							<label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
+						  </div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off" value="Tuesday">
+							<label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
+						  </div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off" value="Wednesday">
+							<label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
+						  </div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off" value="Thursday">
+							<label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
+						  </div>
+						  <div style="clear:both;"></div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off" value="Friday">
+							<label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
+						  </div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off" value="Saturday">
+							<label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
+						  </div>
+						  <div class="day-checkbox">
+							<input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off" value="Sunday">
+							<label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
+						  </div>
+						</div>
+						<div id="error-message" style="display:none; color:red;">
+							Please select at least one day of the week.
+						  </div>
+					  </div>	
+					  
+					</form>
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+		var table = $('#physician-table').DataTable( {
+			lengthChange: false,
+			buttons: [
+				{
+					extend: 'pdf',
+					split: [ 'csv', 'excel', 'print'],
+				}
+			]
+		} );
+	
+		table.buttons().container()
+			.appendTo( '#physician-table_wrapper .col-md-6:eq(0)' );
+	} );
+
+	function openNewPatientModal() {
+		$('#new-physcian').modal('show');
+	}
+
+	function closeNewPatientModal() {
+	$('#new-physcian').modal('hide');
+	}
+
+	function isDaysSelected() {
+		const form = document.querySelector('form');
+		const values = {};
+		for (const field of form.elements) {
+			if (field.type === 'checkbox' && field.checked) {
+			const dayOfWeek = field.value;
+			if (!values.daysOfWeek) {
+				values['daysOfWeek'] = [];
+			}
+			values['daysOfWeek'].push(dayOfWeek);
+			} 
+		}
+	
+		// Check if there is at least one day of the week selected
+		if (!values.daysOfWeek || values.daysOfWeek.length === 0) {
+		values['daysOfWeek'] = 'Error: please select at least one day of the week';
+		return false;
+		}
+
+		return true;
+	}
+
+	function validateForm() {
+		const physicianName = document.getElementById('physician_name');
+		const phoneNumber = document.getElementById('cell_phone_number');
+		const workStartTime = document.getElementById('work_time_start');
+		const workEndTime = document.getElementById('work_time_end');
+		const workDays = document.querySelectorAll('input[name="work_days"]:checked');
+	
+		let valid = true;
+	
+		if (physicianName.value === '') {
+			physicianName.classList.add('is-invalid');
+			valid = false;
+		} else {
+			const fullName = physicianName.value.trim().split(' ');
+			if (fullName.length < 2 || /\d/.test(fullName[0]) || /\d/.test(fullName[fullName.length-1])) {
+			physicianName.classList.add('is-invalid');
+			valid = false;
+			} else {
+			physicianName.classList.remove('is-invalid');
+			}
+		}
+	
+		if (phoneNumber.value === '' || phoneNumber.value.length < 10) {
+		phoneNumber.classList.add('is-invalid');
+		valid = false;
+		} else {
+		phoneNumber.classList.remove('is-invalid');
+		}
+	
+		if (workStartTime.value === '') {
+		workStartTime.classList.add('is-invalid');
+		valid = false;
+		} else {
+		workStartTime.classList.remove('is-invalid');
+		}
+	
+		if (workEndTime.value === '') {
+		workEndTime.classList.add('is-invalid');
+		valid = false;
+		} else {
+		workEndTime.classList.remove('is-invalid');
+		}
+
+		const startTime = new Date(`1970-01-01 ${workStartTime.value}`);
+		const endTime = new Date(`1970-01-01 ${workEndTime.value}`);
+		if (startTime >= endTime) {
+			workStartTime.classList.add('is-invalid');
+			workEndTime.classList.add('is-invalid');
+			valid = false;
+		} else {
+			workStartTime.classList.remove('is-invalid');
+			workEndTime.classList.remove('is-invalid');
+		}
+	
+		if (!isDaysSelected()) {
+			document.getElementById("error-message").style.display = "block";
+			valid = false;
+		} else {
+			document.getElementById("error-message").style.display = "none";
+		}
+		
+		if(valid){
+		$.ajax({
+			type: "POST",
+			url: "/add_physcian",
+			contentType: "application/json",
+			data: JSON.stringify(getFormValues()),
+			success: function(response) {
+			closeNewPatientModal();
+			console.log(response);
+			//window.location.href = "/physician";
+			window.location.href = "/";
+			}
+		});
+		}
+			
+	}
+
+	function getFormValues() {
+		// Get form elements
+		const form = document.querySelector('form');
+		const physicianNameInput = form.querySelector('#physician_name');
+		const cellPhoneNumberInput = form.querySelector('#cell_phone_number');
+		const workTimeStartSelect = form.querySelector('#work_time_start');
+		const workTimeEndSelect = form.querySelector('#work_time_end');
+		const workDaysCheckboxes = form.querySelectorAll('#work_days input[type="checkbox"]');
+
+		// Retrieve values
+		const physicianName = physicianNameInput.value;
+		const cellPhoneNumber = cellPhoneNumberInput.value;
+		const workTimeStart = workTimeStartSelect.value;
+		const workTimeEnd = workTimeEndSelect.value;
+		const workDays = [];
+		workDaysCheckboxes.forEach(checkbox => {
+		if (checkbox.checked) {
+			workDays.push(checkbox.value);
+		}
+		});
+		
+		// Return values as an object
+		return {
+		physicianName: physicianName,
+		cellPhoneNumber: cellPhoneNumber,
+		workTimeStart: workTimeStart,
+		workTimeEnd: workTimeEnd,
+		workDays: workDays
+		};
+	}
+
+  
+	</script>
+</body>
+
+</html>
