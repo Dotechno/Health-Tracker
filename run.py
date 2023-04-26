@@ -6,6 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import random
+import string
+import appointment
+import json
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
 from datetime import datetime
@@ -19,15 +23,18 @@ app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 
 # db = SQLAlchemy(app)
-
-
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
+# Work around autopep8 E402
+if True:
+    from CONSTANT import *
 
-# Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
+
+# Work around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance
+    from model import db, User, LabOrder, LabTest, Prescription, Medication, Patient, MedicalEncounter, Physician, Insurance, Appointment
+
 
 # Routes
 
@@ -68,35 +75,6 @@ def register():
         return redirect(url_for('login'))
 
 
-@app.route('/register_physician', methods=['GET', 'POST'])
-def register_physician():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
-
-    if request.method == 'GET':
-        form = RegistrationForm()
-        return render_template('register_physician.html', title='Register', form=form)
-
-    # if post request
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        roles = request.form.get('roles')
-        hashed_password = bcrypt.generate_password_hash(
-            password).decode('utf-8')
-        user = User(username=username, password=hashed_password, roles=roles)
-
-        # check for duplicate username
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists!', 'danger')
-            return redirect(url_for('register_physician'))
-
-        db.session.add(user)
-        db.session.commit()
-        flash(f'Account created for {username}!', 'success')
-        return redirect(url_for('login'))
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -127,7 +105,9 @@ def login():
 @login_required
 def dashboard():
     if request.method == 'GET':
-        current_user_name = current_user.username.title()
+        current_user_name = current_user.username
+        # check for capitalizations for first letters
+        current_user_name = current_user_name.title()
         print(current_user_name)
         return render_template('dashboard.html', loggedin_user=current_user_name)
 
@@ -150,11 +130,11 @@ def admin():
 
 #################### Jordan Start Here ####################
 
-
+ 
 @app.route('/create_patient', methods=['GET', 'POST'])
 def create_patient():
     form = PatientForm()
-    if request.method == 'POST':
+    if request.method =='POST':
         name = form.name.data
         telephone = form.telephone.data
         address = form.address.data
@@ -222,7 +202,6 @@ def medical_encounter():
 
 
 @app.route('/lab_tracking/', methods=['POST', 'GET'])
-@login_required
 def lab_tracking():
 
     start_date_obj = datetime.min
@@ -251,8 +230,7 @@ def lab_tracking():
     else:
         orders = LabOrder.query.order_by(LabOrder.id).all()
     # lab_test = LabTest.query.filter_by(lab_test_name="Your Test Name").first()
-    current_user_name = current_user.username.title()
-    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test, loggedin_user=current_user_name)
+    return render_template('lab_tracking.html', orders=orders, lab_test=lab_test)
 
 
 @app.route('/lab_tracking/delete_lab_order/<int:id>')
@@ -442,6 +420,7 @@ def retrieve_medication():
     physician_name = request.form.get('physician_name')
     physician_prescriptions = db.session.query(
         Prescription.physician_name,
+
         db.func.count(Prescription.medication).label('count')
     ).filter(func.strftime('%m', Prescription.date_filled) == month,
              Prescription.physician_name == physician_name).all()
@@ -449,6 +428,202 @@ def retrieve_medication():
 
 
 ############################# Shweta End Here #####################################
+
+############################# Amar Starts Here #####################################
+
+@app.route("/physician-scheduler", methods=["GET", "POST"])
+def physician_scheduler():
+    global two_month_appointments, current_physician_id
+    if current_user.roles == "admin":
+        return physician_home()
+    else:
+        # get physican id from current_user.username
+        current_physician_id = Physician.query.filter_by(\
+            physician_name=current_user.username).first().id
+        physician_selected = find_physician_by_id(current_physician_id)
+        physician_appointments = find_appointments_by_physician_id(
+            current_physician_id)
+        two_month_appointments = appointment.set_up(physician_selected.work_time_start,
+                                                    physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+        this_week = appointment.helper.get_subarray(
+            two_month_appointments, current_week_index, 7)
+        return render_template("appointments_scheduler.html", data=this_week)
+    
+@app.route("/physician-appointments", methods=["GET", "POST"])
+def physician_appointments():
+    global two_month_appointments, current_physician_id
+    # get physican id from current_user.username
+    physician_id = request.form.get('physician_id')
+    physician_selected = find_physician_by_id(physician_id)
+    physician_appointments = find_appointments_by_physician_id(physician_id)
+    current_physician_id = physician_id
+    two_month_appointments = appointment.set_up(physician_selected.work_time_start,
+            physician_selected.work_time_end, physician_selected.work_days, physician_appointments)
+    this_week = appointment.helper.get_subarray(
+        two_month_appointments, current_week_index, 7)
+    return render_template("appointments_scheduler.html", data=this_week)
+
+
+@app.route("/slot_clicked", methods=["POST"])
+def slot_clicked():
+    global current_week_index
+    slot_id = request.form.get('slot_id')
+    appointment.helper.update_slot(two_month_appointments, slot_id)
+    return ('', 204)
+
+
+@app.route("/week_selected", methods=["POST"])
+def week_selected():
+    global current_week_index
+    direction = request.form.get('direction')
+
+    if direction == 'left' and current_week_index > MIN_WEEK:
+        current_week_index -= 1
+    elif direction == 'right' and current_week_index < MAX_WEEK:
+        current_week_index += 1
+    else:
+        return ('', 204)
+
+    return refresh_scheduler_page(current_week_index)
+
+
+@app.route("/select_all", methods=["POST"])
+def select_all():
+    global current_week_index
+    switch_status = True if request.form.get(
+        'switchStatus') == 'true' else False
+    day_date = request.form.get('dayDate')
+    appointment.helper.select_all_day(
+        data=two_month_appointments, date=day_date, status=switch_status)
+    return refresh_scheduler_page(current_week_index)
+
+
+@app.route("/select_week", methods=["POST"])
+def select_week():
+    global current_week_index
+    print(f"current_week_index: {current_week_index}")
+    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
+    appointment.helper.select_all_week(this_week)
+    return refresh_scheduler_page(current_week_index)
+
+
+def refresh_scheduler_page(current_week_index):
+    global appointment_type_selected
+    this_week = appointment.helper.get_subarray(two_month_appointments, current_week_index, 7)
+    return render_template("appointments_scheduler.html", data=this_week, appointment_type=appointment_type_selected)
+
+
+@app.route('/confirm_appointment', methods=['POST'])
+def confirm_appointment():
+    print("confirm_appointment")
+    global get_user_selected_appointments
+    get_user_selected_appointments = appointment.helper.get_selected_appointments(two_month_appointments)
+    print(f"get_user_selected_appointments: {get_user_selected_appointments}")
+    return json.dumps({'appointments': get_user_selected_appointments})
+
+
+@app.route('/physician_redirect', methods=["POST"])
+def physician_redirect():
+    global appointment_type
+    appointment_type = request.form['appointment_type']
+    return {'redirect': url_for("physician_home_redirect")}
+
+
+@app.route('/physician_home_redirect')
+def physician_home_redirect():
+    global current_physician_id, get_user_selected_appointments, appointment_type
+    current_physician = find_physician_by_id(current_physician_id)
+    for appointment in get_user_selected_appointments:
+        date, hour = appointment.split(" ")
+        add_appointment(date_time=appointment, date=date, type=appointment_type, 
+            time=hour, physician_id=current_physician.id)
+    return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
+
+@app.route('/physician')
+def physician_home():
+    return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
+
+def find_physician_by_id(physician_id):
+    return Physician.query.filter_by(id=physician_id).first()
+
+
+def get_all_physicians():
+    physicians = Physician.query.all()
+    return physicians
+
+
+def find_appointments_by_physician_id(physician_id):
+    return Appointment.query.filter_by(physician_id=physician_id).all()
+
+
+def get_all_appointments():
+    appointments = Appointment.query.all()
+    return appointments
+
+
+def add_appointment(date_time, date, type, time, physician_id):
+    new_appointment = Appointment(appointment_date_time=date_time,
+                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
+
+    # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
+    # db.session.add(service)
+    db.session.add(new_appointment)
+    db.session.commit()
+
+
+@app.route('/add_physcian', methods=['POST'])
+def add_physcian():
+    data = request.get_json()
+    name = data['physicianName']
+    phone_number = data['cellPhoneNumber']
+    start_time = data['workTimeStart']
+    end_time = data['workTimeEnd']
+    start_time_obj = datetime.strptime(start_time, '%H:%M')
+    start_time = start_time_obj.strftime('%H:%M:%S')
+    end_time_obj = datetime.strptime(end_time, '%H:%M')
+    end_time = end_time_obj.strftime('%H:%M:%S')
+
+    days_working = ' '.join([str(elem) for elem in data['workDays']])
+    new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                             work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+    db.session.add(new_physcian)
+    db.session.commit()
+
+    #create_dummy_physicians()
+
+    return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
+
+
+def create_dummy_physicians():
+    for i in range(10):
+        # Generate random name
+        name = ''.join(random.choices(string.ascii_uppercase, k=10))
+
+        # Generate random phone number
+        phone_number = ''.join(random.choices(string.digits, k=10))
+
+        # Generate random start and end times
+        start_time = "09:00:00"
+        end_time = "17:00:00"
+
+        # Generate random working days
+        working_days = []
+        for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
+            if random.random() < 0.5:
+                working_days.append(day)
+        days_working = ' '.join(working_days)
+
+        # Create new physician object and add to database
+        new_physician = Physician(physician_name=name, cell_phone_number=phone_number,
+                                  work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+        db.session.add(new_physician)
+
+    db.session.commit()
+
+############################# Amar End Here #####################################
+
 
 @ app.route('/pricing')
 def pricing():

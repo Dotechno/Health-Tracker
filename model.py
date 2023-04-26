@@ -109,11 +109,45 @@ class LabOrder(db.Model):  # 05
         return '<LabOrder %r>' % self.id
 
 
+# class Physician(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(200), nullable=False)
+#     appointment = db.relationship('Appointment', backref='appointment')
+#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    
 class Physician(db.Model):
+    #__bind_key__ = 'physician'
+    id = db.Column(db.Integer, primary_key=True)
+    # employee_id = db.Column(db.Integer, nullable=False)
+    physician_name = db.Column(db.String(200), nullable=False)
+    cell_phone_number = db.Column(db.String(200), nullable=False)
+    work_time_start = db.Column(db.Integer, nullable=False)
+    work_time_end = db.Column(db.Integer, nullable=False)
+    work_days = db.Column(db.String(200), nullable=False)
+    #patients = db.relationship('Patient', backref='physician')
+    #appointments = db.relationship('Appointment', backref='physician')
+    
+    def __str__(self):
+        return f"Physician(id={self.id}, name='{self.physician_name}', phone='{self.cell_phone_number}',\
+            work start={self.work_time_start}, work end={self.work_time_end}, work days='{self.work_days}')"
+    
+class Appointment(db.Model):
+    #__bind_key__ = 'Appointment'
     id = db.Column(db.Integer, primary_key=True)
     physician_name = db.Column(db.String(200), nullable=False)
-    appointment = db.relationship('Appointment', backref='appointment')
+    appointment_date_time = db.Column(db.String(200), nullable=False)
+    appointment_date = db.Column(db.String(200), nullable=False)
+    appointment_type = db.Column(db.String(200), nullable=False)
+    appointment_time = db.Column(db.String(200), nullable=False)
+    physician_id = db.Column(db.Integer, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
+    # service_type = db.relationship("ServiceProvidedByClinic")
+    
+    def __str__(self):
+        return f"Appointment(id={self.id}, appointment_date_time={self.appointment_date_time},\
+            appointment_date={self.appointment_date}, appointment_type={self.appointment_type},\
+            appointment_time={self.appointment_time}, physician_id={self.physician_id})"
 
 
 class Insurance(db.Model):
@@ -138,11 +172,11 @@ class Invoice(db.Model):
     status = db.Column(db.String(20), nullable=False, default='unpaid')
 
 
-class Appointment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+# class Appointment(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(200), nullable=False)
+#     physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
+#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
 class VitalSign(db.Model):
