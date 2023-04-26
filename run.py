@@ -130,11 +130,11 @@ def admin():
 
 #################### Jordan Start Here ####################
 
-
+ 
 @app.route('/create_patient', methods=['GET', 'POST'])
 def create_patient():
     form = PatientForm()
-    if request.method == 'POST':
+    if request.method =='POST':
         name = form.name.data
         telephone = form.telephone.data
         address = form.address.data

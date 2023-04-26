@@ -125,8 +125,8 @@ class Physician(db.Model):
     work_time_start = db.Column(db.Integer, nullable=False)
     work_time_end = db.Column(db.Integer, nullable=False)
     work_days = db.Column(db.String(200), nullable=False)
-    patients = db.relationship('Patient', backref='physician')
-    appointments = db.relationship('Appointment', backref='physician')
+    #patients = db.relationship('Patient', backref='physician')
+    #appointments = db.relationship('Appointment', backref='physician')
     
     def __str__(self):
         return f"Physician(id={self.id}, name='{self.physician_name}', phone='{self.cell_phone_number}',\
