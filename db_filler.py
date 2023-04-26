@@ -10,12 +10,12 @@ from datetime import datetime, timedelta
 
 # Initialize app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, Appointment, LabOrder, Insurance, InsuranceStatus
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, Appointment, LabOrder, Insurance
 
 
 with app.app_context():
@@ -28,9 +28,10 @@ with app.app_context():
     bob_me = MedicalEncounter(encounter_date=me_date, practitioner_type='Physician', complaint='Headache',
                               diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',
                               notes='None', submission_date=me_date, patient_id=1)
-
-    tylenol = Prescription(
-        name='Tylenol', medical_encounter_id=1, date=me_date)
-    db.session.add(tylenol)
-
+    patient = Patient(name='John Doe', telephone='1234567890', address='123 Main St', date_of_birth=datetime.now(), gender = 'Male')
+    db.session.add(patient)
+    physician = Physician(physician_name='Dr. Smith', patient_id=1)
+    db.session.add(physician)
+    me = MedicalEncounter(encounter_date=datetime.now(), practitioner_type='Physician', complaint='Headache', diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None', notes='None', submission_date=datetime.now(), patient_id=1)
+    db.session.add(me)
     db.session.commit()

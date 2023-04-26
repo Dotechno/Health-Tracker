@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create Insurance</title>
+    <script>
+        function updateLabel(value) {
+            if (document.querySelector('.patient_name').textContent != "") {
+                document.querySelector('.appears').textContent = "Patient Name";
+            } else {
+                document.querySelector('.appears').textContent = "";
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-2 well form-horizontal" style="margin-top: 20px; margin-bottom: 20px; width: auto;"
+            action=" " method="post" id="contact_form">
+            <fieldset>
+                <!-- Form Name -->
+                <legend>Create Insurance</legend>
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Insurance Name</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <input name="insurance_name" placeholder="Insurance Name" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Insurance address</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <input name="insurance_address" placeholder="Insurance Description" class="form-control"
+                                type="text">
+                        </div>
+                    </div>
+                </div>
+                <!-- dropdowns -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Insurance address</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <select name="insurance_status" class="form-control selectpicker">
+                                <option value=" ">Insurance Type</option>
+                                <option value="Pay on Time">Pay on Time</option>
+                                <option value="Late with Payment">Late with Payment</option>
+                                <option value="Difficult to get Payment">Difficult to get Payment</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+    
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-4 control-label"></label>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-warning"> Add Insurance to this Patient <span
+                        class="glyphicon glyphicon-send"></span></button>
+            </div>
+        </div>
+        </fieldset>
+        </form>
+    </div>
+    
+</body>
+
+</html>
