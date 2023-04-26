@@ -116,7 +116,6 @@ def create_medical_encounter():
     form.patient_id.choices = [(patient.id, patient.name)
                                for patient in Patient.query.all()]
     # form choices for practicioner_id and name
-
     print(form.patient_id.choices)
     if request.method == 'POST':
         encounter_date = form.encounter_date.data

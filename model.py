@@ -22,57 +22,7 @@ class User(db.Model, UserMixin):
     def is_active(self):
         return True
 
-
-class ServiceProvidedByClinic(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    service_description = db.Column(db.String(200), nullable=False)
-    cost_for_service = db.Column(db.Float, nullable=False)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    due_date = db.Column(db.Date, nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    invoice_line_item = db.relationship(
-        'InvoiceLineItem', backref='service_provided_by_clinic')
-
-
-class Invoice(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    patient_name = db.Column(db.String(120), nullable=False)
-    insurance_carrier_id = db.Column(
-        db.Integer, db.ForeignKey('insurance.id'), nullable=False)
-    total_cost = db.Column(db.Float, nullable=False)
-    date = db.Column(db.Date, nullable=False, default=datetime.utcnow())
-    status = db.Column(db.String(20), nullable=False, default='unpaid')
-
-
-class InvoiceLineItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    invoice_id = db.Column(db.Integer, db.ForeignKey(
-        'invoice.id'), nullable=False)
-    service_id = db.Column(db.Integer, db.ForeignKey(
-        'service_provided_by_clinic.id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    cost = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(30), nullable=False)
-
-
-class InsuranceStatus(Enum):
-    on_time = 'Pays on time'
-    late = 'Late in payments'
-    diffcult = 'Difficult to get payments'
-
-
-class Insurance(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    status = db.Column(db.String(200), nullable=False)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    invoice = db.relationship('Invoice', backref='insurance')
-
-    def __repr__(self):
-        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
-
-# not important
+###################### Patient ######################
 
 
 class Patient(db.Model):
@@ -87,12 +37,28 @@ class Patient(db.Model):
     insurance = db.relationship('Insurance', backref='patient')
     current_medication = db.relationship('Medication', backref='patient')
     current_appointments = db.relationship('Appointment', backref='patient')
-    
+
+
+class LabOrder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    medical_encounter_id = db.Column(
+        db.Integer, db.ForeignKey('medical_encounter.id'))
+
+
+class Prescription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    medical_encounter_id = db.Column(
+        db.Integer, db.ForeignKey('medical_encounter.id'))
+    date = db.Column(db.Date, nullable=False)
+
 
 class MedicalEncounter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
-    #practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
+    # practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
     practitioner_type = db.Column(db.String(200), nullable=False)
     complaint = db.Column(db.String(200), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)
@@ -103,41 +69,8 @@ class MedicalEncounter(db.Model):
     submission_date = db.Column(db.Date, nullable=False)
     lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
-    prescription= db.relationship('Prescription', backref='medical_encounter')
+    prescription = db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-
-
-    
-class VitalSign(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body_temperature = db.Column(db.Double, nullable=False)
-    pulse_rate = db.Column(db.Double, nullable=False)
-    respiration_rate = db.Column(db.Double, nullable=False)
-    blood_pressure = db.Column(db.Double, nullable=False)
-    encounter_key = db.Column(db.Integer, db.ForeignKey(
-        'medical_encounter.id'), nullable=False)
-    
-class Medication(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    dosage = db.Column(db.String(200), nullable=False)
-    frequency = db.Column(db.String(200), nullable=False)
-    duration = db.Column(db.String(200), nullable=False)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-#Copy into ChatGPT and ask to make a python flask form
-
-class LabOrder(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
-
-
-class Prescription(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'))
-    date = db.Column(db.Date, nullable=False)
 
 
 class Physician(db.Model):
@@ -147,8 +80,52 @@ class Physician(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
+class Insurance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    invoice = db.relationship('Invoice', backref='insurance')
+
+    def __repr__(self):
+        return f"Insurance('{self.name}', '{self.address}', '{self.status}')"
+
+
+class Invoice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_name = db.Column(db.String(120), nullable=False)
+    insurance_carrier_id = db.Column(
+        db.Integer, db.ForeignKey('insurance.id'), nullable=False)
+    total_cost = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=datetime.utcnow())
+    status = db.Column(db.String(20), nullable=False, default='unpaid')
+
+
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'))
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+class VitalSign(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body_temperature = db.Column(db.String(200), nullable=False)
+    pulse_rate = db.Column(db.String(200), nullable=False)
+    respiratory_rate = db.Column(db.String(200), nullable=False)
+    blood_pressure = db.Column(db.String(200), nullable=False)
+    encounter_id = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+
+
+class Medication(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    dosage = db.Column(db.String(200), nullable=False)
+    frequency = db.Column(db.String(200), nullable=False)
+    duration = db.Column(db.String(200), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+###################### End Patient ######################
