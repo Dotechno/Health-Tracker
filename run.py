@@ -81,6 +81,8 @@ def login():
             return render_template('login.html', form=form, title='Login', login_error=True)
 
 
+#################### Jordan Start Here ####################
+
 @app.route('/create_patient', methods=['GET', 'POST'])
 def create_patient():
     form = PatientForm()
@@ -98,7 +100,7 @@ def create_patient():
 
         return redirect(url_for('patient'))
 
-    return render_template('create_patient.html', form=form)
+    return render_template('patient_create_patient.html', form=form)
 
 
 @app.route('/patient', methods=['GET', 'POST'])
@@ -134,16 +136,16 @@ def create_medical_encounter():
         db.session.add(medical_encounter)
         db.session.commit()
 
-        return "Medical Encounter Added"
+        return redirect(url_for('medical_encounter'))
 
-    return render_template('create_medical_encounter.html', form=form)
+    return render_template('patient_create_medical_encounter.html', form=form)
 
 
 @app.route('/medical_encounter', methods=['GET', 'POST'])
 def medical_encounter():
     medical_encounters = MedicalEncounter.query.order_by(
         MedicalEncounter.encounter_date).all()
-    return render_template('medical_encounter.html', mes=medical_encounters)
+    return render_template('patient_medical_encounter.html', mes=medical_encounters)
 
 
 # Create a form similar to login and fill that in
