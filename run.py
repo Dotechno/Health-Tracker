@@ -29,7 +29,7 @@ login_manager = LoginManager(app)
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder, Insurance, Invoice, InvoiceLineItem
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder, Insurance, Invoice, InvoiceLineItem,Medication
 # Routes
 
 
@@ -152,7 +152,7 @@ def admin():
     users = User.query.order_by(User.username).all()
     return render_template('admin.html', users=users)
 
-#################### Jordan Start Here ####################
+#################### Charzezard Start Here ####################
 
 
 @app.route('/create_patient', methods=['GET', 'POST'])
@@ -164,23 +164,43 @@ def create_patient():
         address = form.address.data
         date_of_birth = form.date_of_birth.data
         gender = form.gender.data
-        
+        insurance = form.insurance.data
+        insurance_address = form.insurance_address.data
+        insurance_status = form.insurance_status.data
+        physician_name = form.physician_name.data
+
+        specific_p = Physician.query.filter_by(physician_name=physician_name).first()
+
+
         # push to db without validation
         patient = Patient(name=name, telephone=telephone,
-                          address=address, date_of_birth=date_of_birth, gender=gender)
+                          address=address, date_of_birth=date_of_birth, gender=gender, physician_id=specific_p.id)
         db.session.add(patient)
+
+        all_insurance = Insurance.query.all()
+
+        if not all_insurance:
+            print('a')
+        else:
+            if insurance not in all_insurance:
+                insurance = Insurance(name=insurance, address=insurance_address, status=insurance_status, patient_id= patient.id)
+                db.session.add(insurance)
         db.session.commit()
 
         return redirect(url_for('patient'))
+    else:
 
-    return render_template('patient_create_patient.html', form=form)
+        return render_template('patient_create_patient.html', form=form)
 
 
 @app.route('/patient', methods=['GET', 'POST'])
 def patient():
 
     patients = Patient.query.order_by(Patient.id).all()
+    
+
     return render_template('patient.html', patients=patients)
+
 
 @app.route('/patient/<int:patient_id>/medication', methods=['GET', 'POST'])
 def medication(patient_id):
@@ -227,6 +247,11 @@ def create_medical_encounter():
     return render_template('patient_create_medical_encounter.html', form=form)
 
 
+@app.route('/medical_encounter/<int:me_id>/doctor_notes')
+def doctor_notes(me_id):
+    # if request.method == 'GET':
+    Note = MedicalEncounter.query.filter_by(id=me_id).first()
+    return render_template('me_doctor_note.html', Note = Note) 
 
 @app.route('/medical_encounter', methods=['GET', 'POST'])
 def medical_encounter():
@@ -235,7 +260,7 @@ def medical_encounter():
 
     return render_template('patient_medical_encounter.html', mes=medical_encounters)
 
-#################### Jordan End Here ####################
+#################### Charlie End Here ####################
 
 
 ################ Shane Start Here #########################

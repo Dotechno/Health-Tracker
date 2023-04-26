@@ -55,9 +55,9 @@
                     <td>{{ me.treatment }}</td>
                     <td>{{ me.referral }}</td>
                     <td>{{ me.recommended_followup }}</td>
-                    <td>{{ me.notes }}</td>
+                    
                     <td>
-                        <button type="button" class="btn btn-primary" onclick="openConfirmModal()">{{me.maintenance}}</button>
+                        <a href="/medical_encounter/{{me.id}}/doctor_notes" class="btn btn-primary">View Note</a>
                     </td>
                 </tr>
                 {% endfor %}

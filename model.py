@@ -35,10 +35,11 @@ class Patient(db.Model):  # 01
     address = db.Column(db.String(200), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(200), nullable=False)
-    primary_physician = db.relationship('Physician', backref='patient')
+    insurance = db.relationship('Insurance', backref='patient')
+    physician_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
     medical_encounter = db.relationship(
         'MedicalEncounter', backref='patient')
-    insurance_id = db.Column(db.Integer, db.ForeignKey('insurance.id'))
+    
     appointment = db.relationship('Appointment', backref='patient')
     medication = db.relationship('Medication', backref='patient')
 
@@ -107,9 +108,9 @@ class LabOrder(db.Model):  # 05
 
 class Physician(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    physician_name = db.Column(db.String(200), nullable=False)
+    physician_name = db.Column(db.String(200), nullable=False, default = 'None')
     appointment = db.relationship('Appointment', backref='appointment')
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    patient_id = db.relationship('Patient', backref='physician')
 
 
 class ServiceProvidedByClinic(db.Model):
@@ -155,10 +156,10 @@ class InsuranceStatus(Enum):
 
 class Insurance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(200), nullable=False, default = 'Add Insurance')
+    address = db.Column(db.String(200), nullable=False, default = 'Add Address')
     status = db.Column(db.String(200), nullable=False)
-    patient = db.relationship('Patient', backref='insurance')
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     invoice = db.relationship('Invoice', backref='insurance')
 
     def __repr__(self):

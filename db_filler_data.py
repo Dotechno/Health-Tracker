@@ -113,9 +113,14 @@ if not 'models' in sys.modules:
 with app.app_context():
     # create user
     user = User(username='admin', password='password', roles='admin')
-    patient = Patient(name='John Doe', telephone='123-456-7890', address='123 Main St', date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender = "male", primary_physician=1, insurance_id = 1)
+    physician = Physician(physician_name='Dr. Smith')
+
+    db.session.add(physician)
+    db.session.commit()
+
+    patient = Patient(name='John Doe', telephone='123-456-7890', address='123 Main St', date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender = "male", physician_id = 1)
     carrier = Insurance(name='Blue Cross Blue Shield',
-                        address='123 Main St', status="on time")
+                        address='123 Main St', status="on time", patient_id = 1)
     bob_me = MedicalEncounter(
         encounter_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), practitioner_type='Physician', complaint='Headache',
         diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',
@@ -123,7 +128,6 @@ with app.app_context():
     lab_order = LabOrder(patient_name='John Doe', physician_name='Dr. Smith', lab_test_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), lab_test_technician='Jane Doe', lab_test_result='Positive', test_name='Blood Test'
                          , lab_order_date=datetime.strptime('2020-12-12', '%Y-%m-%d'), medical_encounter_id=1)
     prescription = Prescription(patient_name='John Doe', physician_name='Dr. Smith', medication='Tylenol', dosage='500mg', frequency='Once a day', filled_by='Jane Doe', pharmacist_name='Jane Doe', medical_encounter_id=1)
-    physician = Physician(name='Dr. Smith', patient_id=1)
     appointment = Appointment(name='Dr. Smith', physician_id=1)
     service = ServiceProvidedByClinic(service_description='Blood Test', cost_for_service=100.00, date= lab_order.lab_test_date, due_date=lab_order.lab_test_date - timedelta(days=30), patient_id=1)
     service1 = ServiceProvidedByClinic(service_description='X-Rays', cost_for_service=200.00, date=datetime.now(), due_date=datetime.now(
@@ -135,7 +139,7 @@ with app.app_context():
     db.session.add(bob_me)
     db.session.add(lab_order)
     db.session.add(prescription)
-    db.session.add(physician)
+    
     db.session.add(appointment)
     db.session.add(carrier)
 

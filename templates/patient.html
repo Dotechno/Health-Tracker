@@ -43,10 +43,12 @@
 				<td>{{ patient.name }}</td>
 				<td>{{ patient.telephone }}</td>
 				<td>{{ patient.address }}</td>
-				<td>{{ patient.insurance.name }}</td>
+				<td>{{ patient.insurance[0].name if patient.insurance else 'N/A' }}</td>
+
 				<td>{{ patient.date_of_birth }}</td>
 				<td>{{ patient.gender }}</td>
-				<td>{{ patient.primary_physician[0].physician_name}}</td>
+				
+				<td>{{ patient.physician.physician_name }}</td>
 				<td><a href="/patient/{{patient.id}}/medication" class="btn btn-primary">View Medication</a>
 
 				</td>
@@ -70,7 +72,7 @@
 			</div>
 			<div class="modal-body">
 				<div div class="mt-5">
-					
+
 					<table class="table center" id="patient-table">
 						<thead>
 							<tr>
@@ -98,12 +100,14 @@
 								<td>{{ patients.gender }}</td>
 								<td>{{ patients.primary_physician }}</td>
 								<td>
-									<a href= f"/patient/{{patients.id}}/medication" class="btn btn-primary">View Medication</a>
+									<a href=f"/patient/{{patients.id}}/medication" class="btn btn-primary">View
+										Medication</a>
 
 
 								</td>
 								<td>
-									<a href="/patient/{{patients.id}}/appointment" class="btn btn-primary">View appointment</a>
+									<a href="/patient/{{patients.id}}/appointment" class="btn btn-primary">View
+										appointment</a>
 
 								</td>
 							</tr>
