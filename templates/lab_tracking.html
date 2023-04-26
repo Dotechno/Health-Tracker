@@ -21,39 +21,43 @@
 
 
 <div class="content">
-    <!-- two columns of sections -->
-    <div class="columns">
-        <h1>Lab Tracker</h1>
-
+    <div class="projects-section-header">
+        <p>Lab Tracker</p>
+        <!-- js to get today's date -->
+        <script>
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            document.getElementsByClassName("time")[0].innerHTML = date;
+        </script>
+        <p class="time"></p>
     </div>
-
-
     <form action="/lab_tracking/" method="POST">
-        <!-- <label for="search-select">Search Type:</label> -->
-        <!-- <select class="form-control" id="search-select" name="search_type" ><br> -->
-        <!-- <option value="patient">Search by Patient</option> -->
-        <!-- <option value="physician">Search by Physician</option> -->
-        <!-- <option value="test">Search by Lab Type</option> -->
-        <!-- <option value="labphy">Search by Lab Type Ordered by Physician</option> -->
-        <!-- </select> -->
-        <!-- <label for="lab-test-select">Lab Type:</label> -->
-        <!-- <select class="form-control" id="lab-test-select" name="lab_tester" disabled> -->
-        <!-- {% if lab_test %} -->
-        <!-- {% for test in lab_test %} -->
-        <!-- <option value="{{ test.id }}">{{ test.lab_test_name }}</option> -->
-        <!-- {% endfor %} -->
-        <!-- {% else %} -->
-        <!-- <option>No lab tests found.</option> -->
-        <!-- {% endif %} -->
-        <!--  -->
-        <!-- </select> -->
-        <!-- <br> -->
-        <!-- <label for="search_query">Name Search:</label> -->
-        <!-- <input type="text" name="search_query" id="search_query" placeholder="Type Here">< -->
+        <div>
+            <!-- <label for="search-select">Search Type:</label> -->
+            <!-- <select class="form-control" id="search-select" name="search_type" ><br> -->
+            <!-- <option value="patient">Search by Patient</option> -->
+            <!-- <option value="physician">Search by Physician</option> -->
+            <!-- <option value="test">Search by Lab Type</option> -->
+            <!-- <option value="labphy">Search by Lab Type Ordered by Physician</option> -->
+            <!-- </select> -->
+            <!-- <label for="lab-test-select">Lab Type:</label> -->
+            <!-- <select class="form-control" id="lab-test-select" name="lab_tester" disabled> -->
+            <!-- {% if lab_test %} -->
+            <!-- {% for test in lab_test %} -->
+            <!-- <option value="{{ test.id }}">{{ test.lab_test_name }}</option> -->
+            <!-- {% endfor %} -->
+            <!-- {% else %} -->
+            <!-- <option>No lab tests found.</option> -->
+            <!-- {% endif %} -->
+            <!--  -->
+            <!-- </select> -->
+            <!-- <br> -->
+            <!-- <label for="search_query">Name Search:</label> -->
+            <!-- <input type="text" name="search_query" id="search_query" placeholder="Type Here">< -->
 
 
 
-        <!--   <script>
+            <!--   <script>
             document.getElementById("search-select").addEventListener("change", function() {
                 if (this.value == "labphy") {
                     document.getElementById("lab-test-select").removeAttribute("disabled");
@@ -77,21 +81,172 @@
                 }
             });
         </script>-->
-        <h2>Filter by Date</h2>
-        <div class="columns">
-            <a class="btn" href="/lab_tracking_add_order/">Add Lab order</a>
-            <a class="btn" href="/lab_tracking_add_test/">Add Lab Test Type</a>
+
         </div>
-        <label for="start-date">Start Date:</label>
-        <input type="date" id="start-date" name="start-date" value="{{ start_date }}">
-        <label for="end-date">End Date:</label>
-        <input type="date" id="end-date" name="end-date" value="{{ end_date }}">
+        <div class="projects-section-line">
+            <span class="status-type">Filter by Date</span>
+            <div class="view-actions">
+                <a class="view-btn list-view" href="/lab_tracking_add_order/">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 32 32"
+                        fill="currentColor" stroke="currentColor" stroke-width=".75" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-home">
+                        <path
+                            d="M19.332 19.041c0 0-1.664 2.125-3.79 0-2.062-2-3.562 0-3.562 0l-4.967 9.79c-0.144 0.533 0.173 1.081 0.706 1.224h16.497c0.533-0.143 0.85-0.69 0.707-1.224l-5.591-9.79zM26.939 28.33l-7.979-13.428v-0.025l-0.014-7.869h0.551c0.826 0 1.498-0.671 1.498-1.499 0-0.827-0.672-1.498-1.498-1.498h-7.995c-0.827 0-1.498 0.671-1.498 1.498 0 0.828 0.671 1.499 1.498 1.499h0.482l-0.016 7.871-6.908 13.451c-0.428 1.599 0.521 3.242 2.119 3.67h17.641c1.6-0.428 2.549-2.071 2.119-3.67zM24.553 30.998l-17.108-0.019c-1.065-0.286-1.697-1.382-1.412-2.446l6.947-13.616 0.021-8.908h-1.498c-0.275 0-0.499-0.224-0.499-0.5s0.224-0.499 0.499-0.499h7.995c0.275 0 0.498 0.224 0.498 0.499 0 0.276-0.223 0.5-0.498 0.5h-1.498l0.025 8.875 7.939 13.666c0.286 1.067-0.347 2.163-1.411 2.448zM16.48 2.512c0 0.552 0.448 1 1 1s1-0.448 1-1-0.447-1-1-1-1 0.447-1 1zM17.48 0.012c0.828 0 1.5-0.671 1.5-1.5s-0.672-1.5-1.5-1.5-1.5 0.671-1.5 1.5 0.672 1.5 1.5 1.5zM13.48 2.512c0.553 0 1-0.448 1-1s-0.447-1-1-1-1 0.448-1 1 0.447 1 1 1z">
+                        </path>
+                    </svg>
+                </a>
+                <span class="status-type">Add Order</span>
+
+                <a class="view-btn list-view" href="/lab_tracking_add_test/">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="transparent" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-home">
+                        <path class="cls-1" d="M21.07,6.75,17.25,2.93,10.59,9.59a6.68,6.68,0,1,0,3.82,3.82Z" />
+                        <line class="cls-1" x1="15.82" y1="1.5" x2="22.5" y2="8.18" />
+                        <line class="cls-1" x1="1.5" y1="14.86" x2="14.86" y2="14.86" />
+                        <line class="cls-1" x1="5.32" y1="18.68" x2="7.23" y2="18.68" />
+                        <line class="cls-1" x1="10.09" y1="17.73" x2="12" y2="17.73" />
+                    </svg>
+                </a>
+                <span class="status-type">Add Test</span>
+
+            </div>
+        </div>
+        <div class="columns">
+        </div>
+        <div class="projects-section-line">
+            <div class="item-status">
+                <label for="start-date">Start Date:</label>
+                <div>
+                    <input class="form-control form-control-sm" type="date" id="start-date" name="start-date"
+                        value="{{ start_date }}">
+                </div>
+            </div>
+            <div class="item-status">
+                <label for="end-date">End Date:</label>
+                <div>
+                    <input class="form-control form-control-sm" type="date" id="end-date" name="end-date"
+                        value="{{ end_date }}">
+                </div>
+            </div>
+            <div class="item-status">
+            </div>
+
+        </div>
 
         <button type="submit">Filter</button><br>
     </form>
 
+    <style>
+        @import "compass/css3";
+        @import 'https://fonts.googleapis.com/css?family=Montserrat:300,400,700';
 
-    <table id="big_lab_table"> <!-- Main Table -->
+        .rwd-table {
+            margin: 1em 0;
+            min-width: 300px;
+        }
+
+        .rwd-table tr {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .rwd-table th {
+            display: none;
+        }
+
+        .rwd-table td {
+            display: block;
+        }
+
+        .rwd-table td:first-child {
+            padding-top: 0.5em;
+        }
+
+        .rwd-table td:last-child {
+            padding-bottom: 0.5em;
+        }
+
+        .rwd-table td:before {
+            content: attr(data-th) ": ";
+            font-weight: bold;
+            width: 6.5em;
+            display: inline-block;
+        }
+
+        @media (min-width: 480px) {
+            .rwd-table td:before {
+                display: none;
+            }
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            text-align: left;
+        }
+
+        @media (min-width: 480px) {
+
+            .rwd-table th,
+            .rwd-table td {
+                display: table-cell;
+                padding: 0.25em 0.5em;
+            }
+
+            .rwd-table th:first-child,
+            .rwd-table td:first-child {
+                padding-left: 0;
+            }
+
+            .rwd-table th:last-child,
+            .rwd-table td:last-child {
+                padding-right: 0;
+            }
+        }
+
+        body {
+            font-family: Montserrat, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1 {
+            font-weight: normal;
+            letter-spacing: -1px;
+            color: #34495e;
+        }
+
+        .rwd-table {
+            background: rgb(49, 48, 71);
+            color: #fff;
+            border-radius: 0.4em;
+            overflow: hidden;
+        }
+
+        .rwd-table tr {
+            border-color: #7189a0;
+        }
+
+        .rwd-table th,
+        .rwd-table td {
+            margin: 0.5em 1em;
+        }
+
+        @media (min-width: 480px) {
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em !important;
+            }
+        }
+
+        .rwd-table th,
+        .rwd-table td:before {
+            color: rgb(220, 220, 194);
+        }
+    </style>
+    <script href="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <table id="big_lab_table" class="rwd-table"> <!-- Main Table -->
         <thead>
             <tr>
                 <th>Patient</a></th>
@@ -126,8 +281,7 @@
 
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
 <script>$(document).ready(function () {
         var table = $('#big_lab_table').DataTable({
             lengthChange: false,
