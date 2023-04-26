@@ -21,15 +21,13 @@ if not 'models' in sys.modules:
 with app.app_context():
     bob = Physician(name='Bob')
     db.session.add(bob)
-    med_mob = Insurance(name='MedMob', address='123 Red Rd',
-                        status='Active')
+    med_mob = Insurance(name='MedMob', address='123 Red Rd', status='Active')
     db.session.add(med_mob)
 
     me_date = datetime.strptime('2020-12-12', '%Y-%m-%d')
-    bob_me = MedicalEncounter(
-        encounter_date=me_date, practitioner_type='Physician', complaint='Headache',
-        diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',
-        notes='None', submission_date=me_date, patient_id=1)
+    bob_me = MedicalEncounter(encounter_date=me_date, practitioner_type='Physician', complaint='Headache',
+                              diagnosis='Migraine', treatment='Tylenol', referral='None', recommended_followup='None',
+                              notes='None', submission_date=me_date, patient_id=1)
 
     tylenol = Prescription(
         name='Tylenol', medical_encounter_id=1, date=me_date)

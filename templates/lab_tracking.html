@@ -28,143 +28,61 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="mb-3">
-                <label for="result_type" class="form-label">Type of Result</label>
-                <select class="form-control" id="result_type" name="result_type" required>
-                    <option value="int_range">Integer Range</option>
-                    <option value="pos_neg">Positive/Negative</option>
-                </select>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="physician_name" class="form-label">Physician Name</label>
-                        <input type="text" class="form-control" id="physician_name" required>
-                        <small class="form-text text-muted">First + Last Name</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cell_phone_number" class="form-label">Cell Phone Number</label>
-                        <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}" maxlength="10"
-                            required>
-                        <small class="form-text text-muted">Please enter phone number with 10 digits only</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_start" class="form-label">Work Time Start</label>
-                        <select class="form-select" id="work_time_start" required>
-                            <option value="" disabled selected>Select Start Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="work_time_end" class="form-label">Work Time End</label>
-                        <select class="form-select" id="work_time_end" required>
-                            <option value="" disabled selected>Select End Time</option>
-                            <option value="00:00">12:00 AM</option>
-                            <option value="01:00">1:00 AM</option>
-                            <option value="02:00">2:00 AM</option>
-                            <option value="03:00">3:00 AM</option>
-                            <option value="04:00">4:00 AM</option>
-                            <option value="05:00">5:00 AM</option>
-                            <option value="06:00">6:00 AM</option>
-                            <option value="07:00">7:00 AM</option>
-                            <option value="08:00">8:00 AM</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="21:00">9:00 PM</option>
-                            <option value="22:00">10:00 PM</option>
-                            <option value="23:00">11:00 PM</option>
-                        </select>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="work_days" class="form-label">Work Days</label>
-                        <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
-                                    value="Monday">
-                                <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
-                                    value="Tuesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
-                                    value="Wednesday">
-                                <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
-                                    value="Thursday">
-                                <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
-                            </div>
-                            <div style="clear:both;"></div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
-                                    value="Friday">
-                                <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
-                                    value="Saturday">
-                                <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
-                            </div>
-                            <div class="day-checkbox">
-                                <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
-                                    value="Sunday">
-                                <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
-                            </div>
-                        </div>
-                        <div id="error-message" style="display:none; color:red;">
-                            Please select at least one day of the week.
-                        </div>
+            <div class="modal-body">
+                <form action='/lab_tracking_add_test/' method="POST">
+                    <label for="testname">Test name</label>
+                    <input type="text" class="form-control" name="testname" id="testname"><br>
+                    <label for="result_type">Type of Result</label>
+                    <select class="form-control" id="result_type" name="result_type">
+                        <option value="int_range">Integer Range</option>
+                        <option value="pos_neg">Positive/Negative</option>
+                    </select>
+                    <br>
+
+                    <label for="lowrange">Low Boundary</label>
+                    <input class="form-control" type="text" name="lowrange" id="lowrange"><br>
+                    <label for="highrange">High Boundary</label>
+                    <input class="form-control" type="text" name="highrange" id="highrange"><br>
+                    <label for="posi_negi">Healthy Result</label>
+                    <select class="form-control" id="posi_negi" name="posi_negi" disabled>
+                        <option value="Positive">Positive</option>
+                        <option value="Negative">Negative</option>
+                    </select><br>
+
+                    <script>
+                        document.getElementById("result_type").addEventListener("change", function () {
+                            if (this.value == "int_range") {
+                                document.getElementById("highrange").removeAttribute("disabled");
+                                document.getElementById("lowrange").removeAttribute("disabled");
+                                document.getElementById("posi_negi").setAttribute("disabled", "");
+
+                            }
+                            else if (this.value == "pos_neg") {
+                                document.getElementById("posi_negi").removeAttribute("disabled");
+                                document.getElementById("highrange").setAttribute("disabled", "");
+                                document.getElementById("lowrange").setAttribute("disabled", "");
+                            }
+                            else {
+                                document.getElementById("highrange").removeAttribute("disabled");
+                                document.getElementById("lowrange").removeAttribute("disabled");
+                                document.getElementById("posi_negi").setAttribute("disabled", "");
+                            }
+                        });
+                    </script>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                        <button type="submit" class="btn btn-primary">Confirm</button>
                     </div>
 
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="create-lab-order" tabindex="-1" aria-labelledby="create-lab-order-label" aria-hidden="true">
+<div class=" modal fade" id="create-lab-order" tabindex="-1" aria-labelledby="create-lab-order-label"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -172,7 +90,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action='/lab_tracking_add_order/' method="POST">m>
+                <form action='/lab_tracking_add_order/' method="POST">
                     <div class="mb-3">
                         <label for="ptname" class="form-label">Patient Name</label>
                         <input type="text" name="ptname" class="form-control" id="ptname" required>
@@ -189,12 +107,32 @@
                         {% endif %}
                     </select>
                     <br>
-
+                    <div class="mb-1"><label for="phname" id="phnameLabel">Physician
+                            Name:</label><input class="form-control" type="text" name="phname" id="phname"><br>
+                    </div>
+                    <div class="mb-1"><label for="lbtech" id="lbtechLabel">Lab test
+                            Technician:</label><input class="form-control" type="text" name="lbtech" id="lbtech"><br>
+                    </div>
+                    <div class="mb-1"><label for="lbresult" id="lbresultLabel">Lab test
+                            result:</label><input class="form-control" type="text" name="lbresult" id="lbresult"><br>
+                    </div>
+                    <div class="mb-1 projects-section-line">
+                        <div class="item-status">
+                            <label for="lbodate" id="lbodateLabel">Lab order date:</label>
+                            <input class="form-control" type="date" name="lbodate" id="lbodate">
+                        </div>
+                        <div class="item-status">
+                            <label for="lbdate" id="lbdateLabel">Lab test date:</label>
+                            <input class="form-control" type="date" name="lbdate" id="lbdate">
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="validateForm()">Confirm</button>
             </div>
         </div>
     </div>
@@ -232,7 +170,8 @@
                 <div class="item-status">
                     <label for="end-date">&nbsp;</label>
 
-                    <button class="btn btn-light buttons-pdf buttons-html5" type="submit">Filter by Date</button><br>
+                    <button class="btn btn-light buttons-pdf buttons-html5" type="submit">Filter by
+                        Date</button><br>
                 </div>
             </div>
         </form>
