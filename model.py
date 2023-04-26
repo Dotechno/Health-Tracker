@@ -30,70 +30,25 @@ class User(db.Model, UserMixin):
         return True
 
 
-class Patient(db.Model):
-    __bind_key__ = 'patient'
+#### Health Tracker Module ####
+
+class Patient(db.Model):  # 01
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     telephone = db.Column(db.String(200), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
     gender = db.Column(db.String(200), nullable=False)
-
-
-# Model for creating prescription of Pharmacy Order Tracking Module
-class Prescription(db.Model):  # Shweta
-    __bind_key__ = 'prescription'
-    id = db.Column(db.Integer, primary_key=True)
-    patient_name = db.Column(db.String(200), db.ForeignKey(Patient.name))
-    physician_name = db.Column(db.String(200), nullable=False)
-    medication = db.Column(db.String(200), nullable=False)
-    dosage = db.Column(db.Text, nullable=True)
-    frequency = db.Column(db.String(200), nullable=False)
-    filled_by = db.Column(db.String(200), nullable=False)
-    date_filled = db.Column(Date, default=date.today)
-    pharmacist_name = db.Column(db.String(200), nullable=False)
-    medical_encounter = db.relationship('MedicalEncounter', backref='patient')
-    primary_physician = db.relationship('Physician', backref='patient')
+    primary_physician = db.Column(db.Integer, db.ForeignKey(
+        'physician.id'), nullable=False)
+    medical_encounter = db.relationship(
+        'MedicalEncounter', backref='patient')
     insurance = db.relationship('Insurance', backref='patient')
-    current_medication = db.relationship('Medication', backref='patient')
-    current_appointments = db.relationship('Appointment', backref='patient')
+    appointment = db.relationship('Appointment', backref='patient')
+    medication = db.relationship('Medication', backref='patient')
 
 
-class Prescription(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    medical_encounter_id = db.Column(
-        db.Integer, db.ForeignKey('medical_encounter.id'))
-    date = db.Column(db.Date, nullable=False)
-
-
-class LabTest(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lab_test_name = db.Column(db.String(200), nullable=False)
-    low_normal_results = db.Column(db.String(200))
-    high_normal_results = db.Column(db.String(200))
-    # lab_order = db.relationship('LabOrder', backref='lab_test')
-
-    def __repr__(self):
-        return '<LabTest %r>' % self.id
-
-
-class LabOrder(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    patient_name = db.Column(db.String(200), nullable=False)
-    physician_name = db.Column(db.String(200), nullable=False)
-    lab_test_date = db.Column(db.DateTime, nullable=False)
-    lab_test_technician = db.Column(db.String(200), nullable=False)
-    lab_test_result = db.Column(db.String(200), nullable=False)
-    test_name = db.Column(db.String(200), nullable=False)
-    lab_order_date = db.Column(db.DateTime, nullable=False)
-    # test = db.Column(db.Integer, db.ForeignKey('lab_test.id'))
-
-    def __repr__(self):
-        return '<LabOrder %r>' % self.id
-
-
-class MedicalEncounter(db.Model):
+class MedicalEncounter(db.Model):  # 02
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
     # practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
@@ -109,6 +64,50 @@ class MedicalEncounter(db.Model):
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
     prescription = db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+
+
+# Model for creating prescription of Pharmacy Order Tracking Module
+
+
+class Prescription(db.Model):  # 03 Shweta
+    id = db.Column(db.Integer, primary_key=True)
+    patient_name = db.Column(db.String(200), db.ForeignKey(Patient.name))
+    physician_name = db.Column(db.String(200), nullable=False)
+    medication = db.Column(db.String(200), nullable=False)
+    dosage = db.Column(db.Text, nullable=True)
+    frequency = db.Column(db.String(200), nullable=False)
+    filled_by = db.Column(db.String(200), nullable=False)
+    date_filled = db.Column(Date, default=date.today)
+    pharmacist_name = db.Column(db.String(200), nullable=False)
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+
+
+class LabTest(db.Model):  # 04
+    id = db.Column(db.Integer, primary_key=True)
+    lab_test_name = db.Column(db.String(200), nullable=False)
+    low_normal_results = db.Column(db.String(200))
+    high_normal_results = db.Column(db.String(200))
+    # lab_order = db.relationship('LabOrder', backref='lab_test')
+
+    def __repr__(self):
+        return '<LabTest %r>' % self.id
+
+
+class LabOrder(db.Model):  # 05
+    id = db.Column(db.Integer, primary_key=True)
+    patient_name = db.Column(db.String(200), nullable=False)
+    physician_name = db.Column(db.String(200), nullable=False)
+    lab_test_date = db.Column(db.DateTime, nullable=False)
+    lab_test_technician = db.Column(db.String(200), nullable=False)
+    lab_test_result = db.Column(db.String(200), nullable=False)
+    test_name = db.Column(db.String(200), nullable=False)
+    lab_order_date = db.Column(db.DateTime, nullable=False)
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+
+    def __repr__(self):
+        return '<LabOrder %r>' % self.id
 
 
 class Physician(db.Model):

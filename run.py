@@ -15,7 +15,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SQLALCHEMY_BINDS'] = {'prescription': 'sqlite:///prescription.db',
                                   'medication': 'sqlite:///medication.db'}
 
-
 app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 
@@ -58,6 +57,10 @@ def register():
         hashed_password = bcrypt.generate_password_hash(
             password).decode('utf-8')
         user = User(username=username, password=hashed_password, roles=roles)
+
+        if user.roles == 'admin':
+            user.roles = 'admin'
+
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {username}!', 'success')
