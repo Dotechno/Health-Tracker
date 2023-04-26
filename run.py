@@ -478,7 +478,7 @@ def vendors():
 # Route for Create Prescription
 
 
-@app.route('/create_prescription', methods=['POST', 'GET'])
+@app.route('/pharmacy_create_prescription', methods=['POST', 'GET'])
 def create_prescription():
     # return render_template('pharmacy_create_prescription.html')
     if request.method == 'POST':
@@ -495,7 +495,7 @@ def create_prescription():
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
-        return redirect(url_for('create_prescription'))
+        return redirect(url_for('pharmacy_create_prescription'))
 
     else:
         return render_template('pharmacy_create_prescription.html')
@@ -503,7 +503,7 @@ def create_prescription():
     # Route for retrieve Prescription # this is an extra route which is currently unused
 
 
-@app.route('/generate_report', methods=['POST', 'GET'])
+@app.route('/pharmacy_generate_report', methods=['POST', 'GET'])
 def retrieve_prescription():
     # return render_template('create_prescription.html')
     tasks = Prescription.query.order_by(Prescription.id).all()
@@ -512,7 +512,7 @@ def retrieve_prescription():
 # this is the current route used for retrieving based on the id or name and prescription name
 
 
-@app.route('/retrieve_prescription_based', methods=['POST', 'GET'])
+@app.route('/pharmacy_retrieve_prescription_based', methods=['POST', 'GET'])
 def retrieve_prescription_based():
     if request.method == 'POST':
         id = request.form['prescription_id']
@@ -527,7 +527,7 @@ def retrieve_prescription_based():
 
 
 # Route for adding medication
-@app.route('/add_medication', methods=['POST', 'GET'])
+@app.route('/pharmacy_add_medication', methods=['POST', 'GET'])
 def add_medication():
     if request.method == 'POST':
 
@@ -542,7 +542,7 @@ def add_medication():
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
-        return redirect(url_for('add_medication'))
+        return redirect(url_for('pharmacy_add_medication'))
 
     else:
         return render_template('pharmacy_add_medication.html')
@@ -550,7 +550,7 @@ def add_medication():
      # Route for retrieve Medications
 
 
-@app.route('/retrieve_medication', methods=['POST', 'GET'])
+@app.route('/pharmacy_retrieve_medication', methods=['POST', 'GET'])
 def retrieve_medication():
     # return render_template('create_prescription.html')
     # tasks = Medication.query.order_by(Medication.id).all()
