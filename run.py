@@ -12,7 +12,7 @@ import appointment
 import json
 
 from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
-from datetime import datetime
+from datetime import datetime, timedelta
 # Initialize app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
