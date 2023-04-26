@@ -3,8 +3,281 @@
 
 <head>
     <title>Register</title>
-
     <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            position: relative;
+            padding: 50px;
+            width: 520px;
+            min-height: 380px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .container::after {
+            content: "";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            left: 5px;
+            border-radius: 5px;
+            pointer-events: none;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.1) 2%);
+        }
+
+        .form {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .form h2 {
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .form .inputBx {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form .inputBx input {
+            width: 100%;
+            outline: none;
+            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 10px;
+            padding-left: 40px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .form .inputBx .password-control {
+            position: absolute;
+            top: 11px;
+            right: 10px;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: url(https://snipp.ru/demo/495/view.svg) 0 0 no-repeat;
+            transition: 0.5s;
+        }
+
+        .form .inputBx .view {
+            background: url(https://snipp.ru/demo/495/no-view.svg) 0 0 no-repeat;
+            transition: 0.5s;
+        }
+
+        .form .inputBx .fas {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+        }
+
+        .form .inputBx input[type="submit"] {
+            background: #fff;
+            color: #111;
+            max-width: 100px;
+            padding: 8px 10px;
+            box-shadow: none;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 1.5s;
+        }
+
+        .form .inputBx input[type="submit"]:hover {
+            background: linear-gradient(115deg,
+                    rgba(0, 0, 0, 0.1),
+                    rgba(255, 255, 255, 0.25));
+            color: #fff;
+            transition: 0.5s;
+        }
+
+        .form .inputBx input::placeholder {
+            color: #fff;
+        }
+
+        .form .inputBx span {
+            position: absolute;
+            left: 30px;
+            padding: 10px;
+            display: inline-block;
+            color: #fff;
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .form .inputBx input:focus~span,
+        .form .inputBx input:valid~span {
+            transform: translateX(-30px) translateY(-25px);
+            font-size: 12px;
+        }
+
+        .form p {
+            color: #fff;
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .form p a {
+            color: #fff;
+        }
+
+        .form p a:hover {
+            background-color: #000;
+            background-image: linear-gradient(to right, #434343 0%, black 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .remember {
+            position: relative;
+            display: inline-block;
+            color: #fff;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        @import url("https://fonts.googleapis.com/css2?family=El+Messiri:wght@700&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: "El Messiri", sans-serif;
+        }
+
+        body {
+            background: #031323;
+            overflow: hidden;
+        }
+
+        .fas {
+            width: 32px;
+        }
+
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .box {
+            position: relative;
+        }
+
+        .box .square {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            animation: square 10s linear infinite;
+            animation-delay: calc(-1s * var(--i));
+        }
+
+        @keyframes square {
+
+            0%,
+            100% {
+                transform: translateY(-20px);
+            }
+
+            50% {
+                transform: translateY(20px);
+            }
+        }
+
+        .box .square:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: -15px;
+            right: -45px;
+        }
+
+        .box .square:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 105px;
+            left: -125px;
+            z-index: 2;
+        }
+
+        .box .square:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 85px;
+            right: -45px;
+            z-index: 2;
+        }
+
+        .box .square:nth-child(4) {
+            width: 50px;
+            height: 50px;
+            bottom: 35px;
+            left: -95px;
+        }
+
+        .box .square:nth-child(5) {
+            width: 50px;
+            height: 50px;
+            top: -15px;
+            left: -25px;
+        }
+
+        .box .square:nth-child(6) {
+            width: 85px;
+            height: 85px;
+            top: 165px;
+            right: -155px;
+            z-index: 2;
+        }
+
+        select.form-control {
+            outline: none;
+            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 7px 10px;
+            padding-left: 34px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+    </style>
     <script>function show_hide_password(target) {
             var input = document.getElementById('password-input');
             if (input.getAttribute('type') == 'password') {
@@ -63,7 +336,7 @@
                         <!--  Auth key so that when creating admin account  -->
 
                         <!-- Create a dropdown with the following roles : ['Practitioner', 'Admin', 'Lab Technition'] -->
-                        <select type='dropdown' class="inputBx" id="roles" name="roles" style="  
+                        <!-- <select type='dropdown' class="inputBx" id="roles" name="roles" style="  
                         outline: none;
                         border: none;
                         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -75,34 +348,33 @@
                         font-size: 16px;
                         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);">
                             <option class="inputBx" selected value="physician">Physician</option>
-                        </select>
+                        </select> -->
 
                         <div id="physician-fields" class="extra">
                             <div class="inputBx">
-                                <span for="physician_name" class="form-label">Physician Name</span>
-                                <input type="text" class="form-control" id="physician_name" required>
+                                <input type="text" id="physician_name" required>
+                                <span>Physician Name</span>
 
                             </div>
                             <div class="inputBx">
-                                <label for="cell_phone_number" class="inputBx">Cell Phone Number</label>
-                                <input type="tel" class="form-control" id="cell_phone_number" pattern="[0-9]{10}"
-                                    maxlength="10" required>
+                                <input type="tel" id="cell_phone_number" maxlength="10" required>
+                                <span for="cell_phone_number">Cell Phone Number</span>
 
                             </div>
-                            <div class="mb-3">
-                                <span for="work_time_start" class="form-label">Work Time Start</span>
-                                <select class="form-select" id="work_time_start" style="  
+                            <div class="" style="display: flex; justify-content: space-between;"">
+                                <div class=" inputBx">
+                                <select class="" id="work_time_start" style="  
                                 outline: none;
                                 border: none;
                                 border: 1px solid rgba(255, 255, 255, 0.2);
                                 background: rgba(255, 255, 255, 0.2);
-                                padding: 7px 10px;
+                                padding: 7px 34px;
                                 padding-left: 34px;
                                 border-radius: 15px;
                                 color: #fff;
                                 font-size: 16px;
                                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);" required>
-                                    <option value="" disabled selected>Select Start Time</option>
+                                    <option value="" disabled selected>Work Time Start</option>
                                     <option value="00:00">12:00 AM</option>
                                     <option value="01:00">1:00 AM</option>
                                     <option value="02:00">2:00 AM</option>
@@ -129,9 +401,18 @@
                                     <option value="23:00">11:00 PM</option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="work_time_end" class="form-label">Work Time End</label>
-                                <select class="form-select" id="work_time_end" required>
+                            <div class="inputBx">
+                                <select class="" id="work_time_end" style="  
+                                outline: none;
+                                border: none;
+                                border: 1px solid rgba(255, 255, 255, 0.2);
+                                background: rgba(255, 255, 255, 0.2);
+                                padding: 7px 34px;
+                                padding-left: 34px;
+                                border-radius: 15px;
+                                color: #fff;
+                                font-size: 16px;
+                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);" required>
                                     <option value="" disabled selected>Select End Time</option>
                                     <option value="00:00">12:00 AM</option>
                                     <option value="01:00">1:00 AM</option>
@@ -159,61 +440,62 @@
                                     <option value="23:00">11:00 PM</option>
                                 </select>
                             </div>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="work_days" class="form-label">Work Days</label>
-                                <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
-                                            value="Monday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck1">Monday</label>
-                                    </div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
-                                            value="Tuesday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck2">Tuesday</label>
-                                    </div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
-                                            value="Wednesday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck3">Wednesday</label>
-                                    </div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
-                                            value="Thursday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck4">Thursday</label>
-                                    </div>
-                                    <div style="clear:both;"></div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
-                                            value="Friday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck5">Friday</label>
-                                    </div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
-                                            value="Saturday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck6">Saturday</label>
-                                    </div>
-                                    <div class="day-checkbox">
-                                        <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
-                                            value="Sunday">
-                                        <label class="btn btn-outline-secondary" for="btnCheck7">Sunday</label>
-                                    </div>
+                        <div class="mb-3">
+                            <label for="work_days" style="color: #fff;">Work Days</label>
+                            <div class="btn-group flex-wrap" role="group" aria-label="Work Days" id="work_days">
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck1" autocomplete="off"
+                                        value="Monday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck1">MON</label>
                                 </div>
-                                <div id="error-message" style="display:none; color:red;">
-                                    Please select at least one day of the week.
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck2" autocomplete="off"
+                                        value="Tuesday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck2">TUE</label>
+                                </div>
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck3" autocomplete="off"
+                                        value="Wednesday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck3">WED</label>
+                                </div>
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck4" autocomplete="off"
+                                        value="Thursday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck4">THUR</label>
+                                </div>
+                                <div style="clear:both;"></div>
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck5" autocomplete="off"
+                                        value="Friday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck5">FRI</label>
+                                </div>
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck6" autocomplete="off"
+                                        value="Saturday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck6">SAT</label>
+                                </div>
+                                <div class="day-checkbox">
+                                    <input type="checkbox" class="btn-check" id="btnCheck7" autocomplete="off"
+                                        value="Sunday">
+                                    <label class="btn btn-outline-secondary" for="btnCheck7">SUN</label>
                                 </div>
                             </div>
+                            <div id="error-message" style="display:none; color:red;">
+                                Please select at least one day of the week.
+                            </div>
                         </div>
-                        <div class="inputBx">
-                            <input type="submit" value="Register">
-                        </div>
-
-                    </form>
-                    <p>Forgot password? <a href="#">Click Here</a></p>
-                    <p>Do have an account? <a href="login">Login</a></p>
                 </div>
+                <div class="inputBx">
+                    <input type="submit" value="Register">
+                </div>
+
+                </form>
+                <p>Forgot password? <a href="#">Click Here</a></p>
+                <p>Do have an account? <a href="login">Login</a></p>
             </div>
+        </div>
 
         </div>
     </section>
