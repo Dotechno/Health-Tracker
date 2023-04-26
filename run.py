@@ -65,6 +65,7 @@ def register():
 
         # create physician class if user is physician
         if user.roles == 'Physician':
+            user
             physician = Physician(name=username.title())
             db.session.add(physician)
             db.session.commit()
@@ -420,7 +421,6 @@ def retrieve_medication():
     physician_name = request.form.get('physician_name')
     physician_prescriptions = db.session.query(
         Prescription.physician_name,
-
         db.func.count(Prescription.medication).label('count')
     ).filter(func.strftime('%m', Prescription.date_filled) == month,
              Prescription.physician_name == physician_name).all()
