@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = 'arbitrarySecretKey'
 
 # Word around so autopep8 E402 doesn't formats import after app = Flask(__name__)
 if not 'models' in sys.modules:
-    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, ServiceProvidedByClinic, Appointment, LabOrder, Insurance, InsuranceStatus
+    from model import db, User, Patient, MedicalEncounter, Prescription, Physician, Appointment, LabOrder, Insurance, InsuranceStatus
 
 
 with app.app_context():

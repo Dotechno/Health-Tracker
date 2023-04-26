@@ -6,7 +6,3 @@ python setup.py
 
 # Run db_filler.py
 python db_filler.py
-
-rm -rf instance
-python setup.py
-python db_filler.py
