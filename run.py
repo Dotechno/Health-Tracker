@@ -654,7 +654,7 @@ def vendors():
 
 
 @app.route('/pharmacy_create_prescription', methods=['POST', 'GET'])
-def create_prescription():
+def pharmacy_create_prescription():
     # return render_template('pharmacy_create_prescription.html')
     if request.method == 'POST':
         patient_name = request.form['patient_name']
@@ -688,7 +688,7 @@ def retrieve_prescription():
 
 
 @app.route('/pharmacy_retrieve_prescription_based', methods=['POST', 'GET'])
-def retrieve_prescription_based():
+def pharmacy_retrieve_prescription_based():
     if request.method == 'POST':
         id = request.form['prescription_id']
         name = request.form['patient_name']
@@ -703,7 +703,7 @@ def retrieve_prescription_based():
 
 # Route for adding medication
 @app.route('/pharmacy_add_medication', methods=['POST', 'GET'])
-def add_medication():
+def pharmacy_add_medication():
     if request.method == 'POST':
 
         medication = request.form.get('Medication')
@@ -726,7 +726,7 @@ def add_medication():
 
 
 @app.route('/pharmacy_retrieve_medication', methods=['POST', 'GET'])
-def retrieve_medication():
+def pharmacy_retrieve_medication():
     # return render_template('create_prescription.html')
     # tasks = Medication.query.order_by(Medication.id).all()
     # eturn render_template('retrieve_medication.html', tasks=tasks)
