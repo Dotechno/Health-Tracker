@@ -573,6 +573,7 @@ def retrieve_medication():
 @app.route("/physician-scheduler", methods=["GET", "POST"])
 def physician_scheduler():
     global two_month_appointments, current_physician_id
+    print(f"current user roles: {current_user.roles}")
     if current_user.roles == "admin":
         return physician_home()
     else:
@@ -707,7 +708,8 @@ def get_all_appointments():
 
 
 def add_appointment(date_time, date, type, time, physician_id):
-    new_appointment = Appointment(appointment_date_time=date_time,
+    physcian = find_physician_by_id(physician_id)
+    new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
                                   appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
 
     # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
