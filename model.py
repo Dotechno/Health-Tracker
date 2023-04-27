@@ -114,7 +114,7 @@ class Physician(db.Model):
     work_time_start = db.Column(db.Integer, nullable=False)
     work_time_end = db.Column(db.Integer, nullable=False)
     work_days = db.Column(db.String(200), nullable=False)
-    # patients = db.relationship('Patient', backref='physician')
+    patients = db.relationship('Patient', backref='physician')
     # appointments = db.relationship('Appointment', backref='physician')
 
     def __str__(self):
@@ -198,7 +198,7 @@ class VitalSign(db.Model):
         'medical_encounter.id'), nullable=False)
 
 
-class Medication(db.Model): #Shweta
+class Medication(db.Model):  # Shweta
     # id = db.Column(db.Integer, primary_key=True)
     # name = db.Column(db.String(200), nullable=False)
     # dosage = db.Column(db.String(200), nullable=False)
