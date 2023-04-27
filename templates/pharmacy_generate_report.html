@@ -1,0 +1,147 @@
+{% extends "dashboard.html" %}
+
+{% block main_content %}
+
+<title>Prescription details</title>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
+
+
+<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/searchbuilder/1.4.2/css/searchBuilder.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/datetime/1.4.0/css/dataTables.dateTime.min.css" rel="stylesheet">
+
+<!--for condition-->
+
+<link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+<!--for buttons-->
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+
+<link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css" rel="stylesheet">
+
+<!--for date-->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+
+
+
+<script>
+
+    var minDate, maxDate;
+
+    // Custom filtering function which will search data in column four between two values
+    // Custom filtering function which will search data in column four between two values
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = minDate.val();
+            var max = maxDate.val();
+            var date = moment(data[7], "YYYY-MM-DD");
+            var isInRange = true;
+
+            if (min && date.isBefore(min, 'day')) {
+                isInRange = false;
+            }
+            if (max && date.isAfter(max, 'day')) {
+                isInRange = false;
+            }
+
+            return isInRange;
+        }
+    );
+
+    $(document).ready(function () {
+        // Create date inputs
+        minDate = new DateTime($('#min'), {
+            format: 'YYYY-MM-DD'
+        });
+        maxDate = new DateTime($('#max'), {
+            format: 'YYYY-MM-DD'
+        });
+
+        // DataTables initialisation
+        //var table = $('#example').DataTable( );
+        var table = $('#example').DataTable(
+            {
+                dom: 'Qlfrtip', buttons: [
+                    'pdfHtml5'
+                ]
+
+            }
+        );
+
+        // Refilter the table
+        $('#min, #max').on('change', function () {
+            table.draw();
+        });
+    });
+
+</script>
+
+
+<div class="container">
+
+    <h1 style="text-align: center"> Prescription Details</h1>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="min">Minimum date:</label>
+                <input type="text" id="min" name="min" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="max">Maximum date:</label>
+                <input type="text" id="max" name="max" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    {% if tasks|length < 1 %} <h4 style="text-align: center">There are no tasks. Create one below!</h4>
+
+        {% else %}
+        <div id="table-container">
+
+            <table id="example" class="display nowrap" style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient Name</th>
+                        <th>Physician Name</th>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                        <th>Frequency</th>
+                        <th>Filled By</th>
+                        <th>Date Created</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.id }}</td>
+                        <td>{{ task.patient_name }}</td>
+                        <td>{{ task.physician_name }}</td>
+                        <td>{{ task.medication }}</td>
+                        <td>{{ task.dosage }}</td>
+                        <td>{{ task.frequency }}</td>
+                        <td>{{ task.filled_by }}</td>
+                        <td>{{ task.date_filled }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% endif %}
+        </div>
+</div>
+{% endblock %}

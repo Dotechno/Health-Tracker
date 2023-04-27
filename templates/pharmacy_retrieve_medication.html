@@ -1,0 +1,101 @@
+{% extends "dashboard.html" %}
+
+{% block main_content %}
+
+<title>Medication details</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link href="../static/css/createprescription.css" rel="stylesheet">
+<link href="../static/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/searchbuilder/1.4.2/js/dataTables.searchBuilder.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+
+
+<script src="https://cdn.datatables.net/datetime/1.4.0/js/dataTables.dateTime.min.js"></script>
+<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'pdfHtml5'
+            ]
+        });
+    });
+</script>
+
+
+<div class="testbox">
+    <form action="/pharmacy_retrieve_medication" method="POST" name="Form">
+        Enter Medication Name <input type="text" name="medication_id" id="medication_id" required> <br> <br>
+        Month <select name="mon" required>
+            <option value="01">JAN</option>
+            <option value="02">FEB</option>
+            <option value="03">MAR</option>
+            <option value="04">APR</option>
+            <option value="05">MAY</option>
+            <option value="06">JUNE</option>
+            <option value="07">JUL</option>
+            <option value="08">AUG</option>
+            <option value="09">SEP</option>
+            <option value="10">OCT</option>
+            <option value="11">NOV</option>
+            <option value="12">DEC</option>
+
+
+        </select>
+        <br>
+        <br>
+        Enter Physician Name <input type="text" name="physician_name" id="physician_name" required>
+        <br>
+        <br>
+
+        <button type="submit" href="/" onclick="myFunction()">Submit</button>
+        <button type="reset" href="/" onclick="myFunction()">Clear</button>
+
+
+
+
+    </form>
+</div>
+<br>
+<div class="container">
+
+    {% if output %}
+    <table id="example" class="display nowrap" style="width:100%">
+
+        <thead>
+            <tr>
+                <td>Physician Name</td>
+                <td>Medication Summary</td>
+
+            </tr>
+
+        </thead>
+        <tbody>
+
+            {% for output in output %}
+            <tr>
+                <td>{{ output[0] }}</td>
+                <td>{{ output[1] }}</td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+</div>
+{% endblock %}
