@@ -42,7 +42,7 @@ class Patient(db.Model):  # 01
         'MedicalEncounter', backref='patient')
 
     appointment = db.relationship('Appointment', backref='patient')
-    # medication = db.relationship('Medication', backref='patient')
+    medication = db.relationship('Medication', backref='patient')
 
 
 class MedicalEncounter(db.Model):  # 02
@@ -55,12 +55,12 @@ class MedicalEncounter(db.Model):  # 02
     diagnosis = db.Column(db.String(200), nullable=False)
     treatment = db.Column(db.String(200), nullable=False)
     referral = db.Column(db.String(200), nullable=False)
-    recommended_followup = db.Column(db.String(200), nullable=False)
+    recommended_followup = db.Column(db.Date, nullable=False)
     notes = db.Column(db.String(200), nullable=False)
     submission_date = db.Column(db.Date, nullable=False)
-    # lab_order = db.relationship('LabOrder', backref='medical_encounter')
+    lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
-   # prescription = db.relationship('Prescription', backref='medical_encounter')
+    prescription = db.relationship('Prescription', backref='medical_encounter')
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 
@@ -77,8 +77,8 @@ class Prescription(db.Model):  # 03 Shweta
     filled_by = db.Column(db.String(200), nullable=False)
     date_filled = db.Column(Date, default=date.today)
     pharmacist_name = db.Column(db.String(200), nullable=False)
-   # medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
-    #    'medical_encounter.id'), nullable=True)
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+      'medical_encounter.id'), nullable=True)
 
 
 class LabTest(db.Model):  # 04
@@ -86,7 +86,7 @@ class LabTest(db.Model):  # 04
     lab_test_name = db.Column(db.String(200), nullable=False)
     low_normal_results = db.Column(db.String(200))
     high_normal_results = db.Column(db.String(200))
-    # lab_order = db.relationship('LabOrder', backref='lab_test')
+    lab_order = db.relationship('LabOrder', backref='lab_test')
 
     def __repr__(self):
         return '<LabTest %r>' % self.id
@@ -101,8 +101,9 @@ class LabOrder(db.Model):  # 05
     lab_test_result = db.Column(db.String(200), nullable=False)
     test_name = db.Column(db.String(200), nullable=False)
     lab_order_date = db.Column(db.DateTime, nullable=False)
-    # medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'), nullable=False)
-
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'), nullable=False)
+    lab_test_id = db.Column(db.Integer, db.ForeignKey('lab_test.id'), nullable=False)
+    
     def __repr__(self):
         return '<LabOrder %r>' % self.id
 
@@ -133,7 +134,6 @@ class Appointment(db.Model):
     appointment_time = db.Column(db.String(200), nullable=False)
     physician_id = db.Column(db.Integer, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
     # service_type = db.relationship("ServiceProvidedByClinic")
 
     def __str__(self):
@@ -151,6 +151,8 @@ class ServiceProvidedByClinic(db.Model):
     date = db.Column(db.Date, nullable=False)
     invoice_line_item = db.relationship(
         'InvoiceLineItem', backref='service_provided_by_clinic')
+    # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
+    
 
 
 class Invoice(db.Model):
@@ -200,12 +202,6 @@ class VitalSign(db.Model):
 
 
 class Medication(db.Model):  # Shweta
-    # id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String(200), nullable=False)
-    # dosage = db.Column(db.String(200), nullable=False)
-    # frequency = db.Column(db.String(200), nullable=False)
-    # duration = db.Column(db.String(200), nullable=False)
-    # patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     id = db.Column(db.Integer, primary_key=True)
     medication = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(500), nullable=False)
@@ -213,6 +209,7 @@ class Medication(db.Model):  # Shweta
     frequency = db.Column(db.String(200), nullable=True)
     side_effects = db.Column(db.String(200), nullable=True)
     interactions = db.Column(db.String(200), nullable=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 ##### Equipment Start #####
 

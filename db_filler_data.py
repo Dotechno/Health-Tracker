@@ -29,17 +29,17 @@ with app.app_context():
                           work_days='Monday, Tuesday, Wednesday, Thursday, Friday')
 
     db.session.add(physician)
-
+    db.session.commit()
     john_doe = Patient(name='John Doe', telephone='619-583-0249', address='439 Main St',
                        date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender="male",
                        physician_id=1)
 
     db.session.add(john_doe)
 
-    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'),
+    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'), physician_id = 1,
                                     practitioner_type='Physician', complaint='fever',
                                     diagnosis='flu', treatment='Tylenol', referral='none',
-                                    recommended_followup='none', notes='none',
+                                    recommended_followup=datetime.now(), notes='none',
                                     submission_date=datetime.strptime(
                                         '2012-12-12', '%Y-%m-%d'),
                                     patient_id=1)
@@ -64,29 +64,32 @@ with app.app_context():
 
     db.session.add(john_vital_sign)
 
-    bob_date = datetime.strptime('2007-01-15', '%Y-%m-%d')
-    bob_ordr = LabOrder(lab_order_date=datetime.strptime('2007-01-15', '%Y-%m-%d'), test_name="Blood Pressure", patient_name="Bob Builder",
-                        physician_name="John Doe", lab_test_result="130", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2019-11-29', '%Y-%m-%d'))
-    db.session.add(bob_ordr)
-
     TestBp = LabTest(lab_test_name="Blood Pressure",
                      low_normal_results="80", high_normal_results="100")
     db.session.add(TestBp)
+    
 
     TestCscree = LabTest(lab_test_name="Cancer Screening",
                          low_normal_results="Negative", high_normal_results="")
     db.session.add(TestCscree)
+    db.session.commit()
+    
+    
+    bob_date = datetime.strptime('2007-01-15', '%Y-%m-%d')
+    bob_ordr = LabOrder(lab_order_date=datetime.strptime('2007-01-15', '%Y-%m-%d'), test_name="Blood Pressure", patient_name="Bob Builder",
+                        physician_name="John Doe", lab_test_result="130", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2019-11-29', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=1)
+    db.session.add(bob_ordr)
 
     bobbb = LabOrder(lab_order_date=datetime.strptime('2010-11-15', '%Y-%m-%d'), test_name="Cancer Screening", patient_name="Bob Builder",
-                     physician_name="Jacob Deer", lab_test_result="Positive", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2023-11-29', '%Y-%m-%d'))
+                     physician_name="Jacob Deer", lab_test_result="Positive", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2023-11-29', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=2)
     db.session.add(bobbb)
 
     GoodOrdrr = LabOrder(lab_order_date=datetime.strptime('2017-05-25', '%Y-%m-%d'), test_name="Blood Pressure", patient_name="Guy Health",
-                         physician_name="John Doe", lab_test_result="82", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2020-06-18', '%Y-%m-%d'))
+                         physician_name="John Doe", lab_test_result="82", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2020-06-18', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=1)
     db.session.add(GoodOrdrr)
 
     nocancer = LabOrder(lab_order_date=datetime.strptime('2019-04-12', '%Y-%m-%d'), test_name="Cancer Screening", patient_name="Guy Health",
-                        physician_name="Jacob Deer", lab_test_result="Negative", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2020-06-18', '%Y-%m-%d'))
+                        physician_name="Jacob Deer", lab_test_result="Negative", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2020-06-18', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=2)
     db.session.add(nocancer)
 
     equipment_1 = Equipment(type='Computer', description='Dell Laptop',
