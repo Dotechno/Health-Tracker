@@ -613,7 +613,7 @@ def maintenance_history(equipment_id):
         maintenance_history = EquipmentMaintenance.query.filter_by(
             equipment_id=equipment_id).all()
         equipment = Equipment.query.get(equipment_id)
-        return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+        return render_template('equipment_maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
 
 
 @app.route('/owned/<int:equipment_id>')
@@ -621,27 +621,27 @@ def equipment_owned(equipment_id):
     owned_information = EquipmentOwned.query.filter_by(
         equipment_id=equipment_id).all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('owned.html', owned_information=owned_information, equipment=equipment)
+    return render_template('equipment_owned.html', owned_information=owned_information, equipment=equipment)
 
 
 @app.route('/leased/<int:equipment_id>')
 def equipment_leased(equipment_id):
     leased_information = EquipmentLeased.query.all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('leased.html', leased_information=leased_information, equipment=equipment)
+    return render_template('equipment_leased.html', leased_information=leased_information, equipment=equipment)
 
 
 @app.route('/vendors', methods=['POST', 'GET'])
 def vendors():
     if "GET" == request.method:
         vendor_data = Vendors.query.all()
-        return render_template('vendors.html', equipment_data=vendor_data)
+        return render_template('equipment_vendors.html', equipment_data=vendor_data)
     if "POST" == request.method:
         search_item = request.form.get('search_item')
         if search_item:
             vendor_data = Vendors.query.filter(
                 Vendors.name.like('%'+search_item+'%')).all()
-            return render_template('vendors.html', equipment_data=vendor_data)
+            return render_template('equipment_vendors.html', equipment_data=vendor_data)
 
         return redirect(url_for('vendors'))
 ############################# IAN Ends Here #####################################
