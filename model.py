@@ -42,13 +42,14 @@ class Patient(db.Model):  # 01
         'MedicalEncounter', backref='patient')
 
     appointment = db.relationship('Appointment', backref='patient')
-    medication = db.relationship('Medication', backref='patient')
+    # medication = db.relationship('Medication', backref='patient')
 
 
 class MedicalEncounter(db.Model):  # 02
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
-    # practitioner_id = db.Column(db.Integer, db.ForeignKey('physician.id'), nullable=False)
+    physician_id = db.Column(db.Integer, db.ForeignKey(
+        'physician.id'), nullable=True)
     practitioner_type = db.Column(db.String(200), nullable=False)
     complaint = db.Column(db.String(200), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)
@@ -106,14 +107,7 @@ class LabOrder(db.Model):  # 05
         return '<LabOrder %r>' % self.id
 
 
-# class Physician(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     appointment = db.relationship('Appointment', backref='appointment')
-#     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-
 class Physician(db.Model):
-    # __bind_key__ = 'physician'
     id = db.Column(db.Integer, primary_key=True)
     # employee_id = db.Column(db.Integer, nullable=False)
     physician_name = db.Column(db.String(200), nullable=False)
@@ -219,7 +213,6 @@ class Medication(db.Model):  # Shweta
     frequency = db.Column(db.String(200), nullable=True)
     side_effects = db.Column(db.String(200), nullable=True)
     interactions = db.Column(db.String(200), nullable=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
 
 ##### Equipment Start #####
 
