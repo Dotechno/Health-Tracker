@@ -1,7 +1,6 @@
 {% extends "dashboard.html" %}
 
 {% block main_content %}
-
 <title>Medication details</title>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
@@ -60,30 +59,18 @@
         <label>Enter Physician Name</label>
 
 
-        <select name = "physician">
+        <select name="physician">
             {% for physician in physicians %}
             <option value="{{ physician.physician_name }}">{{physician.physician_name}}</option>
             {% endfor %}
         </select>
-        
-        
-        
-
-
         <br>
-        <br>
-
         <button type="submit" href="/" onclick="myFunction()">Submit</button>
         <button type="reset" href="/" onclick="myFunction()">Clear</button>
-
-
-
-
     </form>
 </div>
 <br>
 <div class="container">
-
     {% if output %}
     <table id="example" class="display nowrap" style="width:100%">
 
