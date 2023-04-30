@@ -29,20 +29,20 @@ with app.app_context():
                           work_days='Monday, Tuesday, Wednesday, Thursday, Friday')
 
     db.session.add(physician)
-    
+
     john_doe = Patient(name='John Doe', telephone='619-583-0249', address='439 Main St',
                        date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender="male",
                        physician_id=1)
 
     db.session.add(john_doe)
 
-    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'), physician_id=1,
+    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'), employee_id=1,
                                     practitioner_type='Physician', complaint='fever',
                                     diagnosis='flu', treatment='Tylenol', referral='none',
                                     recommended_followup=datetime.now(), notes='none',
                                     submission_date=datetime.strptime(
                                         '2012-12-12', '%Y-%m-%d'),
-                                    patient_id=1, employee_id=1)
+                                    patient_id=1)
 
     db.session.add(jdfirstvisit)
 
@@ -71,9 +71,7 @@ with app.app_context():
     TestCscree = LabTest(lab_test_name="Cancer Screening",
                          low_normal_results="Negative", high_normal_results="")
     db.session.add(TestCscree)
-    
-    
-    
+
     bob_date = datetime.strptime('2007-01-15', '%Y-%m-%d')
     bob_ordr = LabOrder(lab_order_date=datetime.strptime('2007-01-15', '%Y-%m-%d'), test_name="Blood Pressure", patient_name="Bob Builder",
                         physician_name="John Doe", lab_test_result="130", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2019-11-29', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=1)
@@ -101,7 +99,6 @@ with app.app_context():
                             department='HR', is_leased=False, is_owned=True)
 
     db.session.add_all([equipment_1, equipment_2, equipment_3, equipment_4])
-    
 
     owned_1 = EquipmentOwned(date_purchased=datetime.now(),
                              warranty_information='2 years', equipment_id=1)
