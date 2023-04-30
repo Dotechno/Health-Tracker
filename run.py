@@ -475,12 +475,13 @@ def lab_tracking_add_order():
         test = LabTest.query.get(lab_test_id)
         ordr_lbtestname = test.lab_test_name
         # print(lab_test_id, ordr_lbtestname)
-
+        patient_id = Patient.query.filter_by(name=ordr_ptname).first().id
         new_ordr = LabOrder(lab_order_date=ordr_lbodate, test_name=ordr_lbtestname, patient_name=ordr_ptname,
                             physician_name=ordr_phname, lab_test_result=ordr_lbresult, lab_test_technician=ordr_lbtech, lab_test_date=ordr_lbdate)
-
+        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        db.session.add(service)
         db.session.add(new_ordr)
-
+        
         db.session.commit()
         print('successfully committed')
         flash('Lab order added successfully')
@@ -668,11 +669,14 @@ def pharmacy_create_prescription():
         frequency = request.form.get('frequency')
         filled_by = request.form.get('filled_by')
         pharmacist_name = request.form.get('pharmacist_name')
-        med_enc = request.form.get('med_enc')
-
-        Details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
+        med_enc=request.form.get('med_enc')
+        patient_id = Patient.query.filter_by(name=patient_name).first().id
+        details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
                                dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
-        db.session.add(Details)
+        
+        db.session.add(details)
+        service = ServiceProvidedByClinic(service_description=medication, service_cost=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        db.session.add(service)
         db.session.commit()
         flash(f'Prescription added!', 'success')
 
@@ -720,9 +724,9 @@ def pharmacy_add_medication():
         side_effects = request.form.get('side_effects')
         interactions = request.form.get('interactions')
         patient_id = request.form.get('patient_id')
-        Details = Medication(medication=medication, description=description, dosage=dosage,
+        details = Medication(medication=medication, description=description, dosage=dosage,
                              frequency=frequency, side_effects=side_effects, interactions=interactions, patient_id=patient_id)
-        db.session.add(Details)
+        db.session.add(details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
         return redirect(url_for('pharmacy_add_medication'))
@@ -904,9 +908,10 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
     new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
                                   appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
 
-    # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
-    # db.session.add(service)
+    
     db.session.add(new_appointment)
+    service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date= date + timedelta(days=30), patient_id=1)
+    db.session.add(service)
     db.session.commit()
 
 
