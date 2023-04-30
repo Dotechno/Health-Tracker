@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField, IntegerField, ValidationError
 from wtforms.validators import DataRequired, Length, EqualTo, InputRequired
 
 
@@ -71,12 +73,13 @@ class MedicalEncounterForm(FlaskForm):
     diagnosis = StringField('Diagnosis', validators=[InputRequired()])
     treatment = StringField('Treatment', validators=[InputRequired()])
     referral = StringField('Referral', validators=[InputRequired()])
-    recommended_followup = StringField(
+    recommended_followup = DateField(
         'Recommended Follow-up', validators=[InputRequired()])
     notes = StringField('Notes', validators=[InputRequired()])
     submission_date = DateField(
         'Submission Date', format='%Y-%m-%d', validators=[InputRequired()])
     patient_name = StringField('Patient Name', validators=[DataRequired()])
     patient_id = SelectField('Patient ID', coerce=int)
-    practitioner_id = SelectField('Practitioner ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
+
+

@@ -263,10 +263,14 @@ def create_medical_encounter():
     form = MedicalEncounterForm()
     form.patient_id.choices = [(patient.id, patient.name)
                                for patient in Patient.query.all()]
-    # form choices for practicioner_id and name
-    print(form.patient_id.choices)
+    form.practitioner_id.choices = [( user.id, user.roles)
+                               for user in  User.query.all()]
+
+    
+    
     if request.method == 'POST':
         encounter_date = form.encounter_date.data
+        
         practitioner_type = form.practitioner_type.data
         complaint = form.complaint.data
         diagnosis = form.diagnosis.data
@@ -274,13 +278,12 @@ def create_medical_encounter():
         referral = form.referral.data
         recommended_followup = form.recommended_followup.data
         notes = form.notes.data
+        
         submission_date = form.submission_date.data
         patient_id = form.patient_id.data
-        patient = Patient.query.get(patient_id)
-        patient_name = patient.name
-
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
-                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+        
+        medical_encounter = MedicalEncounter(encounter_date= form.encounter_date.data, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
+                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=form.submission_date.data, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
 
@@ -663,16 +666,19 @@ def pharmacy_create_prescription():
         frequency = request.form.get('frequency')
         filled_by = request.form.get('filled_by')
         pharmacist_name = request.form.get('pharmacist_name')
-       # med_enc=request.form.get('med_enc')
+        med_enc=request.form.get('med_enc')
+        
         Details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
-                               dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name)
+                               dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
+        
         return redirect(url_for('pharmacy_create_prescription'))
 
     else:
-        return render_template('pharmacy_create_prescription.html')
+        mes = MedicalEncounter.query.all()
+        return render_template('pharmacy_create_prescription.html', mes = mes)
 
     # Route for retrieve Prescription # this is an extra route which is currently unused
 
@@ -711,15 +717,17 @@ def pharmacy_add_medication():
         frequency = request.form.get('frequency')
         side_effects = request.form.get('side_effects')
         interactions = request.form.get('interactions')
+        patient_id = request.form.get('patient_id')
         Details = Medication(medication=medication, description=description, dosage=dosage,
-                             frequency=frequency, side_effects=side_effects, interactions=interactions)
+                             frequency=frequency, side_effects=side_effects, interactions=interactions, patient_id = patient_id)
         db.session.add(Details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
         return redirect(url_for('pharmacy_add_medication'))
 
     else:
-        return render_template('pharmacy_add_medication.html')
+        patients = Patient.query.all()
+        return render_template('pharmacy_add_medication.html', patients = patients)
 
      # Route for retrieve Medications
 

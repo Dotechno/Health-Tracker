@@ -56,7 +56,20 @@
         <input type="text" name="filled_by" id="filled_by" required />
       </div>
 
+      <div class="item">
+        <label for="phone"> MedicalEncounter ID <span>*</span></label>
+        <select name="med_enc">
+          
+          {%for me in mes%}
 
+          <option for="phone" value="{{me.id}}">{{me.id}}</option>
+
+
+          {%endfor%}
+
+
+        </select>
+      </div>
       <!--       
           <div class="item">
             <label for="date">Date filled <span>*</span></label>

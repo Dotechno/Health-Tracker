@@ -48,8 +48,6 @@ class Patient(db.Model):  # 01
 class MedicalEncounter(db.Model):  # 02
     id = db.Column(db.Integer, primary_key=True)
     encounter_date = db.Column(db.Date, nullable=False)
-    physician_id = db.Column(db.Integer, db.ForeignKey(
-        'physician.id'), nullable=True)
     practitioner_type = db.Column(db.String(200), nullable=False)
     complaint = db.Column(db.String(200), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)
@@ -58,10 +56,11 @@ class MedicalEncounter(db.Model):  # 02
     recommended_followup = db.Column(db.Date, nullable=False)
     notes = db.Column(db.String(200), nullable=False)
     submission_date = db.Column(db.Date, nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
     prescription = db.relationship('Prescription', backref='medical_encounter')
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    
 
 
 # Model for creating prescription of Pharmacy Order Tracking Module

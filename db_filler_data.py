@@ -29,14 +29,14 @@ with app.app_context():
                           work_days='Monday, Tuesday, Wednesday, Thursday, Friday')
 
     db.session.add(physician)
-    db.session.commit()
+    
     john_doe = Patient(name='John Doe', telephone='619-583-0249', address='439 Main St',
                        date_of_birth=datetime.strptime('2012-12-12', '%Y-%m-%d'), gender="male",
                        physician_id=1)
 
     db.session.add(john_doe)
 
-    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'), physician_id = 1,
+    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'),
                                     practitioner_type='Physician', complaint='fever',
                                     diagnosis='flu', treatment='Tylenol', referral='none',
                                     recommended_followup=datetime.now(), notes='none',
@@ -72,7 +72,7 @@ with app.app_context():
     TestCscree = LabTest(lab_test_name="Cancer Screening",
                          low_normal_results="Negative", high_normal_results="")
     db.session.add(TestCscree)
-    db.session.commit()
+    
     
     
     bob_date = datetime.strptime('2007-01-15', '%Y-%m-%d')
@@ -102,7 +102,7 @@ with app.app_context():
                             department='HR', is_leased=False, is_owned=True)
 
     db.session.add_all([equipment_1, equipment_2, equipment_3, equipment_4])
-    db.session.commit()
+    
 
     owned_1 = EquipmentOwned(date_purchased=datetime.now(),
                              warranty_information='2 years', equipment_id=1)
