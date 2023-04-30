@@ -14,6 +14,26 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
 
+class PhysicianRegistrationForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    roles = StringField('Roles', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+
+    physician_name = StringField('Physician Name',
+                                 validators=[DataRequired(), Length(min=2, max=20)])
+    cell_phone_number = StringField('Cell Phone Number',
+                                    validators=[DataRequired(), Length(min=2, max=20)])
+    work_time_start = IntegerField('Work Time Start',)
+    work_time_end = IntegerField('Work Time End',)
+    work_days = StringField('Work Days',
+                            validators=[DataRequired(), Length(min=2, max=20)])
+
+    submit = SubmitField('Sign Up')
+
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[
                            DataRequired(), Length(min=2, max=20)])
@@ -36,7 +56,8 @@ class PatientForm(FlaskForm):
     submit = SubmitField('Create Patient')
     insurance = StringField('Insurance')
     insurance_address = StringField('Insurance Address')
-    insurance_status = SelectField('Insurance Status', choices=[('pay on time', 'Pay on Time'), ('late in payment', 'Late in payment'), ('difficult to get payment', 'Diffcult to get payment')])
+    insurance_status = SelectField('Insurance Status', choices=[('pay on time', 'Pay on Time'), (
+        'late in payment', 'Late in payment'), ('difficult to get payment', 'Diffcult to get payment')])
     physician_name = StringField('Physician Name')
 
 
@@ -59,4 +80,3 @@ class MedicalEncounterForm(FlaskForm):
     patient_id = SelectField('Patient ID', coerce=int)
     practitioner_id = SelectField('Practitioner ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
-

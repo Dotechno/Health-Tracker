@@ -10,7 +10,7 @@ import string
 import appointment
 import json
 
-from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
+from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm, PhysicianRegistrationForm
 from datetime import datetime, timedelta
 
 # Initialize app
@@ -84,7 +84,7 @@ def register_physician():
         return redirect(url_for('dashboard'))
 
     if request.method == 'GET':
-        form = RegistrationForm()
+        form = PhysicianRegistrationForm()
         return render_template('register_physician.html', title='Register', form=form)
 
     # if post request
@@ -101,7 +101,34 @@ def register_physician():
             flash('Username already exists!', 'danger')
             return redirect(url_for('register_physician'))
 
+        # physician_name = request.form.get('physician_name')
+        # cell_phone_number = request.form.get('cell_phone_number')
+        # work_time_start = request.form.get('work_time_start')
+        # work_time_end = request.form.get('work_time_end')
+        # work_days = request.form.get('work_days')
+        # days_working = ' '.join([str(elem) for elem in work_days])
+
+        # physician = Physician(physician_name=username,
+        #                       cell_phone_number=cell_phone_number, work_time_start=work_time_start,
+        #                       work_time_end=work_time_end, work_days=work_days)
+
+        data = request.get_json()
+        name = data['physicianName']
+        phone_number = data['cellPhoneNumber']
+        start_time = data['workTimeStart']
+        end_time = data['workTimeEnd']
+        start_time_obj = datetime.strptime(start_time, '%H:%M')
+        start_time = start_time_obj.strftime('%H:%M:%S')
+        end_time_obj = datetime.strptime(end_time, '%H:%M')
+        end_time = end_time_obj.strftime('%H:%M:%S')
+
+        days_working = ' '.join([str(elem) for elem in data['workDays']])
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                 work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+
         db.session.add(user)
+        db.session.add(physician)
+
         db.session.commit()
         flash(f'Account created for {username}!', 'success')
         return redirect(url_for('login'))
