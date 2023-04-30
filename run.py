@@ -279,8 +279,10 @@ def create_medical_encounter():
         patient = Patient.query.get(patient_id)
         patient_name = patient.name
 
+        employee_id = current_user.id
+
         medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
-                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+                                             treatment=treatment, employee_id=employee_id, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
 

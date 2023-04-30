@@ -47,6 +47,7 @@ class Patient(db.Model):  # 01
 
 class MedicalEncounter(db.Model):  # 02
     id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer, nullable=False)
     encounter_date = db.Column(db.Date, nullable=False)
     physician_id = db.Column(db.Integer, db.ForeignKey(
         'physician.id'), nullable=True)
@@ -78,7 +79,7 @@ class Prescription(db.Model):  # 03 Shweta
     date_filled = db.Column(Date, default=date.today)
     pharmacist_name = db.Column(db.String(200), nullable=False)
     medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
-      'medical_encounter.id'), nullable=True)
+        'medical_encounter.id'), nullable=True)
 
 
 class LabTest(db.Model):  # 04
@@ -101,9 +102,11 @@ class LabOrder(db.Model):  # 05
     lab_test_result = db.Column(db.String(200), nullable=False)
     test_name = db.Column(db.String(200), nullable=False)
     lab_order_date = db.Column(db.DateTime, nullable=False)
-    medical_encounter_id = db.Column(db.Integer, db.ForeignKey('medical_encounter.id'), nullable=False)
-    lab_test_id = db.Column(db.Integer, db.ForeignKey('lab_test.id'), nullable=False)
-    
+    medical_encounter_id = db.Column(db.Integer, db.ForeignKey(
+        'medical_encounter.id'), nullable=False)
+    lab_test_id = db.Column(db.Integer, db.ForeignKey(
+        'lab_test.id'), nullable=False)
+
     def __repr__(self):
         return '<LabOrder %r>' % self.id
 
@@ -152,7 +155,6 @@ class ServiceProvidedByClinic(db.Model):
     invoice_line_item = db.relationship(
         'InvoiceLineItem', backref='service_provided_by_clinic')
     # service_type_id = db.Column(db.Integer, db.ForeignKey('ServiceProvidedByClinic.id'))
-    
 
 
 class Invoice(db.Model):
