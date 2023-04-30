@@ -22,7 +22,7 @@ if not 'models' in sys.modules:
                        )
 
 with app.app_context():
-    user = User(username='admin', password='password', roles='admin')
+    user = User(username='admin', password='wert', roles='admin')
 
     physician = Physician(physician_name='Dr. Smith', cell_phone_number='619-247-4212',
                           work_time_start="08:00:00", work_time_end="18:00:00",
@@ -36,13 +36,13 @@ with app.app_context():
 
     db.session.add(john_doe)
 
-    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'),
+    jdfirstvisit = MedicalEncounter(encounter_date=datetime.strptime('2012-12-12', '%Y-%m-%d'), physician_id=1,
                                     practitioner_type='Physician', complaint='fever',
                                     diagnosis='flu', treatment='Tylenol', referral='none',
                                     recommended_followup=datetime.now(), notes='none',
                                     submission_date=datetime.strptime(
                                         '2012-12-12', '%Y-%m-%d'),
-                                    patient_id=1)
+                                    patient_id=1, employee_id=1)
 
     db.session.add(jdfirstvisit)
 
@@ -67,7 +67,6 @@ with app.app_context():
     TestBp = LabTest(lab_test_name="Blood Pressure",
                      low_normal_results="80", high_normal_results="100")
     db.session.add(TestBp)
-    
 
     TestCscree = LabTest(lab_test_name="Cancer Screening",
                          low_normal_results="Negative", high_normal_results="")
