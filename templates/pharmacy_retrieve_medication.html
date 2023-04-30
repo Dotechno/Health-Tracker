@@ -57,8 +57,16 @@
         </select>
         <br>
         <br>
-        Enter Physician Name <input type="text" name="physician_name" id="physician_name" required>
+        <label>Enter Physician Name</label>
 
+
+        <select name = "physician">
+            {% for physician in physicians %}
+            <option value="{{ physician.physician_name }}">{{physician.physician_name}}</option>
+            {% endfor %}
+        </select>
+        
+        
         
 
 

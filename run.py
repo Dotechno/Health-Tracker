@@ -741,15 +741,19 @@ def pharmacy_retrieve_medication():
     # return render_template('create_prescription.html')
     # tasks = Medication.query.order_by(Medication.id).all()
     # eturn render_template('retrieve_medication.html', tasks=tasks)
-    month = request.form.get('mon')
-    physician_name = request.form.get('physician_name')
-    physician_prescriptions = db.session.query(
-        Prescription.physician_name,
+    if request.method == 'POST':
+        month = request.form.get('mon')
+        physician_name = request.form.get('physician_name')
+        physician_prescriptions = db.session.query(
+            Prescription.physician_name,
 
-        db.func.count(Prescription.medication).label('count')
-    ).filter(func.strftime('%m', Prescription.date_filled) == month,
-             Prescription.physician_name == physician_name).all()
-    return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
+            db.func.count(Prescription.medication).label('count')
+        ).filter(func.strftime('%m', Prescription.date_filled) == month,
+                Prescription.physician_name == physician_name).all()
+        return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
+    else:
+        physicians = Physician.query.all()
+        return render_template('pharmacy_retrieve_medication.html', physicians=physicians)
 
 
 ############################# Shweta End Here #####################################
