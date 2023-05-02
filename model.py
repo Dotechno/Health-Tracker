@@ -248,7 +248,7 @@ class EquipmentMaintenance(db.Model):
     type_of_problem = db.Column(db.String(200), nullable=False)
     description_of_problem = db.Column(db.String(200), nullable=False)
     is_resolved = db.Column(db.Boolean, nullable=False)
-    description_of_resoltion = db.Column(db.String(200), nullable=False)
+    description_of_resolution = db.Column(db.String(200), nullable=False)
     equipment_id = db.Column(db.Integer, db.ForeignKey(
         'equipment.id'), nullable=False)
 

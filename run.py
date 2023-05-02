@@ -552,7 +552,7 @@ def search_equipment():
         search_item = request.form.get('search_item')
         if search_item:
             equipments = Equipment.query.filter(
-                Equipment.type.like('%'+search_item+'%')).all()
+                Equipment.equipment_type.like('%'+search_item+'%')).all()
             return render_template('equipment.html', equipments=equipments)
         else:
             equipments = Equipment.query.all()
@@ -565,7 +565,7 @@ def search_equipment():
 def equipment():
     if request.method == 'POST':
         # id
-        # type
+        # equipment_type
         # description
         # department
         # is_leased
@@ -604,14 +604,14 @@ def maintenance_history(equipment_id):
         type_of_problem = request.form.get('type_of_problem')
         description_of_problem = request.form.get('description_of_problem')
         is_resolved = request.form.get('is_resolved')
-        description_of_problem = request.form.get('description_of_problem')
+        description_of_resolution = request.form.get('description_of_resolution')
         if is_resolved == True:
             is_resolved = True
         else:
             is_resolved = False
 
         history = EquipmentMaintenance(type_of_problem=type_of_problem, description_of_problem=description_of_problem,
-                                       is_resolved=is_resolved, description_of_resoltion=description_of_problem, equipment_id=equipment_id)
+                                       is_resolved=is_resolved, description_of_resolution=description_of_resolution, equipment_id=equipment_id)
         db.session.add(history)
         db.session.commit()
         return redirect(url_for('maintenance_history', equipment_id=equipment_id))
@@ -917,52 +917,34 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
 
 @app.route('/add_physcian', methods=['POST'])
 def add_physcian():
-    data = request.get_json()
-    name = data['physicianName']
-    phone_number = data['cellPhoneNumber']
-    start_time = data['workTimeStart']
-    end_time = data['workTimeEnd']
-    start_time_obj = datetime.strptime(start_time, '%H:%M')
-    start_time = start_time_obj.strftime('%H:%M:%S')
-    end_time_obj = datetime.strptime(end_time, '%H:%M')
-    end_time = end_time_obj.strftime('%H:%M:%S')
+    # if data request is not json, try form
+    if request:
+        data = request.form
+        name = data['physician_name']
+        phone_number = data['cell_phone_number']
+        start_time = data['work_time_start']
+        end_time = data['work_time_end']
+        work_days = data['work_days']
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                work_time_start=start_time, work_time_end=end_time, work_days=work_days)
+    else:
+        data = request.get_json()
+        name = data['physicianName']
+        phone_number = data['cellPhoneNumber']
+        start_time = data['workTimeStart']
+        end_time = data['workTimeEnd']
+        start_time_obj = datetime.strptime(start_time, '%H:%M')
+        start_time = start_time_obj.strftime('%H:%M:%S')
+        end_time_obj = datetime.strptime(end_time, '%H:%M')
+        end_time = end_time_obj.strftime('%H:%M:%S')
 
-    days_working = ' '.join([str(elem) for elem in data['workDays']])
-    new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
-                             work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+        days_working = ' '.join([str(elem) for elem in data['workDays']])
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                work_time_start=start_time, work_time_end=end_time, work_days=days_working)
     db.session.add(new_physcian)
     db.session.commit()
 
-    # create_dummy_physicians()
-
     return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
-
-
-def create_dummy_physicians():
-    for i in range(10):
-        # Generate random name
-        name = ''.join(random.choices(string.ascii_uppercase, k=10))
-
-        # Generate random phone number
-        phone_number = ''.join(random.choices(string.digits, k=10))
-
-        # Generate random start and end times
-        start_time = "09:00:00"
-        end_time = "17:00:00"
-
-        # Generate random working days
-        working_days = []
-        for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
-            if random.random() < 0.5:
-                working_days.append(day)
-        days_working = ' '.join(working_days)
-
-        # Create new physician object and add to database
-        new_physician = Physician(physician_name=name, cell_phone_number=phone_number,
-                                  work_time_start=start_time, work_time_end=end_time, work_days=days_working)
-        db.session.add(new_physician)
-
-    db.session.commit()
 
 ############################# Amar End Here #####################################
 
