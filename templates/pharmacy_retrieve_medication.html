@@ -61,7 +61,7 @@
 
         <select name="physician">
             {% for physician in physicians %}
-            <option value="{{ physician.physician_name }}">{{physician.physician_name}}</option>
+            <option value="{{physician.physician_name}}">{{physician.physician_name}}</option>
             {% endfor %}
         </select>
         <br>
@@ -83,10 +83,10 @@
 
         </thead>
         <tbody>
-            {% for output in output %}
+            {% for output in outputs %}
             <tr>
-                <td>{{ output[0] }}</td>
-                <td>{{ output[1] }}</td>
+                <td>{{ output.physican_name }}</td>
+                <td>{{ output.medication }}</td>
             </tr>
             {% endfor %}
         </tbody>

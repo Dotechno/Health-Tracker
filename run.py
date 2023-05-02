@@ -250,12 +250,12 @@ def medication(patient_id):
     patient = Patient.query.get(patient_id)
     return render_template('medication.html', all_medication=all_medication, patient=patient)
 
-
 @app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
-def patient_appointment(patient_id):
+def viewappointment(patient_id):
     all_appointment = Appointment.query.filter_by(patient_id=patient_id).all()
     patient = Patient.query.get(patient_id)
     return render_template('appointment.html', all_appointment=all_appointment, patient=patient)
+
 
 
 @app.route('/create_medical_encounter', methods=['GET', 'POST'])
@@ -284,8 +284,8 @@ def create_medical_encounter():
 
         employee_id = current_user.id
 
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
-                                             treatment=treatment, employee_id=employee_id, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, employee_id = employee_id,
+                                             treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
 
@@ -675,7 +675,7 @@ def pharmacy_create_prescription():
                                dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
         
         db.session.add(details)
-        service = ServiceProvidedByClinic(service_description=medication, service_cost=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        service = ServiceProvidedByClinic(service_description=medication, cost_for_service=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
         db.session.add(service)
         db.session.commit()
         flash(f'Prescription added!', 'success')
@@ -747,6 +747,7 @@ def pharmacy_retrieve_medication():
     # tasks = Medication.query.order_by(Medication.id).all()
     # eturn render_template('retrieve_medication.html', tasks=tasks)
     if request.method == 'POST':
+        medication_name = request.form.get('medication_id')
         month = request.form.get('mon')
         physician_name = request.form.get('physician_name')
         physician_prescriptions = db.session.query(
@@ -755,7 +756,8 @@ def pharmacy_retrieve_medication():
             db.func.count(Prescription.medication).label('count')
         ).filter(func.strftime('%m', Prescription.date_filled) == month,
                 Prescription.physician_name == physician_name).all()
-        return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
+        physicians = Physician.query.all()
+        return render_template('pharmacy_retrieve_medication.html', outputs =physician_prescriptions, physicians = physicians)
     else:
         physicians = Physician.query.all()
         return render_template('pharmacy_retrieve_medication.html', physicians=physicians)
@@ -910,6 +912,7 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
 
     
     db.session.add(new_appointment)
+    date = datetime.strptime(date, '%m/%d/%y')
     service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date= date + timedelta(days=30), patient_id=1)
     db.session.add(service)
     db.session.commit()
