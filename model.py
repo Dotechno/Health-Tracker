@@ -1,4 +1,7 @@
-from __main__ import app
+try:
+    from run import app
+except ImportError:
+    from __main__ import app
 
 from datetime import date
 from sqlalchemy import Column, Date
@@ -61,7 +64,6 @@ class MedicalEncounter(db.Model):  # 02
     lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
     prescription = db.relationship('Prescription', backref='medical_encounter')
-    
 
 
 # Model for creating prescription of Pharmacy Order Tracking Module
