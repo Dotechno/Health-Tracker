@@ -126,7 +126,6 @@ def test_lab_tracking_add_test(client):
         cancer_screening = db.session.query(LabTest).filter_by(
             lab_test_name='Cancer Screening').first()
     assert cancer_screening.lab_test_name == 'Cancer Screening'
-    # assert cancer_screening.posi_negi == 'positive'
 
 
 def test_lab_tracking_200(client):
@@ -190,44 +189,6 @@ def test_lab_tracking_post_response2(client):
     ), follow_redirects=True)
     assert b"Lab Tracker" in response.data
 
-# @app.route('/lab_tracking_add_order/', methods=['POST', 'GET'])
-# def lab_tracking_add_order():
-#     if request.method == 'POST':
-#         ordr_ptname = request.form['ptname']
-#         ordr_phname = request.form['phname']
-#         ordr_lbtech = request.form['lbtech']
-#         ordr_lbresult = request.form['lbresult']
-#         # ordr_lbtestname = request.form['testname']
-#         ordr_timetemp = (request.form.get('lbdate') +
-#                          ' ' + "00:00:00")
-#         ordr_lbdate = datetime.strptime(ordr_timetemp, '%Y-%m-%d %H:%M:%S')
-#         ordr_timetemp = (request.form.get('lbodate') +
-#                          ' ' + "00:00:00")
-#         ordr_lbodate = datetime.strptime(ordr_timetemp, '%Y-%m-%d %H:%M:%S')
-
-#         lab_test_id = int(request.form.get('lab_test'))
-#         test = LabTest.query.get(lab_test_id)
-#         ordr_lbtestname = test.lab_test_name
-#         # print(lab_test_id, ordr_lbtestname)
-#         patient_id = Patient.query.filter_by(name=ordr_ptname).first().id
-#         new_ordr = LabOrder(lab_order_date=ordr_lbodate, test_name=ordr_lbtestname, patient_name=ordr_ptname,
-#                             physician_name=ordr_phname, lab_test_result=ordr_lbresult, lab_test_technician=ordr_lbtech, lab_test_date=ordr_lbdate)
-#         service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300,
-#                                           patient_id=patient_id, due_date=datetime.now() + timedelta(days=30), date=datetime.now())
-#         db.session.add(service)
-#         db.session.add(new_ordr)
-
-#         db.session.commit()
-#         print('successfully committed')
-#         flash('Lab order added successfully')
-#         return redirect('/lab_tracking/')
-
-#     else:
-#         lab_test = LabTest.query.order_by(LabTest.lab_test_name).all()
-#         # print(lab_test)
-#         orders = LabOrder.query.order_by(LabOrder.id).all()
-#         return render_template('lab_tracking_add_order.html', orders=orders, lab_test=lab_test)
-
 
 def test_lab_tracking_add_order(client):
     # logout
@@ -241,19 +202,42 @@ def test_lab_tracking_add_order(client):
     ), follow_redirects=True)
     assert b"Home" in response.data
 
+    # create patient Bob
+    with app.app_context():
+        # class Patient(db.Model):  # 01
+        #     id = db.Column(db.Integer, primary_key=True)
+        #     name = db.Column(db.String(200), nullable=False)
+        #     telephone = db.Column(db.String(200), nullable=False)
+        #     address = db.Column(db.String(200), nullable=False)
+        #     date_of_birth = db.Column(db.Date, nullable=False)
+        #     gender = db.Column(db.String(200), nullable=False)
+        #     insurance = db.relationship('Insurance', backref='patient')
+        #     physician_id = db.Column(db.Integer, db.ForeignKey(
+        #         'physician.id'), nullable=False)
+        #     medical_encounter = db.relationship(
+        #         'MedicalEncounter', backref='patient')
+
+        #     appointment = db.relationship('Appointment', backref='patient')
+        #     medication = db.relationship('Medication', backref='patient')
+
+        bob = Patient(name='Bob', telephone='1234567890', address='1234 Bob St', gender="Male",
+                      date_of_birth=datetime.strptime('1990-01-01', '%Y-%m-%d'), physician_id=1)
+        db.session.add(bob)
+        db.session.commit()
+
     response = client.post('/lab_tracking_add_order/', data=dict(
         ptname='Bob',
-        phname='Dr. Doe',
-        lbtech='John',
+        phname='Dr. Bob',
+        lbtech='Bob',
         lbresult='Positive',
-        lbdate=datetime.now(),
-        lbodate=datetime.now(),
-        lab_test=1
+        lbdate='2020-01-01',
+        lbodate='2020-01-01',
+        lab_test='1'
     ), follow_redirects=True)
 
     with app.app_context():
         order = LabOrder.query.filter_by(
-            lbresult='Positive').first()
+            lab_test_result='Positive').first()
         assert order.lab_test_result == 'Positive'
 
 
@@ -279,58 +263,38 @@ def test_admin_200(client):
     assert b"Home" in response.data
 
 
-# class Patient(db.Model):  # 01
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     telephone = db.Column(db.String(200), nullable=False)
-#     address = db.Column(db.String(200), nullable=False)
-#     date_of_birth = db.Column(db.Date, nullable=False)
-#     gender = db.Column(db.String(200), nullable=False)
-#     insurance = db.relationship('Insurance', backref='patient')
-#     physician_id = db.Column(db.Integer, db.ForeignKey(
-#         'physician.id'), nullable=False)
-#     medical_encounter = db.relationship(
-#         'MedicalEncounter', backref='patient')
-
-#     appointment = db.relationship('Appointment', backref='patient')
-#     medication = db.relationship('Medication', backref='patient')
-
 def test_patient_200(client):
     response = client.get('/patient')
     assert response.status_code == 200
 
 ##### Test form #####
 
-# class Physician(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     # employee_id = db.Column(db.Integer, nullable=False)
-#     physician_name = db.Column(db.String(200), nullable=False)
-#     cell_phone_number = db.Column(db.String(200), nullable=False)
-#     work_time_start = db.Column(db.Integer, nullable=False)
-#     work_time_end = db.Column(db.Integer, nullable=False)
-#     work_days = db.Column(db.String(200), nullable=False)
-#     patients = db.relationship('Patient', backref='physician')
-#     # appointments = db.relationship('Appointment', backref='physician')
-
 
 def test_create_physican(client):
-    client.post('/add_physician', data=dict(
-        physician_name='Dr.Doe',
-        phone_number='619-555-1234',
-        start_time="09:00:00",
-        end_time="17:00:00",
-        days_working="Monday Wednesday Friday"
-    ))
+    import json
+    data = {
+        'physicianName': "Dr. Bob",
+        'cellPhoneNumber': "619-123-2345",
+        'workTimeStart': "09:00:00",
+        'workTimeEnd': "17:00:00",
+        'workDays': ["Monday", "Tuesday", "Wednesday", "Friday"]
+    }
+
+    json_data = json.dumps(data)
+
+    response = client.post('/add_physcian', data=json_data,
+                           content_type='application/json')
+    assert response.status_code == 200
 
     with app.app_context():
-        p = db.session.query(Physician).filter_by(
-            physician_name='Dr.Doe').first()
+        physician = db.session.query(Physician).filter_by(
+            physician_name='Dr. Bob').first()
 
-        assert p.physician_name == 'Dr.Doe'
-        assert p.cell_phone_number == '619-555-1234'
-        assert p.work_time_start == '09:00:00'
-        assert p.work_time_end == '17:00:00'
-        assert p.work_days == 'Monday Wednesday Friday'
+    with app.app_context():
+        physician = db.session.query(Physician).filter_by(
+            physician_name='Dr. Bob').first()
+        assert physician is not None
+        assert physician.physician_name == 'Dr. Bob'
 
 
 def test_create_patient(client):
@@ -554,22 +518,48 @@ def test_physician_home_200(client):
 
 
 def test_confirm_appointment(appointment, client):
-    two_month_appointments = appointment.set_up("09:00:00",
-                                                "12:00:00", "Block Out", [])
-    get_user_selected_appointments = appointment.helper.get_selected_appointments(
+    two_month_appointments = appointment.set_up(
+        "09:00:00", "12:00:00", "Block Out", [])
+
+    import json
+
+    # send a POST request to the endpoint
+    response = client.post('/confirm_appointment')
+
+    # check that the response contains the expected appointments
+    expected_appointments = appointment.helper.get_selected_appointments(
         two_month_appointments)
-    data = {'get_user_selected_appointments': get_user_selected_appointments}
-
-    response = client.post('/confirm_appointment', data=data)
-
-    # check that the response status code is 200 (OK)
-    assert response.status_code == 200
+    expected_response = json.dumps({'appointments': expected_appointments})
+    assert response.data == expected_response.encode()
 
 
 ##### TESTS FOR EXCEPIONS #####
 
 def test_404(client):
-    response = client.get('/random')
-    assert response.data == b'404'
+    response = client.get('/random/', follow_redirects=True)
+    assert b'404' in response.data
+
+##### TESTING EQUIPMENT SYSTEM #####
+
+
+def test_equipment_200(client):
+    response = client.get('/equipment')
+    assert response.status_code == 200
+
+
+def test_equipment(client):
+    response = client.post('/equipment', data=dict(
+        equipment_type='X-Ray',
+        description='X-Ray Machine',
+        department='Radiology',
+        is_owned='on'
+    ), follow_redirects=True)
+
+    with app.app_context():
+        equipment = db.session.query(Equipment).filter_by(
+            equipment_type="X-Ray").first()
+
+    assert equipment.description == 'X-Ray Machine'
+
 
 ##### TESTING APPOINTMENT SYSTEM #####

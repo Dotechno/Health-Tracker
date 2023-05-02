@@ -581,7 +581,7 @@ def equipment():
         else:
             is_owned = False
             is_leased = True
-        equipment = Equipment(id=equipment_id, type=equipment_type, description=description,
+        equipment = Equipment(id=equipment_id, equipment_type=equipment_type, description=description,
                               department=department, is_leased=is_leased, is_owned=is_owned)
         db.session.add(equipment)
         db.session.commit()

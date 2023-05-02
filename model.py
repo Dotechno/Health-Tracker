@@ -219,7 +219,7 @@ class Medication(db.Model):  # Shweta
 
 class Equipment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200), nullable=False)
+    equipment_type = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     department = db.Column(db.String(200), nullable=False)
     is_leased = db.Column(db.Boolean, nullable=False)
