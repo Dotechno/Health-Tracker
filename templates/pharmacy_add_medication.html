@@ -58,6 +58,21 @@
         <input id="interactions" type="text" name="interactions" required />
       </div>
 
+      <div class="item">
+        <label for="phone" > Patient ID <span>*</span></label>
+        <select name="patient_id">
+          
+          {%for patient in patients%}
+  
+          <option for="phone"  value="{{patient.id}}">{{patient.id}}</option>
+  
+  
+          {%endfor%}
+  
+  
+        </select>
+      </div>
+
 
     </fieldset>
     <div class="btn-block">
@@ -65,6 +80,11 @@
       <button type="reset" href="/" onclick="myFunction()">Clear</button>
 
     </div>
+
+  
+
+
+
     <a href="pharmacy_retrieve_medication">Click here to generate report for medication</a>
 
   </form>

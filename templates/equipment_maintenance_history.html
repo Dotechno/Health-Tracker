@@ -1,0 +1,112 @@
+{% extends "dashboard.html" %}
+{% block main_content %}
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="../static/css/physician.css">
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
+<script src="../static/javascript/physcian.js"></script>
+
+<h1 class="equipment-title" style="text-align:center">{{ equipment.type }}'s Maintenance History</h1>
+<br>
+<div class="projects-section-line">
+    <div class="projects-status">
+    </div>
+    <div class="view-actions">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+            style="text-align:right">
+            Add Maintenance History:
+        </button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Maintenance Issue</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <div class="content">
+                        <form action="" method="POST">
+                            <br>
+                            <label for=" type_of_problem">Type of Maintenance Problem: </label><br>
+                            <input type="text" name="type_of_problem" id="type_of_problem" size="50" value=""><br><br>
+
+                            <label for="description_of_problem">Description of Problem: </label><br>
+                            <input type="text" name="description_of_problem" id="description_of_problem" value=""
+                                size="50"><br><br>
+
+                            <label for="is_resolved">Resolved?: </label>
+                            <input type="checkbox" id="is_resolved" name="is_resolved" value="True"><br><br>
+
+                            <label for="description_of_resolution">Resolution for Problem:</label>
+                            <input type="text" id="description_of_resolution" name="description_of_resolution"
+                                value=""><br><br>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add Equipment</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="project-boxes " style="">
+    <div div class="mt-5 ">
+        <table class="table center " id="equipment-table ">
+            <thead>
+                <tr>
+                    <th>Maintenance ID: </th>
+                    <th>Type of Problem: </th>
+                    <th>Description of Problem: </th>
+                    <th>Resolved?</th>
+                    <th>Resolution for Problem: </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for maintenance_history in maintenance_histories %}
+                <tr>
+                    <td>{{ maintenance_history.id }}</td>
+                    <td>{{ maintenance_history.type_of_problem }}</td>
+                    <td>{{ maintenance_history.description_of_problem }}</td>
+                    {% if maintenance_history.is_resolved%}
+                    <td>Resovled</td>
+                    {% else %}
+                    <td> Not Resolved</td>
+                    {% endif%}
+                    <td>{{ maintenance_history.description_of_resoltion}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js "></script>
+
+{% endblock %}

@@ -10,7 +10,7 @@ import string
 import appointment
 import json
 
-from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm
+from forms import PatientForm, RegistrationForm, LoginForm, MedicalEncounterForm, PhysicianRegistrationForm
 from datetime import datetime, timedelta
 
 # Initialize app
@@ -84,7 +84,7 @@ def register_physician():
         return redirect(url_for('dashboard'))
 
     if request.method == 'GET':
-        form = RegistrationForm()
+        form = PhysicianRegistrationForm()
         return render_template('register_physician.html', title='Register', form=form)
 
     # if post request
@@ -101,7 +101,34 @@ def register_physician():
             flash('Username already exists!', 'danger')
             return redirect(url_for('register_physician'))
 
+        # physician_name = request.form.get('physician_name')
+        # cell_phone_number = request.form.get('cell_phone_number')
+        # work_time_start = request.form.get('work_time_start')
+        # work_time_end = request.form.get('work_time_end')
+        # work_days = request.form.get('work_days')
+        # days_working = ' '.join([str(elem) for elem in work_days])
+
+        # physician = Physician(physician_name=username,
+        #                       cell_phone_number=cell_phone_number, work_time_start=work_time_start,
+        #                       work_time_end=work_time_end, work_days=work_days)
+
+        data = request.get_json()
+        name = data['physicianName']
+        phone_number = data['cellPhoneNumber']
+        start_time = data['workTimeStart']
+        end_time = data['workTimeEnd']
+        start_time_obj = datetime.strptime(start_time, '%H:%M')
+        start_time = start_time_obj.strftime('%H:%M:%S')
+        end_time_obj = datetime.strptime(end_time, '%H:%M')
+        end_time = end_time_obj.strftime('%H:%M:%S')
+
+        days_working = ' '.join([str(elem) for elem in data['workDays']])
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                 work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+
         db.session.add(user)
+        db.session.add(physician)
+
         db.session.commit()
         flash(f'Account created for {username}!', 'success')
         return redirect(url_for('login'))
@@ -221,14 +248,14 @@ def patient():
 def medication(patient_id):
     all_medication = Medication.query.filter_by(patient_id=patient_id).all()
     patient = Patient.query.get(patient_id)
-    return render_template('medication.html', all_medication=all_medication, patient=patient)
-
+    return render_template('medication.html', medications=all_medication, patient=patient)
 
 @app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
-def patient_appointment(patient_id):
+def viewappointment(patient_id):
     all_appointment = Appointment.query.filter_by(patient_id=patient_id).all()
     patient = Patient.query.get(patient_id)
     return render_template('appointment.html', all_appointment=all_appointment, patient=patient)
+
 
 
 @app.route('/create_medical_encounter', methods=['GET', 'POST'])
@@ -236,10 +263,12 @@ def create_medical_encounter():
     form = MedicalEncounterForm()
     form.patient_id.choices = [(patient.id, patient.name)
                                for patient in Patient.query.all()]
-    # form choices for practicioner_id and name
-    print(form.patient_id.choices)
+    form.practitioner_id.choices = [(user.id, user.roles)
+                                    for user in User.query.all()]
+
     if request.method == 'POST':
         encounter_date = form.encounter_date.data
+
         practitioner_type = form.practitioner_type.data
         complaint = form.complaint.data
         diagnosis = form.diagnosis.data
@@ -247,12 +276,15 @@ def create_medical_encounter():
         referral = form.referral.data
         recommended_followup = form.recommended_followup.data
         notes = form.notes.data
+
         submission_date = form.submission_date.data
         patient_id = form.patient_id.data
         patient = Patient.query.get(patient_id)
         patient_name = patient.name
 
-        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis,
+        employee_id = current_user.id
+
+        medical_encounter = MedicalEncounter(encounter_date=encounter_date, practitioner_type=practitioner_type, complaint=complaint, diagnosis=diagnosis, employee_id = employee_id,
                                              treatment=treatment, referral=referral, recommended_followup=recommended_followup, notes=notes, submission_date=submission_date, patient_id=patient_id)
         db.session.add(medical_encounter)
         db.session.commit()
@@ -347,8 +379,6 @@ def invoice(invoice_id):
 
         all_me = MedicalEncounter.query.order_by(
             MedicalEncounter.encounter_date.asc()).all()
-        physician = Physician.query.filter_by(
-            patient_id=all_patient.id).first()
         insurance = Insurance.query.filter_by(
             patient_id=all_patient.id).first()
 
@@ -359,7 +389,7 @@ def invoice(invoice_id):
         # order it by date
         items.sort(key=lambda x: x.date, reverse=True)
 
-        return render_template('billing_invoice.html', invoice=invoice, items=items, physician=physician,
+        return render_template('billing_invoice.html', invoice=invoice, items=items,
                                total_cost=invoice.total_cost, patient=all_patient)
 
 
@@ -443,12 +473,13 @@ def lab_tracking_add_order():
         test = LabTest.query.get(lab_test_id)
         ordr_lbtestname = test.lab_test_name
         # print(lab_test_id, ordr_lbtestname)
-
+        patient_id = Patient.query.filter_by(name=ordr_ptname).first().id
         new_ordr = LabOrder(lab_order_date=ordr_lbodate, test_name=ordr_lbtestname, patient_name=ordr_ptname,
                             physician_name=ordr_phname, lab_test_result=ordr_lbresult, lab_test_technician=ordr_lbtech, lab_test_date=ordr_lbdate)
-
+        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        db.session.add(service)
         db.session.add(new_ordr)
-
+        
         db.session.commit()
         print('successfully committed')
         flash('Lab order added successfully')
@@ -586,7 +617,7 @@ def maintenance_history(equipment_id):
         maintenance_history = EquipmentMaintenance.query.filter_by(
             equipment_id=equipment_id).all()
         equipment = Equipment.query.get(equipment_id)
-        return render_template('maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
+        return render_template('equipment_maintenance_history.html', maintenance_histories=maintenance_history, equipment=equipment)
 
 
 @app.route('/owned/<int:equipment_id>')
@@ -594,27 +625,27 @@ def equipment_owned(equipment_id):
     owned_information = EquipmentOwned.query.filter_by(
         equipment_id=equipment_id).all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('owned.html', owned_information=owned_information, equipment=equipment)
+    return render_template('equipment_owned.html', owned_information=owned_information, equipment=equipment)
 
 
 @app.route('/leased/<int:equipment_id>')
 def equipment_leased(equipment_id):
     leased_information = EquipmentLeased.query.all()
     equipment = Equipment.query.get(equipment_id)
-    return render_template('leased.html', leased_information=leased_information, equipment=equipment)
+    return render_template('equipment_leased.html', leased_information=leased_information, equipment=equipment)
 
 
 @app.route('/vendors', methods=['POST', 'GET'])
 def vendors():
     if "GET" == request.method:
         vendor_data = Vendors.query.all()
-        return render_template('vendors.html', equipment_data=vendor_data)
+        return render_template('equipment_vendors.html', equipment_data=vendor_data)
     if "POST" == request.method:
         search_item = request.form.get('search_item')
         if search_item:
             vendor_data = Vendors.query.filter(
                 Vendors.name.like('%'+search_item+'%')).all()
-            return render_template('vendors.html', equipment_data=vendor_data)
+            return render_template('equipment_vendors.html', equipment_data=vendor_data)
 
         return redirect(url_for('vendors'))
 ############################# IAN Ends Here #####################################
@@ -636,16 +667,22 @@ def pharmacy_create_prescription():
         frequency = request.form.get('frequency')
         filled_by = request.form.get('filled_by')
         pharmacist_name = request.form.get('pharmacist_name')
-       # med_enc=request.form.get('med_enc')
-        Details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
-                               dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name)
-        db.session.add(Details)
+        med_enc=request.form.get('med_enc')
+        patient_id = Patient.query.filter_by(name=patient_name).first().id
+        details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
+                               dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
+        
+        db.session.add(details)
+        service = ServiceProvidedByClinic(service_description=medication, cost_for_service=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        db.session.add(service)
         db.session.commit()
         flash(f'Prescription added!', 'success')
+
         return redirect(url_for('pharmacy_create_prescription'))
 
     else:
-        return render_template('pharmacy_create_prescription.html')
+        mes = MedicalEncounter.query.all()
+        return render_template('pharmacy_create_prescription.html', mes=mes)
 
     # Route for retrieve Prescription # this is an extra route which is currently unused
 
@@ -684,33 +721,44 @@ def pharmacy_add_medication():
         frequency = request.form.get('frequency')
         side_effects = request.form.get('side_effects')
         interactions = request.form.get('interactions')
-        Details = Medication(medication=medication, description=description, dosage=dosage,
-                             frequency=frequency, side_effects=side_effects, interactions=interactions)
-        db.session.add(Details)
+        patient_id = request.form.get('patient_id')
+        details = Medication(medication=medication, description=description, dosage=dosage,
+                             frequency=frequency, side_effects=side_effects, interactions=interactions, patient_id=patient_id)
+        db.session.add(details)
         db.session.commit()
         flash(f'Prescription added!', 'success')
         return redirect(url_for('pharmacy_add_medication'))
 
     else:
-        return render_template('pharmacy_add_medication.html')
+        patients = Patient.query.all()
+        return render_template('pharmacy_add_medication.html', patients=patients)
 
      # Route for retrieve Medications
 
 
 @app.route('/pharmacy_retrieve_medication', methods=['POST', 'GET'])
 def pharmacy_retrieve_medication():
+    if 'get' == request.method:
+        physicians = Physician.query.all()
+        return render_template('pharmacy_retrieve_medication.html', physicians=physicians)
     # return render_template('create_prescription.html')
     # tasks = Medication.query.order_by(Medication.id).all()
     # eturn render_template('retrieve_medication.html', tasks=tasks)
-    month = request.form.get('mon')
-    physician_name = request.form.get('physician_name')
-    physician_prescriptions = db.session.query(
-        Prescription.physician_name,
+    if request.method == 'POST':
+        medication_name = request.form.get('medication_id')
+        month = request.form.get('mon')
+        physician_name = request.form.get('physician_name')
+        physician_prescriptions = db.session.query(
+            Prescription.physician_name,
 
-        db.func.count(Prescription.medication).label('count')
-    ).filter(func.strftime('%m', Prescription.date_filled) == month,
-             Prescription.physician_name == physician_name).all()
-    return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
+            db.func.count(Prescription.medication).label('count')
+        ).filter(func.strftime('%m', Prescription.date_filled) == month,
+                Prescription.physician_name == physician_name).all()
+        physicians = Physician.query.all()
+        return render_template('pharmacy_retrieve_medication.html', outputs =physician_prescriptions, physicians = physicians)
+    else:
+        physicians = Physician.query.all()
+        return render_template('pharmacy_retrieve_medication.html', physicians=physicians)
 
 
 ############################# Shweta End Here #####################################
@@ -858,11 +906,13 @@ def get_all_appointments():
 def add_appointment(physician_name, date_time, date, type, time, physician_id):
     physcian = find_physician_by_id(physician_id)
     new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
-                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
+                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id, patient_id = 1)
 
-    # service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date=datetime.now() + timedelta(days=30), patient_id=1)
-    # db.session.add(service)
+    
     db.session.add(new_appointment)
+    date = datetime.strptime(date, '%m/%d/%y')
+    service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date= date + timedelta(days=30), patient_id=1)
+    db.session.add(service)
     db.session.commit()
 
 

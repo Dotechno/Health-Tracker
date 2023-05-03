@@ -33,16 +33,18 @@
                     <th scope="col">Name</th>
                     <th scope="col">Dosage</th>
                     <th scope="col">Frequency</th>
-                    <th scope="col">Duration</th>
+                    <th scope="col">side_effects</th>
+                    <th scope="col">interactions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for medication in medications %}
                   <tr>
-                    <td>{{ medication.name }}</td>
+                    <td>{{ medication.medication }}</td>
                     <td>{{ medication.dosage }}</td>
                     <td>{{ medication.frequency }}</td>
-                    <td>{{ medication.duration }}</td>
+                    <td>{{ medication.side_effects }}</td>
+                    <td>{{ medication.interactions }}</td>  
                   </tr>
                   {% endfor %}
                 </tbody>
