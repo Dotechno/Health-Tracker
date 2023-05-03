@@ -18,6 +18,7 @@
 ``` bash
 git clone https://github.com/Dotechno/Health-Tracker
 cd Health-Tracker
+```
 
 # Create python venv
 python -m venv venv
@@ -31,6 +32,7 @@ venv/Scripts/activate
 # Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
+```
 
 ## Unit-Testing
 
