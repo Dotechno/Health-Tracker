@@ -32,7 +32,8 @@ venv/Scripts/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-## Unit Testing
+## Unit-Testing
+
 ```bash
 pytest -s -v
 ```
@@ -102,4 +103,3 @@ class User(db.Model):
 class Channel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
 ```
-
