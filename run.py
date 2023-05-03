@@ -476,10 +476,11 @@ def lab_tracking_add_order():
         patient_id = Patient.query.filter_by(name=ordr_ptname).first().id
         new_ordr = LabOrder(lab_order_date=ordr_lbodate, test_name=ordr_lbtestname, patient_name=ordr_ptname,
                             physician_name=ordr_phname, lab_test_result=ordr_lbresult, lab_test_technician=ordr_lbtech, lab_test_date=ordr_lbdate)
-        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300,
+                                          patient_id=patient_id, due_date=datetime.now() + timedelta(days=30), date=datetime.now())
         db.session.add(service)
         db.session.add(new_ordr)
-        
+
         db.session.commit()
         print('successfully committed')
         flash('Lab order added successfully')
@@ -550,7 +551,7 @@ def search_equipment():
         search_item = request.form.get('search_item')
         if search_item:
             equipments = Equipment.query.filter(
-                Equipment.type.like('%'+search_item+'%')).all()
+                Equipment.equipment_type.like('%'+search_item+'%')).all()
             return render_template('equipment.html', equipments=equipments)
         else:
             equipments = Equipment.query.all()
@@ -563,7 +564,7 @@ def search_equipment():
 def equipment():
     if request.method == 'POST':
         # id
-        # type
+        # equipment_type
         # description
         # department
         # is_leased
@@ -579,7 +580,7 @@ def equipment():
         else:
             is_owned = False
             is_leased = True
-        equipment = Equipment(id=equipment_id, type=equipment_type, description=description,
+        equipment = Equipment(id=equipment_id, equipment_type=equipment_type, description=description,
                               department=department, is_leased=is_leased, is_owned=is_owned)
         db.session.add(equipment)
         db.session.commit()
@@ -602,14 +603,15 @@ def maintenance_history(equipment_id):
         type_of_problem = request.form.get('type_of_problem')
         description_of_problem = request.form.get('description_of_problem')
         is_resolved = request.form.get('is_resolved')
-        description_of_problem = request.form.get('description_of_problem')
+        description_of_resolution = request.form.get(
+            'description_of_resolution')
         if is_resolved == True:
             is_resolved = True
         else:
             is_resolved = False
 
         history = EquipmentMaintenance(type_of_problem=type_of_problem, description_of_problem=description_of_problem,
-                                       is_resolved=is_resolved, description_of_resoltion=description_of_problem, equipment_id=equipment_id)
+                                       is_resolved=is_resolved, description_of_resolution=description_of_resolution, equipment_id=equipment_id)
         db.session.add(history)
         db.session.commit()
         return redirect(url_for('maintenance_history', equipment_id=equipment_id))
@@ -667,11 +669,11 @@ def pharmacy_create_prescription():
         frequency = request.form.get('frequency')
         filled_by = request.form.get('filled_by')
         pharmacist_name = request.form.get('pharmacist_name')
-        med_enc=request.form.get('med_enc')
+        med_enc = request.form.get('med_enc')
         patient_id = Patient.query.filter_by(name=patient_name).first().id
         details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
                                dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
-        
+
         db.session.add(details)
         service = ServiceProvidedByClinic(service_description=medication, cost_for_service=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
         db.session.add(service)
@@ -908,7 +910,6 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
     new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
                                   appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id, patient_id = 1)
 
-    
     db.session.add(new_appointment)
     date = datetime.strptime(date, '%m/%d/%y')
     service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date= date + timedelta(days=30), patient_id=1)
@@ -918,52 +919,34 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
 
 @app.route('/add_physcian', methods=['POST'])
 def add_physcian():
-    data = request.get_json()
-    name = data['physicianName']
-    phone_number = data['cellPhoneNumber']
-    start_time = data['workTimeStart']
-    end_time = data['workTimeEnd']
-    start_time_obj = datetime.strptime(start_time, '%H:%M')
-    start_time = start_time_obj.strftime('%H:%M:%S')
-    end_time_obj = datetime.strptime(end_time, '%H:%M')
-    end_time = end_time_obj.strftime('%H:%M:%S')
+    # if data request is not json, try form
+    if request:
+        data = request.form
+        name = data['physician_name']
+        phone_number = data['cell_phone_number']
+        start_time = data['work_time_start']
+        end_time = data['work_time_end']
+        work_days = data['work_days']
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                 work_time_start=start_time, work_time_end=end_time, work_days=work_days)
+    else:
+        data = request.get_json()
+        name = data['physicianName']
+        phone_number = data['cellPhoneNumber']
+        start_time = data['workTimeStart']
+        end_time = data['workTimeEnd']
+        start_time_obj = datetime.strptime(start_time, '%H:%M')
+        start_time = start_time_obj.strftime('%H:%M:%S')
+        end_time_obj = datetime.strptime(end_time, '%H:%M')
+        end_time = end_time_obj.strftime('%H:%M:%S')
 
-    days_working = ' '.join([str(elem) for elem in data['workDays']])
-    new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
-                             work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+        days_working = ' '.join([str(elem) for elem in data['workDays']])
+        new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
+                                 work_time_start=start_time, work_time_end=end_time, work_days=days_working)
     db.session.add(new_physcian)
     db.session.commit()
 
-    # create_dummy_physicians()
-
     return render_template('physician.html', data=get_all_physicians(), datetime=datetime, appointments=get_all_appointments())
-
-
-def create_dummy_physicians():
-    for i in range(10):
-        # Generate random name
-        name = ''.join(random.choices(string.ascii_uppercase, k=10))
-
-        # Generate random phone number
-        phone_number = ''.join(random.choices(string.digits, k=10))
-
-        # Generate random start and end times
-        start_time = "09:00:00"
-        end_time = "17:00:00"
-
-        # Generate random working days
-        working_days = []
-        for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
-            if random.random() < 0.5:
-                working_days.append(day)
-        days_working = ' '.join(working_days)
-
-        # Create new physician object and add to database
-        new_physician = Physician(physician_name=name, cell_phone_number=phone_number,
-                                  work_time_start=start_time, work_time_end=end_time, work_days=days_working)
-        db.session.add(new_physician)
-
-    db.session.commit()
 
 ############################# Amar End Here #####################################
 
@@ -1008,4 +991,4 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002, host='0.0.0.0')
+    app.run(debug=True, port=550, host='0.0.0.0')

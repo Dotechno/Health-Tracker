@@ -1,4 +1,7 @@
-from __main__ import app
+try:
+    from run import app
+except ImportError:
+    from __main__ import app
 
 from datetime import date
 from sqlalchemy import Column, Date
@@ -61,7 +64,6 @@ class MedicalEncounter(db.Model):  # 02
     lab_order = db.relationship('LabOrder', backref='medical_encounter')
     vital_signs_id = db.relationship('VitalSign', backref='medical_encounter')
     prescription = db.relationship('Prescription', backref='medical_encounter')
-    
 
 
 # Model for creating prescription of Pharmacy Order Tracking Module
@@ -216,7 +218,7 @@ class Medication(db.Model):  # Shweta
 
 class Equipment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200), nullable=False)
+    equipment_type = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     department = db.Column(db.String(200), nullable=False)
     is_leased = db.Column(db.Boolean, nullable=False)
@@ -245,7 +247,7 @@ class EquipmentMaintenance(db.Model):
     type_of_problem = db.Column(db.String(200), nullable=False)
     description_of_problem = db.Column(db.String(200), nullable=False)
     is_resolved = db.Column(db.Boolean, nullable=False)
-    description_of_resoltion = db.Column(db.String(200), nullable=False)
+    description_of_resolution = db.Column(db.String(200), nullable=False)
     equipment_id = db.Column(db.Integer, db.ForeignKey(
         'equipment.id'), nullable=False)
 

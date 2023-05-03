@@ -174,3 +174,7 @@ dist
 .pnp.*
 package-lock.json
 db_fillerdata.py
+
+# unit test
+unittest.txt
+.pytest_cache/
