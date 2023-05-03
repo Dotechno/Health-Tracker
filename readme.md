@@ -18,7 +18,7 @@
 ``` bash
 git clone https://github.com/Dotechno/Health-Tracker
 cd Health-Tracker
-```
+
 
 # Create python venv
 python -m venv venv
