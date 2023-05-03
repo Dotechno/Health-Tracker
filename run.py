@@ -478,10 +478,11 @@ def lab_tracking_add_order():
         patient_id = Patient.query.filter_by(name=ordr_ptname).first().id
         new_ordr = LabOrder(lab_order_date=ordr_lbodate, test_name=ordr_lbtestname, patient_name=ordr_ptname,
                             physician_name=ordr_phname, lab_test_result=ordr_lbresult, lab_test_technician=ordr_lbtech, lab_test_date=ordr_lbdate)
-        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        service = ServiceProvidedByClinic(service_description=ordr_lbtestname, service_cost=300,
+                                          patient_id=patient_id, due_date=datetime.now() + timedelta(days=30), date=datetime.now())
         db.session.add(service)
         db.session.add(new_ordr)
-        
+
         db.session.commit()
         print('successfully committed')
         flash('Lab order added successfully')
@@ -604,7 +605,8 @@ def maintenance_history(equipment_id):
         type_of_problem = request.form.get('type_of_problem')
         description_of_problem = request.form.get('description_of_problem')
         is_resolved = request.form.get('is_resolved')
-        description_of_resolution = request.form.get('description_of_resolution')
+        description_of_resolution = request.form.get(
+            'description_of_resolution')
         if is_resolved == True:
             is_resolved = True
         else:
@@ -669,13 +671,14 @@ def pharmacy_create_prescription():
         frequency = request.form.get('frequency')
         filled_by = request.form.get('filled_by')
         pharmacist_name = request.form.get('pharmacist_name')
-        med_enc=request.form.get('med_enc')
+        med_enc = request.form.get('med_enc')
         patient_id = Patient.query.filter_by(name=patient_name).first().id
         details = Prescription(patient_name=patient_name, physician_name=physician_name, medication=medication,
                                dosage=dosage, frequency=frequency, filled_by=filled_by, pharmacist_name=pharmacist_name, medical_encounter_id=med_enc)
-        
+
         db.session.add(details)
-        service = ServiceProvidedByClinic(service_description=medication, service_cost=100, patient_id = patient_id, due_date = datetime.now() + timedelta(days=30), date = datetime.now())
+        service = ServiceProvidedByClinic(service_description=medication, service_cost=100,
+                                          patient_id=patient_id, due_date=datetime.now() + timedelta(days=30), date=datetime.now())
         db.session.add(service)
         db.session.commit()
         flash(f'Prescription added!', 'success')
@@ -754,7 +757,7 @@ def pharmacy_retrieve_medication():
 
             db.func.count(Prescription.medication).label('count')
         ).filter(func.strftime('%m', Prescription.date_filled) == month,
-                Prescription.physician_name == physician_name).all()
+                 Prescription.physician_name == physician_name).all()
         return render_template('pharmacy_retrieve_medication.html', output=physician_prescriptions)
     else:
         physicians = Physician.query.all()
@@ -908,9 +911,9 @@ def add_appointment(physician_name, date_time, date, type, time, physician_id):
     new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
                                   appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
 
-    
     db.session.add(new_appointment)
-    service = ServiceProvidedByClinic(service_description=appointment_type, cost_for_service=75, date= date, due_date= date + timedelta(days=30), patient_id=1)
+    service = ServiceProvidedByClinic(service_description=appointment_type,
+                                      cost_for_service=75, date=date, due_date=date + timedelta(days=30), patient_id=1)
     db.session.add(service)
     db.session.commit()
 
@@ -926,7 +929,7 @@ def add_physcian():
         end_time = data['work_time_end']
         work_days = data['work_days']
         new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
-                                work_time_start=start_time, work_time_end=end_time, work_days=work_days)
+                                 work_time_start=start_time, work_time_end=end_time, work_days=work_days)
     else:
         data = request.get_json()
         name = data['physicianName']
@@ -940,7 +943,7 @@ def add_physcian():
 
         days_working = ' '.join([str(elem) for elem in data['workDays']])
         new_physcian = Physician(physician_name=name, cell_phone_number=phone_number,
-                                work_time_start=start_time, work_time_end=end_time, work_days=days_working)
+                                 work_time_start=start_time, work_time_end=end_time, work_days=days_working)
     db.session.add(new_physcian)
     db.session.commit()
 
@@ -989,4 +992,4 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002, host='0.0.0.0')
+    app.run(debug=True, port=550, host='0.0.0.0')

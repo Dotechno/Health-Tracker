@@ -177,3 +177,4 @@ db_fillerdata.py
 
 # unit test
 unittest.txt
+.pytest_cache/
