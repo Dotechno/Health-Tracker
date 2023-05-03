@@ -24,16 +24,6 @@ def app():
     yield app
 
 
-def app_appointment():
-    import appointment
-    yield appointment
-
-
 @pytest.fixture()
 def client(app):
     return app.test_client()
-
-
-@pytest.fixture()
-def appointment_client(app_appointment):
-    return app_appointment.test_client()

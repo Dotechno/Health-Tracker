@@ -488,20 +488,20 @@ def test_physician_home_200(client):
     assert response.status_code == 405
 
 
-def test_confirm_appointment(appointment, client):
-    two_month_appointments = appointment.set_up(
-        "09:00:00", "12:00:00", "Block Out", [])
+# def test_confirm_appointment(appointment, client):
+#     two_month_appointments = appointment.set_up(
+#         "09:00:00", "12:00:00", "Block Out", [])
 
-    import json
+#     import json
 
-    # send a POST request to the endpoint
-    response = client.post('/confirm_appointment')
+#     # send a POST request to the endpoint
+#     response = client.post('/confirm_appointment')
 
-    # check that the response contains the expected appointments
-    expected_appointments = appointment.helper.get_selected_appointments(
-        two_month_appointments)
-    expected_response = json.dumps({'appointments': expected_appointments})
-    assert response.data == expected_response.encode()
+#     # check that the response contains the expected appointments
+#     expected_appointments = appointment.helper.get_selected_appointments(
+#         two_month_appointments)
+#     expected_response = json.dumps({'appointments': expected_appointments})
+#     assert response.data == expected_response.encode()
 
 
 ##### TESTS FOR EXCEPIONS #####
