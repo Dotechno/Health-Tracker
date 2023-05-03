@@ -2,7 +2,7 @@
 
 ## Table of Contents
 - [Setup](#setup)
-- Unit Testing
+- [Unit Testing](#unit-testing)
 - [Naming Conventions](#naming-conventions)
     - [Structure](#structure)
     - [Python](#python)
@@ -37,7 +37,7 @@ pip install -r requirements.txt
 pytest -s -v
 ```
 
-# Setup DB 
+## Setup DB 
 python setup.py
 ```
 ## Naming Conventions
