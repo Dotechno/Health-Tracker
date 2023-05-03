@@ -114,7 +114,6 @@ class LabOrder(db.Model):  # 05
 
 class Physician(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # employee_id = db.Column(db.Integer, nullable=False)
     physician_name = db.Column(db.String(200), nullable=False)
     cell_phone_number = db.Column(db.String(200), nullable=False)
     work_time_start = db.Column(db.Integer, nullable=False)

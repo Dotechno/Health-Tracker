@@ -26,7 +26,7 @@ with app.app_context():
 
     physician = Physician(physician_name='Dr. Smith', cell_phone_number='619-247-4212',
                           work_time_start="08:00:00", work_time_end="18:00:00",
-                          work_days='Monday, Tuesday, Wednesday, Thursday, Friday')
+                          work_days='Monday Tuesday Wednesday Thursday Friday')
 
     db.session.add(physician)
 
