@@ -248,7 +248,7 @@ def patient():
 def medication(patient_id):
     all_medication = Medication.query.filter_by(patient_id=patient_id).all()
     patient = Patient.query.get(patient_id)
-    return render_template('medication.html', all_medication=all_medication, patient=patient)
+    return render_template('medication.html', medications=all_medication, patient=patient)
 
 @app.route('/patient/<int:patient_id>/appointment', methods=['GET', 'POST'])
 def viewappointment(patient_id):
@@ -379,8 +379,6 @@ def invoice(invoice_id):
 
         all_me = MedicalEncounter.query.order_by(
             MedicalEncounter.encounter_date.asc()).all()
-        physician = Physician.query.filter_by(
-            patient_id=all_patient.id).first()
         insurance = Insurance.query.filter_by(
             patient_id=all_patient.id).first()
 
@@ -391,7 +389,7 @@ def invoice(invoice_id):
         # order it by date
         items.sort(key=lambda x: x.date, reverse=True)
 
-        return render_template('billing_invoice.html', invoice=invoice, items=items, physician=physician,
+        return render_template('billing_invoice.html', invoice=invoice, items=items,
                                total_cost=invoice.total_cost, patient=all_patient)
 
 
@@ -908,7 +906,7 @@ def get_all_appointments():
 def add_appointment(physician_name, date_time, date, type, time, physician_id):
     physcian = find_physician_by_id(physician_id)
     new_appointment = Appointment(physician_name=physcian.physician_name, appointment_date_time=date_time,
-                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id)
+                                  appointment_date=date, appointment_type=type, appointment_time=time, physician_id=physician_id, patient_id = 1)
 
     
     db.session.add(new_appointment)

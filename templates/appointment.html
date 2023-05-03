@@ -33,21 +33,21 @@
                     <th scope="col">physician name</th>
                     <th scope="col">appointment date</th>
                     <th scope="col">appointment time</th>
-                    
                     <th scope="col">appointment type</th>
                     
                   </tr>
                 </thead>
+                {%for appointment in all_appointment %}
                 <tbody>
-                    {%for appointment in all_appointment %}
+                    
                     <td>{{appointment.physician_name}}</td>
                     <td>{{appointment.appointment_date}}</td>
                     <td>{{appointment.appointment_time}}</td>
                     <td>{{appointment.appointment_type}}</td>
                     
                     
-                    {%endfor%}
                 </tbody>
+                {%endfor%}
               
 
             </tbody>
