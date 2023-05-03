@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Setup](#setup)
+- Unit Testing
 - [Naming Conventions](#naming-conventions)
     - [Structure](#structure)
     - [Python](#python)
@@ -10,6 +11,7 @@
     - [One-to-One](#one-to-one)
     - [One-to-Many](#one-to-many)
     - [Many-to-Many](#many-to-many)
+
 
 ## Setup
 
@@ -29,6 +31,11 @@ venv/Scripts/activate
 # Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
+
+## Unit Testing
+```bash
+pytest -s -v
+```
 
 # Setup DB 
 python setup.py
