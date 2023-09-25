@@ -81,5 +81,3 @@ class MedicalEncounterForm(FlaskForm):
     patient_name = StringField('Patient Name', validators=[DataRequired()])
     patient_id = SelectField('Patient ID', coerce=int)
     submit = SubmitField('Create Medical Encounter')
-
-
