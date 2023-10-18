@@ -1,5 +1,28 @@
 # Healthtrack
 
+Welcome to the Health Tracker App! A comprehensive solution designed to streamline and manage various aspects of healthcare processes. From patients to medicine, equipment to encounters, this platform covers it all.
+
+![image](https://github.com/Dotechno/Health-Tracker/assets/61751438/0c0705b9-318e-4075-ac55-70114b756364)
+![image](https://github.com/Dotechno/Health-Tracker/assets/61751438/7aa4bfc6-794f-4595-839b-29c0b81d5fe4)
+
+## Features:
+- Login & Register System: Secure access for authorized personnel (HTTPS with Nginx).
+- Persistent Login: Seamless user experience with cookies saving login status.
+- Lab Tracker: Keep track of all lab activities, tests, and results.
+- Patient Tracker: Manage patient details, appointments, and histories.
+- Medical Encounter Tracker: Record and review all patient-doctor interactions.
+- Equipment Tracker and Maintenance: Stay updated with all equipment status and their maintenance schedules.
+- Pharmacy and Medicine Tracker: Ensure timely stocking and dispensing of medicines.
+- Dark Theme
+- Feedback and Review System: Allow patients to rate and review their experiences with healthcare professionals.
+
+## In Progress
+- Chatbot Support: Implement a chatbot for instant answers to common queries, appointment scheduling, and medication reminders.
+- AI Diagnostics: Use machine learning models to provide preliminary diagnoses based on symptoms entered by patients.
+- Personalized Health Dashboard: Provide users with a dashboard that showcases their health trends, upcoming appointments, and other relevant information.
+- Medication Reminder: Send notifications to patients when it's time to take their medications.
+- Telemedicine Integration: Allow video consultations between doctors and patients within the app. This can be particularly useful in situations where physical visits are challenging.
+
 ## Table of Contents
 - [Setup](#setup)
 - [Unit Testing](#unit-testing)
