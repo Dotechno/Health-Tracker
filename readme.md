@@ -1,4 +1,4 @@
-![image](https://github.com/Dotechno/Health-Tracker/assets/61751438/f782aaab-93ea-4651-92a5-07a353a4aaa8)# Healthtrack
+# Healthtrack
 
 Welcome to the Health Tracker App! A comprehensive solution designed to streamline and manage various aspects of healthcare processes. From patients to medicine, equipment to encounters, this platform covers it all.
 
