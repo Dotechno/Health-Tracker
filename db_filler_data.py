@@ -23,6 +23,7 @@ if not 'models' in sys.modules:
 
 with app.app_context():
     user = User(username='admin', password='wert', roles='admin')
+    user = User(username='matthew', password='wert', roles='physician')
 
     physician = Physician(physician_name='Dr. Smith', cell_phone_number='619-247-4212',
                           work_time_start="08:00:00", work_time_end="18:00:00",
@@ -89,13 +90,13 @@ with app.app_context():
                         physician_name="Jacob Deer", lab_test_result="Negative", lab_test_technician="John Mann", lab_test_date=datetime.strptime('2020-06-18', '%Y-%m-%d'), medical_encounter_id=1, lab_test_id=2)
     db.session.add(nocancer)
 
-    equipment_1 = Equipment(type='Computer', description='Dell Laptop',
+    equipment_1 = Equipment(equipment_type='Computer', description='Dell Laptop',
                             department='IT', is_leased=False, is_owned=True)
-    equipment_2 = Equipment(type='Printer', description='HP LaserJet Printer',
+    equipment_2 = Equipment(equipment_type='Printer', description='HP LaserJet Printer',
                             department='Admin', is_leased=False, is_owned=False)
-    equipment_3 = Equipment(type='Projector', description='Epson Multimedia',
+    equipment_3 = Equipment(equipment_type='Projector', description='Epson Multimedia',
                             department='Sales', is_leased=True, is_owned=False)
-    equipment_4 = Equipment(type='Scanner', description='Canon Document',
+    equipment_4 = Equipment(equipment_type='Scanner', description='Canon Document',
                             department='HR', is_leased=False, is_owned=True)
 
     db.session.add_all([equipment_1, equipment_2, equipment_3, equipment_4])
@@ -113,7 +114,7 @@ with app.app_context():
     db.session.add(leased_1)
 
     maintenance_1 = EquipmentMaintenance(type_of_problem='Hardware issue', description_of_problem='Laptop not turning on',
-                                         is_resolved=False, description_of_resoltion='', equipment_id=1)
+                                         is_resolved=False, description_of_resolution='', equipment_id=1)
 
     db.session.add(maintenance_1)
 
@@ -124,15 +125,15 @@ with app.app_context():
 
     vendors = Vendors(name='builder', address='mira roam road',
                       type_of_equipment_provided='Blood Pressure Monitor', is_preferred_vendor=True, equipment_id=1)
-    mri_equipment = Equipment(type='MRI', description='Magnetic Resonance Imaging',
+    mri_equipment = Equipment(equipment_type='MRI', description='Magnetic Resonance Imaging',
                               department='Radiology', is_leased=False, is_owned=True)
     blood_pressure_equipment = Equipment(
-        type='Blood Pressure Monitor', description='Blood Pressure Monitor', department='Cardiology', is_leased=False, is_owned=True)
+        equipment_type='Blood Pressure Monitor', description='Blood Pressure Monitor', department='Cardiology', is_leased=False, is_owned=True)
 
     logitics_llc_vendor = Vendors(name='Logistics LLC', address='1234 Main Street, Anytown, USA',
                                   type_of_equipment_provided='MRI', is_preferred_vendor=True, equipment_id=1)
     plug_issue_1 = EquipmentMaintenance(type_of_problem='plug issue', description_of_problem='plug is not working',
-                                        is_resolved=False, description_of_resoltion='plug is replaced', equipment_id=1)
+                                        is_resolved=False, description_of_resolution='plug is replaced', equipment_id=1)
 
     db.session.add(user)
     db.session.add(plug_issue_1)
